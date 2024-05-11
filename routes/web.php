@@ -2,14 +2,31 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController;
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::middleware(['guest'])->group(function () {
+    Route::get('/iniciar-sesion', function () {
+        return view('auth.login');
+    });
+    Route::get('/iniciar-sesion2', function () {
+        return view('auth.login2');
+    });
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/', function () {
+        return view('home.administrador');
+    })->name('Dashboard-Adm');
+
+    Route::get('/panel-staff', function () {
+        return view('home.staff');
+    })->name('Dashboard-St');
+
+
+    Route::resource('users', UserController::class)->names('admin.users');
+});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
