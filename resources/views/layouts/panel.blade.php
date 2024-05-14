@@ -63,7 +63,8 @@
                         <i class='bx bxs-dashboard mr-3 text-lg'></i>
                         <span class="nav-text text-sm">Dashboard</span>
                     </a>
-                    @elseif (Auth::user()->hasRole('Administrador'))
+                    
+                    @elseif (Auth::user()->hasAnyRole('Super Administrador', 'Administrador'))
                     <a href="/"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md">
                         <i class='bx bxs-dashboard mr-3 text-lg'></i>
@@ -322,6 +323,15 @@
             <main class="contenido relative">
                 @yield('contenido')
             </main>
+            <footer>
+                <div class="w-full md:w-4/12 px-4 mx-auto text-center mb-5">
+                    <div class="text-sm text-blueGray-500 font-semibold py-1">
+                      Copyright © <span id="get-current-year">2024</span><a href="https://www.facebook.com/profile.php?id=61558455937047" class="hover:underline text-blueGray-500 hover:text-gray-800" target="_blank"> Erick's GYM </a>
+                      <span>by</span>
+                      <a href="https://www.firenow.com" class="text-blueGray-500 hover:text-blueGray-800 hover:underline">Firenow Solutions</a>.
+                    </div>
+                  </div>
+            </footer>
         </main>
 
     </section>

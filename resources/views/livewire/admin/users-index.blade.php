@@ -70,52 +70,66 @@
         </div>
     </form>
     @if($users->count())
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-[#545759] shadow-md">
-            <tr>
-                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    Nombre
-                </th>
-                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    Correo electrónico
-                </th>
-                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    Fecha de registro
-                </th>
-                <th scope="col" colspan="4" class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    Acciones
-                </th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            @foreach($users as $user)
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-600">
+            <thead class="bg-[#545759] shadow-md">
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->name}}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->email}}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->created_at}}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        <a href="{{-- {{ route('contactos.show', $user->id) }} --}}" class="text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">Ver Detalles</a>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        <a href="{{ route('admin.users.edit', $user) }}" class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">Editar</a>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        <form action="{{-- {{ route('contactos.destroy', $user->id) }} --}}" method="POST" onsubmit="return confirm('¿Estás seguro que deseas eliminar?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">Eliminar</button>
-                        </form>
-                    </td>
+                    <th scope="col" class="px-3ssssssss py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        Nombre
+                    </th>
+                    <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        Correo electrónico
+                    </th>
+                    <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        Rol
+                    </th>
+                    <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        Fecha de registro
+                    </th>
+                    <th scope="col"  class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        Acciones
+                    </th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @foreach($users as $user)
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                            {{ $user->name}}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                            {{ $user->email}}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                           
+                            @php
+                            $roleNames = $user->roles->pluck('name');
+                            @endphp
+                            
+                            {{ $roleNames->isNotEmpty() ? $roleNames->join(', ') : 'Sin Rol' }}
+                            
+
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                            {{ $user->created_at}}
+                        </td>
+                    
+                        <td class=" flex px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                            <a href="{{ route('admin.users.show', $user) }}"" class="text-teal-600 hover:text-teal-900 px-3 py-1 mr-1 rounded-md bg-teal-100 hover:bg-teal-200">Ver Detalles</a>
+                            <a href="{{ route('admin.users.edit', $user) }}" class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">Editar</a>
+                            <form action="{{-- {{ route('contactos.destroy', $user->id) }} --}}" method="POST" onsubmit="return confirm('¿Estás seguro que deseas eliminar?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">Eliminar</button>
+                            </form>
+                        </td>
+                     
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    
     <div class="mt-5">
         {{ $users->links() }}
     </div>

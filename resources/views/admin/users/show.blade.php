@@ -1,11 +1,11 @@
 @extends('layouts.panel')
 
 @section('titulo')
-   Editar Usuario
+   Información del Usuario
 @endsection
 
 @section('contenido')
-<h1 class="text-3xl font-bold text-center mt-5 uppercase">Editar Usuario</h1>
+<h1 class="text-3xl font-bold text-center mt-5 uppercase">Detalles del Usuario</h1>
 <div class="mb-10 mt-5">
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
         
@@ -32,7 +32,7 @@
                                     </div>
                                     @enderror
             
-                                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5"
+                                    <label class="text-sm font-medium text-gray-700 dark:text-gray-400 mb-5"
                                     for="role">Rol:</label>
                                     <select class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
                                      name="role" id="role" required>

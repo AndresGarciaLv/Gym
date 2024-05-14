@@ -17,14 +17,14 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('home.administrador');
-    })->name('Dashboard-Adm');
+    })->middleware('can:Dashboard-Adm')->name('Dashboard-Adm');
 
     Route::get('/panel-staff', function () {
         return view('home.staff');
-    })->name('Dashboard-St');
+    })->middleware('can:Dashboard-St')->name('Dashboard-St');
 
 
-    Route::resource('users', UserController::class)->names('admin.users');
+    Route::resource('users', UserController::class)->middleware('can:admin.users')->names('admin.users');
 });
 
 

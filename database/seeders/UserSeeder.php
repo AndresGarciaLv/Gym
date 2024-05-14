@@ -29,10 +29,16 @@ class UserSeeder extends Seeder
         ])->assignRole('Staff');
 
         User::create([
+            'name'=> 'Omar Caballero',
+            'email'=> 'ocaballero@gmail.com',
+            'password'=> Hash::make('Toluca10')
+        ])->assignRole('Cliente');
+
+        User::create([
             'name'=> 'AndrésGL',
             'email'=> 'andresgarciia09@gmail.com',
             'password'=> Hash::make('Toluca10')
-        ])->assignRole('Administrador');
+        ])->assignRole('Super Administrador');
 
         User::factory(200)->create();
     }
