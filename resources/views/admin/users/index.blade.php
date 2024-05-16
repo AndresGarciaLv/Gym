@@ -5,6 +5,7 @@
 @endsection
 
 @section('contenido')
+
 <h1 class="text-3xl font-bold text-center mt-5 uppercase">Lista de usuarios</h1>
 <div class="mb-10 mt-5">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

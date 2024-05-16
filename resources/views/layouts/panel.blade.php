@@ -114,7 +114,7 @@
                 @endif
 
 
-                <li class="mb-1 group relative z-2">
+              {{--   <li class="mb-1 group relative z-2">
                     @if (auth()->user()->hasRole(['Super Administrador', 'Administrador de División']))
                     <a href=""
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#394C5F] sidebar-dropdown-toggle rounded-md">
@@ -177,10 +177,10 @@
                         </li>
                         @endif
                     </ul>
-                </li>
+                </li> --}}
 
 
-                <!-- EMPRESAS Section -->
+           {{--      <!-- EMPRESAS Section -->
                 @role(['Super Administrador', 'Administrador de División', 'Asesor Académico'])
                 <span class="text-[#fff] nav-text font-bold">EMPRESAS</span>
 
@@ -203,18 +203,18 @@
                         <span class="nav-text text-sm">Libros</span>
                     </a>
                 </li>
-                @endrole
+                @endrole --}}
 
 
                 <!-- PERSONAL Section -->
                 <span class="text-gray-400 font-bold nav-text">PERSONAL</span>
-                <li class="mb-1 group">
+               {{--  <li class="mb-1 group">
                     <a href="/admin/notificaciones"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md">
                         <i class='bx bx-bell mr-3 text-lg'></i>
                         <span class="nav-text text-sm">Notificaciones</span>
                     </a>
-                </li>
+                </li> --}}
                 <form action="{{ route('logout') }}" method="post">
                     @csrf
                     <button href="{{ route('logout') }}"
@@ -239,6 +239,7 @@
                 <button type="button" class="text-lg text-white font-semibold sidebar-toggle">
                     <i class=" bg-gray-gym rounded-md p-2 ri-menu-line"></i>
                 </button>
+                <livewire:breadcrumb />
 
                 <ul class="ml-auto flex items-center ">
                     <li class="dropdown  hidden md:block">
