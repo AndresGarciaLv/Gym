@@ -2,6 +2,13 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+     <!-- Error Message for Inactive Account -->
+     @if ($errors->has('inactive'))
+     <div class="mb-4 font-medium text-sm text-red-600">
+         {{ $errors->first('inactive') }}
+     </div>
+ @endif
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -49,4 +56,19 @@
             </x-primary-button>
         </div>
     </form>
+
+      <!-- Mostrar las notificaciones Toastr.js -->
+      <script>
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+
+        @if ($errors->has('inactive'))
+            toastr.error("{{ $errors->first('inactive') }}");
+        @endif
+    </script>
 </x-guest-layout>

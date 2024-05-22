@@ -1,5 +1,5 @@
 <div class="flex">
-    <nav class="text-sm sm:text-base p-4 md:p-6 lg:p-6 rounded-md">
+    <nav class="text-sm sm:text-base pl-4 rounded-md">
         <ol class="list-none p-0 inline-flex space-x-2">
             @foreach ($items as $item)
                 <li class="flex items-center">

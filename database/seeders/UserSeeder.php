@@ -16,42 +16,65 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name'=> 'Andrés Garcia',
-            'email'=> 'andresgarcia@gmail.com',
-            'birthdate'=> '1980-11-25',
-            'phone_number'=> '9987352189',
-            'phone_emergency'=> '9987352183',
-            'password'=> Hash::make('Toluca10')
-        ])->assignRole('Administrador');
+      // Verificar y crear roles si no existen
+      $roles = ['Administrador', 'Staff', 'Cliente', 'Super Administrador'];
+      foreach ($roles as $role) {
+          Role::firstOrCreate(['name' => $role]);
+      }
 
-        User::create([
-            'name'=> 'Andrés Leyva',
-            'email'=> 'andresleyva@gmail.com',
-            'birthdate'=> '1999-05-12',
-            'phone_number'=> '9987352189',
-            'phone_emergency'=> '9987352183',
-            'password'=> Hash::make('Toluca10')
-        ])->assignRole('Staff');
+      // Contraseña encriptada común para todos los usuarios
+      $password = Hash::make('Toluca10');
 
-        User::create([
-            'name'=> 'Omar Caballero',
-            'email'=> 'ocaballero@gmail.com',
-            'birthdate'=> '2000-12-15',
-            'phone_number'=> '99875123454',
-            'phone_emergency'=> '9987312433',
-            'password'=> Hash::make('Toluca10')
-        ])->assignRole('Cliente');
+      // Array de usuarios a crear
+      $users = [
+          [
+              'name' => 'Andrés Garcia',
+              'email' => 'andresgarcia@gmail.com',
+              'birthdate' => '1980-11-25',
+              'phone_number' => '9987352189',
+              'phone_emergency' => '9987352183',
+              'role' => 'Administrador',
+          ],
+          [
+              'name' => 'Andrés Leyva',
+              'email' => 'andresleyva@gmail.com',
+              'birthdate' => '1999-05-12',
+              'phone_number' => '9987352189',
+              'phone_emergency' => '9987352183',
+              'role' => 'Staff',
+          ],
+          [
+              'name' => 'Omar Caballero',
+              'email' => 'ocaballero@gmail.com',
+              'birthdate' => '2000-12-15',
+              'phone_number' => '99875123454',
+              'phone_emergency' => '9987312433',
+              'role' => 'Cliente',
+          ],
+          [
+              'name' => 'AndrésGL',
+              'email' => 'andresgarciia09@gmail.com',
+              'birthdate' => '1999-07-01',
+              'phone_number' => '9987824454',
+              'phone_emergency' => '9985352422',
+              'role' => 'Super Administrador',
+          ],
+      ];
 
-        User::create([
-            'name'=> 'AndrésGL',
-            'email'=> 'andresgarciia09@gmail.com',
-            'birthdate'=> '199-07-01',
-            'phone_number'=> '9987824454',
-            'phone_emergency'=> '9985352422',
-            'password'=> Hash::make('Toluca10')
-        ])->assignRole('Super Administrador');
+      // Crear usuarios y asignar roles
+      foreach ($users as $userData) {
+          $user = User::create([
+              'name' => $userData['name'],
+              'email' => $userData['email'],
+              'birthdate' => $userData['birthdate'],
+              'phone_number' => $userData['phone_number'],
+              'phone_emergency' => $userData['phone_emergency'],
+              'password' => $password,
+          ]);
+          $user->assignRole($userData['role']);
+      }
 
-/*         User::factory(200)->create(); */
+      // Crear usuarios adicionales para pruebas
+      // User::factory(200)->create();
     }
 }

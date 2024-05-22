@@ -2,7 +2,7 @@
     <form wire:submit="search">
         <div class="flex items-end align-middle mb-5">
             <!-- BOTÓN QUE DIRIGE AL CRUD -->
-            <a href="{{ route('admin.users.create') }}"
+            <a href="{{ route('admin.gyms.create') }}"
                 class="relative bg-[#34AD3C] text-white px-4 py-2 ml-5 mr-6 rounded hover:bg-[#3D7A41] transition-colors h-full">Agregar</a>
 
             <!-- SE AÑADE EL BÚSCADOR -->
@@ -23,7 +23,7 @@
                 </span>
             </div>
 
-             <!-- BOTÓN QUE NOS SIRVE PARA EXPORTAR LOS ARCHIVOS -->
+            <!-- BOTÓN QUE NOS SIRVE PARA EXPORTAR LOS ARCHIVOS -->
             <div x-data="{ isActive: false }" class="relative ml-auto mr-6">
                 <div class="inline-flex items-center overflow-hidden rounded-md border bg-white">
                     <a href="javascript:void(0);"
@@ -68,95 +68,60 @@
         </div>
     </form>
 
-    @if($users->count())
+    @if($gyms->count())
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-600">
             <thead class="bg-[#545759] shadow-md">
                 <tr>
                     <th scope="col"
-                        class="px-3ssssssss py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                         Nombre
                     </th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Correo electrónico
+                        Dirección
                     </th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Rol
+                       Estado
                     </th>
                     <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Código
-                    </th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Gimnasio (s)
-                    </th>
-                    <th scope="col"
-                    class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    Estado
-                </th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        class=" py-3 text-xs font-medium text-white uppercase">
                         Acciones
                     </th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($users as $user)
+                @foreach($gyms as $gym)
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->name}}
+                        {{ $gym->name}}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->email}}
+                        {{ $gym->location}}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-
-                        @php
-                        $roleNames = $user->roles->pluck('name');
-                        @endphp
-
-                        {{ $roleNames->isNotEmpty() ? $roleNames->join(', ') : 'Sin Rol' }}
-
-
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->code}}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        @php
-                        $gymNames = $user->gyms->pluck('name');
-                        @endphp
-                    
-                        @if ($gymNames->isNotEmpty())
-                            <ul >
-                                @foreach ($gymNames as $gymName)
-                                    <li>{{ $gymName }}</li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <span>Sin Gimnasios</span>
-                        @endif
-                    </td>
-                    
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">
-                        @if($user->isActive == 1)
+                        @if($gym->isActive == 1)
                             <span class="text-green-500">Activo</span>
                         @else
                             <span class="text-red-500">Inactivo</span>
                         @endif
                     </td>
-
-                    <td class=" flex px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class=" flex justify-center px-3 py-4 text-sm text-gray-500">
                         {{-- <a href="{{ route('admin.users.show', $user) }}"
                             class="text-teal-600 hover:text-teal-900 px-3 py-1 mr-1 rounded-md bg-teal-100 hover:bg-teal-200">Ver
                             Detalles</a> --}}
-                        <a href="{{ route('admin.users.edit', $user) }}"
+                        <a href="{{ route('admin.gyms.edit', $gym) }}"
                             class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">Editar</a>
-                        <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
-                        class="text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Generar Credencial</a>
+                      {{--   <form action="{{ route('admin.gyms.destroy', $gym->id) }} " method="POST"
+                            onsubmit="return confirm('¿Estás seguro que deseas eliminar?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="text-red-600 hover:text-red-900 px-3 py-1 rounded-md mr-1 bg-red-100 hover:bg-red-200">Eliminar</button>
+                        </form> --}}
+                        <a href="{{ route('admin.gyms.users', $gym->id) }}"
+                        class="text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Ver usuarios</a>
                     </td>
 
                 </tr>
@@ -166,7 +131,7 @@
     </div>
 
     <div class="mt-5">
-        {{ $users->links() }}
+        {{ $gyms->links() }}
     </div>
     @else
     <div class="min-w-full divide-y divide-gray-200 text-center text-2xl text-gray-500">Sin resultados</div>

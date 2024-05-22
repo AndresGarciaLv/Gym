@@ -75,14 +75,13 @@
 
                 </li>
 
-
                 @if (Auth::check() &&
                 Auth::user()->hasAnyRole(['Staff']))
                 @else
                 <li class="mb-1 group relative z-2">
                     <a href=""
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
-                        <i class='bx bx-building-house mr-3 text-lg'></i>
+                        <i class='bx bx-sitemap mr-3 text-lg'></i>
                         <span class="nav-text text-sm">Administración</span>
                         <i
                             class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
@@ -113,108 +112,69 @@
                 </li>
                 @endif
 
-
-              {{--   <li class="mb-1 group relative z-2">
-                    @if (auth()->user()->hasRole(['Super Administrador', 'Administrador de División']))
+                
+                @if (Auth::check() &&
+                Auth::user()->hasAnyRole(['Staff']))
+                @else
+                <li class="mb-1 group relative z-2">
                     <a href=""
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#394C5F] sidebar-dropdown-toggle rounded-md">
-                        <i class='bx bxs-graduation mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Académico</span>
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
+                        <i class='bx bx-building-house mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">Gimnasios</span>
                         <i
-                            class="ri-arrow-right-s-line ml-auto  group-[.selected]:rotate-90 transition-transform  hidden md:block"></i>
+                            class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
                     </a>
-                    @endif
-
-                    <ul class="hidden absolute right-2 top-0 w-48 bg-[#394C5F] text-white submenu rounded-md">
-                        @if (auth()->user()->hasRole(['Super Administrador', 'Administrador de División']))
-                        <li>
-
-                            <a href=""
-                                class=" text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md "><i
-                                    class='bx bx-folder-plus mr-3 text-lg'></i><span
-                                    class="text-sm">Proyectos</span></a>
-                        </li>
-                        @endif
-
-
-
-                        <li class="">
-                            @if (Auth::check() &&
-                            Auth::user()->hasAnyRole([
-                            'Administrador de División',
-                            'Asesor Académico',
-                            'Estudiante',
-                            'Presidente Académico',
-                            'Asistente de Dirección',
-                            ]))
-                            @else
-                            <a href=""
-                                class=" text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md "><i
-                                    class='bx bx-buildings mr-3 text-lg'></i><span
-                                    class=" text-sm">Divisiones</span></a>
-
-                        </li>
-                        @endif
-                        @if (Auth::check() && Auth::user()->hasAnyRole(['Presidente Académico', 'Asistente de
-                        Dirección', 'Super Administrador']))
+                    <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
+                        @if (Auth::check() &&
+                        Auth::user()->hasAnyRole([
+                        'Staff',
+                        ]))
                         @else
-                        <li class="">
-                            <a href=""
-                                class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md "><i
-                                    class=' bx bxs-school mr-3 text-lg'></i><span class="text-sm">Academia</span></a>
+                        
+                        <li>
+                            <a href="{{ route('admin.gyms.index') }}"
+                            class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                <i class='bx bx-dumbbell mr-3 text-lg'></i>
+                                <span >Lista de Gimnasios</span>
+                            </a>
                         </li>
-                        <li class="">
-
-                            <a href=""
-                                class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md "><i
-                                    class=' bx bx-book-open mr-3 text-lg'></i><span class="text-sm">Carreras</span></a>
-                        </li>
-                        <li class="">
-
-                            <a href=""
-                                class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md "><i
-                                    class=' bx bx-group mr-3 text-lg'></i><span class="text-sm">Grupos</span></a>
+                        <li>
+                            <a href="{{ route('admin.gyms.create') }}"
+                                class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                <i class='bx bx-list-plus mr-3 text-lg'></i>
+                                <span>Crear Gimnasio</span>
+                            </a>
                         </li>
                         @endif
                     </ul>
-                </li> --}}
-
-
-           {{--      <!-- EMPRESAS Section -->
-                @role(['Super Administrador', 'Administrador de División', 'Asesor Académico'])
-                <span class="text-[#fff] nav-text font-bold">EMPRESAS</span>
-
-                <li class="mb-1 group">
-                    <a href=""
-                        class="flex hover:text-[#d0d3d4] font-semibold items-center py-2 px-4 text-white hover:bg-[#394C5F] hover:text-gray-100 rounded-md">
-                        <i class='  bx bx-buildings mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Empresas Afiliadas</span>
-                    </a>
                 </li>
-                @endrole
-
-                @role(['Asistente de Dirección'])
-                <!-- RECURSOS Section -->
-                <span class="text-gray-400 nav-text font-bold">RECURSOS</span>
-                <li class="mb-1 group">
-                    <a href="/libros"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#394C5F] hover:text-gray-100 rounded-md">
-                        <i class='bx bx-book mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Libros</span>
+                @endif
+          
+                 <span class="text-white font-bold nav-text">SUCURSALES</span>
+               {{--  @foreach ($gym as $gym)
+                <li class="mb-1 group relative z-2">
+                    <a href="#" class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
+                        <i class='bx bx-building-house mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">{{ $gym->name }}</span>
+                        <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
                     </a>
+                    <ul class="hidden absolute z-20 left-full top-0 w-48 text-white submenu rounded-md">
+                        <li>
+                            <a href="{{ route('admin.users.index', ['gym' => $gym->id]) }}" class="text-white text-sm flex items-center p-1 rounded-md">
+                                <i class='bx bx-user mr-3 text-lg'></i>
+                                <span>Ver Usuarios</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.users.create', ['gym' => $gym->id]) }}" class="text-white text-sm flex items-center p-1 rounded-md">
+                                <i class='bx bx-user-plus mr-3 text-lg'></i>
+                                <span>Crear Usuario</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                @endrole --}}
-
-
-                <!-- PERSONAL Section -->
-                <span class="text-gray-400 font-bold nav-text">PERSONAL</span>
-               {{--  <li class="mb-1 group">
-                    <a href="/admin/notificaciones"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md">
-                        <i class='bx bx-bell mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Notificaciones</span>
-                    </a>
-                </li> --}}
+                @endforeach  --}}
+          
                 <form action="{{ route('logout') }}" method="post">
                     @csrf
                     <button href="{{ route('logout') }}"
@@ -234,7 +194,7 @@
 
         <main class="main-content w-full bg-gray-200 h-screen min-h-[500px] overflow-y-scroll transition-all" id="main">
             <!-- navbar -->
-            <div class="py-2 px-6 bg-[#f8f4f3] flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30">
+            <div class="py-2 px-6 bg-[#f8f4f3] flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-20">
 
                 <button type="button" class="text-lg text-white font-semibold sidebar-toggle">
                     <i class=" bg-gray-gym rounded-md p-2 ri-menu-line"></i>
@@ -338,9 +298,7 @@
     </section>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="{{ asset('scripts/sidebar.js') }}"></script>
-    <script src="{{ asset('resources/js/divisions.js') }}"></script>
     @yield('scripts')
-    <link href="{{ asset('css/projectstyle.css') }}" rel="stylesheet">
     @livewireScripts
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -368,6 +326,20 @@
           updateConnectionStatus();
         });
     </script>
+
+<script>
+    @if (session('success'))
+        toastr.success("{{ session('success') }}");
+    @endif
+ 
+    @if (session('error'))
+        toastr.error("{{ session('error') }}");
+    @endif
+ 
+    @if ($errors->has('inactive'))
+        toastr.error("{{ $errors->first('inactive') }}");
+    @endif
+ </script>
 
 </body>
 

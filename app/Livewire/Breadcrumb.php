@@ -33,6 +33,13 @@ class Breadcrumb extends Component
             'admin.users.edit' => 'Editar Usuario',
             'admin.users.show' => 'Detalles Usuario',
             'profile.edit' => 'Editar Perfil',
+
+           /*  GYMS */
+           'admin.gyms.index' => 'Gimnasios',
+           'admin.gyms.create' => 'Crear Gimnasio',
+           'admin.gyms.edit' => 'Editar Gimnasio',
+           'admin.gyms.users' => 'Usuarios',
+
         ];
 
         // Definimos la jerarquía de rutas
@@ -40,6 +47,10 @@ class Breadcrumb extends Component
             'admin.users.create' => 'admin.users.index',
             'admin.users.edit' => 'admin.users.index',
             'admin.users.show' => 'admin.users.index',
+
+            'admin.gyms.users' =>'admin.gyms.index',
+            'admin.gyms.create' => 'admin.gyms.index',
+            'admin.gyms.edit' => 'admin.gyms.index',
         ];
 
         $accumulatedRoute = '';

@@ -24,7 +24,7 @@
             </div>
 
              <!-- BOTÓN QUE NOS SIRVE PARA EXPORTAR LOS ARCHIVOS -->
-            <div x-data="{ isActive: false }" class="relative ml-auto mr-6">
+             <div x-data="{ isActive: false }" class="relative ml-auto mr-6">
                 <div class="inline-flex items-center overflow-hidden rounded-md border bg-white">
                     <a href="javascript:void(0);"
                         class="w-full border-e px-4 py-3 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700"
@@ -74,7 +74,7 @@
             <thead class="bg-[#545759] shadow-md">
                 <tr>
                     <th scope="col"
-                        class="px-3ssssssss py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                         Nombre
                     </th>
                     <th scope="col"
@@ -91,12 +91,12 @@
                     </th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Gimnasio (s)
+                        Estado
                     </th>
                     <th scope="col"
-                    class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    Estado
-                </th>
+                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        Gimnasio (s)
+                    </th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                         Acciones
@@ -125,6 +125,13 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->code}}
                     </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">
+                        @if($user->isActive == 1)
+                            <span class="text-green-500">Activo</span>
+                        @else
+                            <span class="text-red-500">Inactivo</span>
+                        @endif
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         @php
                         $gymNames = $user->gyms->pluck('name');
@@ -140,14 +147,6 @@
                             <span>Sin Gimnasios</span>
                         @endif
                     </td>
-                    
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">
-                        @if($user->isActive == 1)
-                            <span class="text-green-500">Activo</span>
-                        @else
-                            <span class="text-red-500">Inactivo</span>
-                        @endif
-                    </td>
 
                     <td class=" flex px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{-- <a href="{{ route('admin.users.show', $user) }}"
@@ -155,6 +154,7 @@
                             Detalles</a> --}}
                         <a href="{{ route('admin.users.edit', $user) }}"
                             class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">Editar</a>
+                       
                         <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
                         class="text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Generar Credencial</a>
                     </td>

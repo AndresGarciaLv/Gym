@@ -29,9 +29,19 @@ class AuthenticatedSessionController extends Controller
     
         // Obtener el usuario autenticado
         $user = Auth::user();
+
+        // Verificar si el usuario está activo
+        if (!$user->isActive) {
+            Auth::logout();
+            flash()->error('Su cuenta ha sido Desactivada. Por favor, contácte al Administrador del Sistema');
+            return redirect()->route('login');
+        }
+
         // Asumiendo que el modelo de usuario tiene una relación 'roles' que devuelve una colección
         $role = optional($user->roles->first())->name; // Usa 'optional' para manejar casos donde no hay roles
     
+        flash()->success('Bienvenido, ' . $user->name . '!');
+        
         // Redirigir según el rol del usuario
         switch ($role) {
             case 'Administrador':
@@ -42,7 +52,6 @@ class AuthenticatedSessionController extends Controller
                 return redirect('/'); // Redirige a una ruta predeterminada si no tiene roles específicos
         }
     }
-    
 
     /**
      * Destroy an authenticated session.
@@ -54,6 +63,8 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        flash()->success('Sesión cerrada correctamente.');
 
         return redirect('/');
     }
