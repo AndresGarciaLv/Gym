@@ -19,12 +19,20 @@ class GymsIndex extends Component
     public function render()
     {
         $gyms = Gym::query()
-            ->where('name', 'LIKE', '%' . $this->query . '%')
-            ->orWhere('location', 'LIKE', '%' . $this->query . '%');
+            ->where(function($query) {
+                $query->where('name', 'LIKE', '%' . $this->query . '%')
+                      ->orWhere('location', 'LIKE', '%' . $this->query . '%');
+
+                // Filtrar por estado (isActive)
+                if (strtolower($this->query) === 'activo') {
+                    $query->orWhere('isActive', 1);
+                } elseif (strtolower($this->query) === 'inactivo') {
+                    $query->orWhere('isActive', 0);
+                }
+            });
 
         return view('livewire.gym.gyms-index', [
             'gyms' => $gyms->paginate(10)
         ]);
-
     }
 }

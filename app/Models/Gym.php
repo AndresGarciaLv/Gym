@@ -19,4 +19,9 @@ class Gym extends Model
     {
         return $this->belongsToMany(User::class, 'gym_users', 'id_gym', 'id_user');
     }
+
+    public function memberships()
+    {
+        return $this->hasMany(Membership::class);
+    }
 }
