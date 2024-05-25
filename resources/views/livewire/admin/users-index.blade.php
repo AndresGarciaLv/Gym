@@ -1,4 +1,5 @@
 <div class="mt-4">
+    
     <form wire:submit="search">
         <div class="flex items-end align-middle mb-5">
             <!-- BOTÓN QUE DIRIGE AL CRUD -->

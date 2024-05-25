@@ -19,6 +19,14 @@ class MembershipSeeder extends Seeder
         foreach ($gyms as $gym) {
             Membership::create([
                 'id_gym' => $gym->id,
+                'name' => 'Membresia Semanal',
+                'description' => 'Acceso basico a todo el equipo del GYM por 7 días',
+                'price' => 350.00,
+                'duration_days' => 7
+            ]);
+
+            Membership::create([
+                'id_gym' => $gym->id,
                 'name' => 'Membresia Bronce',
                 'description' => 'Acceso basico a todo el equipo del GYM',
                 'price' => 350.00,
