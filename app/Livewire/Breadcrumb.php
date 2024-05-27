@@ -27,6 +27,7 @@ class Breadcrumb extends Component
 
         // Definimos los nombres personalizados y jerarquía de rutas
         $names = [
+            /*  USERS */
             'Dashboard-Adm' => 'Home',
             'admin.users.index' => 'Usuarios',
             'admin.users.create' => 'Crear Usuario',
@@ -40,17 +41,27 @@ class Breadcrumb extends Component
            'admin.gyms.edit' => 'Editar Gimnasio',
            'admin.gyms.users' => 'Usuarios',
 
+           /*  MEMBERSHIPS */
+           'admin.memberships.index' => 'Membresias',
+           'admin.memberships.create' => 'Crear Membresia',
+
+
         ];
 
         // Definimos la jerarquía de rutas
         $hierarchy = [
+            /*  USERS */
             'admin.users.create' => 'admin.users.index',
             'admin.users.edit' => 'admin.users.index',
             'admin.users.show' => 'admin.users.index',
 
+            /*  GYMS */
             'admin.gyms.users' =>'admin.gyms.index',
             'admin.gyms.create' => 'admin.gyms.index',
             'admin.gyms.edit' => 'admin.gyms.index',
+
+            /*  MEMBERSHIPS */
+           'admin.memberships.create' => 'admin.memberships.index',
         ];
 
         $accumulatedRoute = '';

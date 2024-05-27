@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\GymController;
+use App\Http\Controllers\Admin\MembershipController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->middleware('can:admin.users')->names('admin.users');
     Route::resource('gyms', GymController::class)->middleware('can:admin.gyms')->names('admin.gyms');
     Route::get('admin/gyms/{id}/users', [GymController::class, 'users'])->middleware('can:admin.gyms.users')->name('admin.gyms.users');
+    Route::resource('memberships', MembershipController::class)->middleware('can:admin.memberships')->names('admin.memberships');
 });
 
 

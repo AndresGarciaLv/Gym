@@ -32,6 +32,7 @@ class RoleSeeder extends Seeder
             'admin.users' => ['Super Administrador', 'Administrador'],
             'admin.gyms' => ['Super Administrador', 'Administrador'],
             'admin.gyms.users' => ['Super Administrador', 'Administrador'],
+            'admin.memberships' => ['Super Administrador', 'Administrador'],
             'Dashboard-St' => ['Staff'],
         ];
 

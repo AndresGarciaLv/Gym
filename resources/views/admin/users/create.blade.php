@@ -77,6 +77,7 @@
                             type="text"
                             name="phone_number"
                             id="phone_number"
+                            maxlength="10" pattern="\d{0,10}"
                             class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                             placeholder="Número de Telefono"
                             value="{{ old('phone_number') }}"

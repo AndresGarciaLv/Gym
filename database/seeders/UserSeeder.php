@@ -47,8 +47,8 @@ class UserSeeder extends Seeder
               'name' => 'Omar Caballero',
               'email' => 'ocaballero@gmail.com',
               'birthdate' => '2000-12-15',
-              'phone_number' => '99875123454',
-              'phone_emergency' => '9987312433',
+              'phone_number' => '9987352189',
+              'phone_emergency' => '9987352189',
               'role' => 'Cliente',
           ],
           [

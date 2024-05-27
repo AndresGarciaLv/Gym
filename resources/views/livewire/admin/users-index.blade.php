@@ -150,14 +150,40 @@
                         @endif
                     </td>
 
-                    <td class=" flex px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{-- <a href="{{ route('admin.users.show', $user) }}"
-                            class="text-teal-600 hover:text-teal-900 px-3 py-1 mr-1 rounded-md bg-teal-100 hover:bg-teal-200">Ver
-                            Detalles</a> --}}
-                        <a href="{{ route('admin.users.edit', $user) }}"
-                            class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">Editar</a>
-                        <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
-                        class="text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Generar Credencial</a>
+                    <td class="grid grid-cols-3 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[265px] w-full">
+                        <div class="col-span-3">
+                            <a href=""
+                               class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
+                                Ver Historial Membresias
+                            </a>
+                        </div>
+                        <div class="col-span-1">
+                            <a href="{{ route('admin.users.edit', $user) }}"
+                               class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
+                                Editar
+                            </a>
+                        </div>
+                        <div class="col-span-1">
+                            <a href="{{ route('admin.users.edit', $user) }}"
+                               class="block text-center text-green-600 hover:text-green-900 px-3 py-1 rounded-md bg-green-100 hover:bg-green-200">
+                                 Entrada
+                            </a>
+                        </div>
+                        <div class="col-span-1">
+                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirmDeletion(event);">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full block text-center text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-span-3">
+                            <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
+                               class="block text-center text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md bg-blue-100 hover:bg-blue-200">
+                                Generar Credencial
+                            </a>
+                        </div>
                     </td>
 
                 </tr>
@@ -176,12 +202,22 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 4000);
-        }
-    });
+    function confirmDeletion(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        Swal.fire({
+            title: '¿Estás seguro que deseas eliminar el Usuario?',
+            text: "¡No podrás revertir está acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, Eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
 </script>

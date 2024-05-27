@@ -21,6 +21,8 @@
     @vite('resources/css/loader/loader.css')
     <title>@yield('titulo')</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body class="text-gray-800 font-inter">
@@ -149,6 +151,45 @@
                     </ul>
                 </li>
                 @endif
+
+                @if (Auth::check() &&
+                Auth::user()->hasAnyRole(['Staff']))
+                @else
+                <li class="mb-1 group relative z-2">
+                    <a href=""
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
+                        <i class='bx bx-credit-card-front mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">Membresias</span>
+                        <i
+                            class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
+                    </a>
+                    <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
+                        @if (Auth::check() &&
+                        Auth::user()->hasAnyRole([
+                        'Staff',
+                        ]))
+                        @else
+                        
+                        <li>
+                            <a href="{{ route('admin.memberships.index') }}"
+                            class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                <i class='bx bx-list-ul mr-3 text-lg'></i>
+                                <span >Lista de Membresias</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.memberships.create') }}"
+                                class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                <i class='bx bx-list-plus mr-3 text-lg'></i>
+                                <span>Crear Membresia</span>
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                </li>
+                @endif
+
+          
           
                  <span class="text-white font-bold nav-text">SUCURSALES</span>
                {{--  @foreach ($gym as $gym)

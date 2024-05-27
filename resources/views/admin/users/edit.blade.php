@@ -43,7 +43,7 @@
 
                     <label for="phone_number" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Número de Telefono</label>
                     <input class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
-                    type="text" name="phone_number" maxlength="10" placeholder="Numero de telefono" value="{{ $user->phone_number }}">
+                    type="text" name="phone_number" maxlength="10" pattern="\d{0,10}" placeholder="Numero de telefono" value="{{ $user->phone_number }}">
                     @error('phone_number')
                     <div style="color:red">
                         {{ $message }}

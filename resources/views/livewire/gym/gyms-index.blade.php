@@ -107,21 +107,27 @@
                             <span class="text-red-500">Inactivo</span>
                         @endif
                     </td>
-                    <td class=" flex justify-center px-3 py-4 text-sm text-gray-500">
-                        {{-- <a href="{{ route('admin.users.show', $user) }}"
-                            class="text-teal-600 hover:text-teal-900 px-3 py-1 mr-1 rounded-md bg-teal-100 hover:bg-teal-200">Ver
-                            Detalles</a> --}}
-                        <a href="{{ route('admin.gyms.edit', $gym) }}"
-                            class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">Editar</a>
-                      {{--   <form action="{{ route('admin.gyms.destroy', $gym->id) }} " method="POST"
-                            onsubmit="return confirm('¿Estás seguro que deseas eliminar?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="text-red-600 hover:text-red-900 px-3 py-1 rounded-md mr-1 bg-red-100 hover:bg-red-200">Eliminar</button>
-                        </form> --}}
-                        <a href="{{ route('admin.gyms.users', $gym->id) }}"
-                        class="text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Ver usuarios</a>
+                   
+                    <td class="grid grid-cols-2 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[100px] w-full">
+                        <div class="col-span-2">
+                            <a href="{{ route('admin.gyms.users', $gym->id) }}"
+                                class="block text-center first-line:text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Ver usuarios</a>
+                        </div>
+                        <div class="col-span-1">
+                            <a href="{{ route('admin.gyms.edit', $gym) }}"
+                            class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">Editar</a>
+                        </div>
+                       
+                        <div class="col-span-1">
+                            <form action="{{ route('admin.gyms.destroy', $gym->id) }}" method="POST" onsubmit="return confirmDeletion(event);">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full block text-center text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
+                       
                     </td>
 
                 </tr>
@@ -140,12 +146,22 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 4000);
-        }
-    });
+    function confirmDeletion(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        Swal.fire({
+            title: '¿Estás seguro que deseas eliminar el Gimnasio?',
+            text: "¡No podrás revertir está acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, Eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
 </script>
