@@ -111,7 +111,6 @@ body{
   /* Estilo para cuando el sidebar está contraído */
   .sidebar-contracted {
     width: 80px; /* Ancho contraído del sidebar */
-    height: 110vh;
     position: relative;
     overflow:visible;
     z-index: 500;
