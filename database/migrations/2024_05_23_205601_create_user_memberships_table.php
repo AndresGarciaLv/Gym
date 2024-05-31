@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
             $table->foreignId('id_gym')->constrained('gyms')->onDelete('cascade');
-            $table->foreignId('membership_id')->constrained('memberships')->onDelete('cascade');
+            $table->foreignId('id_membership')->constrained('memberships')->onDelete('cascade');
             $table->timestamp('start_date');
             $table->timestamp('end_date');
-            $table->boolean('is_active')->default(true);
+            $table->integer('duration_days')->nullable();
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
         });
     }

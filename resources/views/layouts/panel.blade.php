@@ -50,9 +50,21 @@
     <section class="flex">
         <div class="relative sidebar fixed left-0 top-0 h-full bg-[#5E0409] p-4 z-50 transition-transform">
             <div class="">
-                <a href="/" class="flex justify-center items-center border-b border-b-white">
+                <a href="/panel-staff" class="flex justify-center items-center border-b border-b-white">
+                    @php
+                        $user = auth()->user();
+                        $roles = $user->getRoleNames();
+                    @endphp
+                     @if ($roles->contains('Staff'))
+                     @php
+                         $gym = $user->gyms()->first();
+                     @endphp
+                     <h2 id="imagen" class="text-xl text-[#fff] font-bold mb-2">{{ $gym ? $gym->name : 'GYM' }}</h2>
+                     <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
+                 @else
                     <img class="w-[100px]" id="imagen" src="{{ asset('images/Gym-logo.png') }}" alt="">
                     <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
+                @endif
                 </a>
             </div>
             <ul class="mt-4 scroll2 overflow-y-scroll" id="lista-side">
@@ -65,6 +77,30 @@
                         <i class='bx bxs-dashboard mr-3 text-lg'></i>
                         <span class="nav-text text-sm">Dashboard</span>
                     </a>
+                    <li class="mb-1 group">
+                        <a href="{{ route('staffs.create') }}"
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md">
+                            <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
+                            <span class="nav-text text-sm">Nuevo Cliente</span>
+                        </a>
+                    </li>
+                    <li class="mb-1 group">
+                        <a href="{{ route('staffs.clients') }}"
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md">
+                            <i class='bx bxs-user-detail mr-3 text-lg'></i>
+                            <span class="nav-text text-sm">Lista de Clientes</span>
+                        </a>
+                    </li>
+                </li>
+                <li class="mb-1 group">
+                    <a href="{{ route('staffs.index') }}"
+                    class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md">
+                        <i class='bx bx-list-ul mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">Lista de Membresías</span>
+                    </a>
+                </li>
+
+
                     
                     @elseif (Auth::user()->hasAnyRole('Super Administrador', 'Administrador'))
                     <a href="/"
@@ -75,12 +111,12 @@
                     @endif
                     @endif
 
-                </li>
+                   
 
                 @if (Auth::check() &&
                 Auth::user()->hasAnyRole(['Staff']))
                 @else
-                <li class="mb-1 group relative z-2">
+                <li id="group-usuarios" class="mb-1 group relative z-2">
                     <a href=""
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
                         <i class='bx bx-sitemap mr-3 text-lg'></i>
@@ -113,12 +149,11 @@
                     </ul>
                 </li>
                 @endif
-
-                
+            
                 @if (Auth::check() &&
                 Auth::user()->hasAnyRole(['Staff']))
                 @else
-                <li class="mb-1 group relative z-2">
+                <li id="group-gyms" class="mb-1 group relative z-2">
                     <a href=""
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
                         <i class='bx bx-building-house mr-3 text-lg'></i>
@@ -155,7 +190,7 @@
                 @if (Auth::check() &&
                 Auth::user()->hasAnyRole(['Staff']))
                 @else
-                <li class="mb-1 group relative z-2">
+                <li id="group-membresias" class="mb-1 group relative z-2">
                     <a href=""
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
                         <i class='bx bx-credit-card-front mr-3 text-lg'></i>
@@ -191,7 +226,65 @@
 
           
           
-                 <span class="text-white font-bold nav-text">SUCURSALES</span>
+                @if(Auth::user()->hasAnyRole('Staff'))
+               
+                @else <span class="text-white font-bold nav-text">SUCURSALES</span>
+                @endif
+               
+                 @if (Auth::check() && !Auth::user()->hasAnyRole(['Staff']))
+                 @foreach($allGyms as $gym)
+                     <li id="group-sucursales"class="mb-1 group relative z-2">
+                         <a href="#"
+                             class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
+                            
+                             <img class="w-[20px] mr-3" id="imagen" src="{{ asset('icons/gimnasio.png') }}" alt="">
+                             <span class="nav-text text-sm">{{ $gym->name }}</span>
+                             <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
+                         </a>
+                         <ul class="hidden absolute z-20 left-full top-0 w-48 text-white submenu rounded-md">
+                             @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
+                                 <!-- No mostrar nada -->
+                             @else
+                                 <li>
+                                     <a href="{{ route('admin.gyms.users', $gym->id) }}"
+                                         class="text-white text-sm flex items-center p-1 rounded-md">
+                                         <i class='bx bx-user mr-3 text-lg'></i>
+                                         <span>Usuarios del Gimnasio</span>
+                                     </a>
+                                 </li>
+                             @endif
+                             <li>
+                                 <a href="{{ route('admin.memberships.gyms', $gym->id) }}"
+                                     class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
+                                     <i class='bx bx-credit-card-front mr-3 text-lg'></i>
+                                     <span>Tipos de Membresias</span>
+                                 </a>
+                             </li>
+                             <li>
+                                <a href="{{ route('admin.user-memberships.create') }}"
+                                    class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
+                                    <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
+                                    <span>Asignar Membresía</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.user-memberships.index') }}"
+                                    class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
+                                    <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
+                                    <span>Membresías Asignadas</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('staffs.create') }}"
+                                    class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
+                                    <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
+                                    <span>Nuevo Cliente</span>
+                                </a>
+                            </li>
+                         </ul>
+                     </li>
+                 @endforeach
+             @endif
                {{--  @foreach ($gym as $gym)
                 <li class="mb-1 group relative z-2">
                     <a href="#" class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
@@ -265,13 +358,12 @@
                             <div class="flex-shrink-0 w-10 h-10 relative">
                                 <div class="p-1 bg-white rounded-full focus:outline-none focus:ring">
                                     @if (auth()->user()->photo)
-                                    <img class="w-8 h-8 rounded-full" src="{{ asset(auth()->user()->photo) }}" alt="" />
-                                    @else
+                                    <img class="w-8 h-8 rounded-full" src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Foto de perfil" />
+                                @else
                                     <!-- Si el usuario no tiene foto de perfil, muestra un icono de usuario predeterminado -->
-                                    <img id="preview" class="w-8 h-8 rounded-full"
-                                        src="{{ asset('fotos/avatar.webp') }}"
-                                        alt="Ícono de usuario predeterminado">
-                                    @endif
+                                    <img id="preview" class="w-8 h-8 rounded-full" src="{{ asset('fotos/avatar.webp') }}" alt="Ícono de usuario predeterminado">
+                                @endif
+                                
                                     <div
                                         class="connection-status-dot top-0 left-7 absolute w-3 h-3 bg-lime-500 border-2 border-white rounded-full animate-ping">
                                     </div>
@@ -322,10 +414,10 @@
                     </li>
                 </ul>
             </div>
-            <main class="contenido relative">
+            <main class="contenido relative  bg-gradient-to-r from-gray-200 via-red-100 to-gray-300 p-4">
                 @yield('contenido')
             </main>
-            <footer>
+            <footer class= "bg-gradient-to-r from-gray-200 via-red-100 to-gray-300  p-5">
                 <div class="w-full md:w-4/12 px-4 mx-auto text-center mb-5">
                     <div class="text-sm text-blueGray-500 font-semibold py-1">
                       Copyright © <span id="get-current-year">2024</span><a href="https://www.facebook.com/profile.php?id=61558455937047" class="hover:underline text-blueGray-500 hover:text-gray-800" target="_blank"> Erick's GYM </a>

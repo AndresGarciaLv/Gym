@@ -108,10 +108,16 @@
                         @endif
                     </td>
                    
-                    <td class="grid grid-cols-2 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[100px] w-full">
-                        <div class="col-span-2">
+                    <td class="grid grid-cols-3 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[100px] w-full">
+                        <div class="col-span-3">
                             <a href="{{ route('admin.gyms.users', $gym->id) }}"
                                 class="block text-center first-line:text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Ver usuarios</a>
+                        </div>
+                        <div class="col-span-1">
+                            <a href="{{ route('admin.memberships.gyms', $gym->id) }}"
+                               class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
+                                Membresias
+                            </a>
                         </div>
                         <div class="col-span-1">
                             <a href="{{ route('admin.gyms.edit', $gym) }}"

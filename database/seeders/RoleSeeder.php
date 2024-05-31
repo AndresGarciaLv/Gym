@@ -33,7 +33,13 @@ class RoleSeeder extends Seeder
             'admin.gyms' => ['Super Administrador', 'Administrador'],
             'admin.gyms.users' => ['Super Administrador', 'Administrador'],
             'admin.memberships' => ['Super Administrador', 'Administrador'],
+            'admin.memberships.gyms' => ['Super Administrador', 'Administrador'],
+
+            'admin.user-memberships' => ['Super Administrador', 'Administrador'],
+            
+            'staffs' => ['Staff'],
             'Dashboard-St' => ['Staff'],
+            'staffs.clients' => ['Staff'],
         ];
 
         // Crear o buscar permisos y sincronizar roles

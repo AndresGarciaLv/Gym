@@ -44,6 +44,7 @@ class Breadcrumb extends Component
            /*  MEMBERSHIPS */
            'admin.memberships.index' => 'Membresias',
            'admin.memberships.create' => 'Crear Membresia',
+           'admin.memberships.gyms' => 'Membresias'
 
 
         ];
@@ -59,6 +60,7 @@ class Breadcrumb extends Component
             'admin.gyms.users' =>'admin.gyms.index',
             'admin.gyms.create' => 'admin.gyms.index',
             'admin.gyms.edit' => 'admin.gyms.index',
+            'admin.memberships.gyms' => 'admin.gyms.index',
 
             /*  MEMBERSHIPS */
            'admin.memberships.create' => 'admin.memberships.index',

@@ -17,7 +17,7 @@
                     </div>
                 @endif
                                      
-                <form id="userForm" action="{{ route('admin.users.store') }}" method="POST">
+                <form id="userForm" action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-4 w-full">
@@ -97,8 +97,7 @@
                           class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                         />
                       </div>
-
-                      <div class="mb-4 w-full">
+                      <div id="multiGymSelection" class="mb-4 w-full">
                         <label for="gyms" class="block text-sm font-medium text-gray-700 mb-2">Selecciona uno o más Gimnasios <b class="text-[#FF0104]">*</b></label>
                         <div class="flex flex-col space-y-2">
                             @foreach ($gyms as $gym)
@@ -119,7 +118,26 @@
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                    
+
+                    <div id="singleGymSelection" class="mb-4 w-full" style="display: none;">
+                        <label for="single_gym" class="block text-sm font-medium text-gray-700 mb-2">Selecciona un Gimnasio <b class="text-[#FF0104]">*</b></label>
+                        <select
+                            name="single_gym"
+                            id="single_gym"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                        >
+                            <option value="" disabled selected>Selecciona un Gimnasio</option>
+                            @foreach ($gyms as $gym)
+                                <option value="{{ $gym->id }}" {{ old('single_gym') == $gym->id ? 'selected' : '' }}>
+                                    {{ $gym->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('single_gym')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="mb-4 w-full">
                         <label for="isActive" class="block text-sm font-medium text-gray-700 mb-2">Estado <b class="text-[#FF0104]">*</b></label>
                         <select
@@ -128,8 +146,8 @@
                             class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                             required
                         >
-                            <option value="" disabled selected>Selecciona el Estado del Usuario</option>
-                            <option value="1">Activo</option>
+                            
+                            <option value="1" selected>Activo</option>
                             <option value="0">Inactivo</option>
                         </select>
                         @error('isActive')
@@ -167,6 +185,21 @@
                         </div>
                     </div>
 
+                    <div class="mb-4 w-full">
+                        <label for="photo" class="block text-sm font-medium text-gray-700 mb-2">Foto de Perfil <span class="text-gray-400">(opcional)</span></label>
+                        <input
+                            type="file"
+                            name="photo"
+                            id="photo"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                            accept="image/*"
+                            
+                        >
+                        @error('photo')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <button
                         type="submit"
                         class="mt-3 w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#03A6A6] hover:bg-[#038686] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#03A6A6]"
@@ -179,6 +212,32 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const roleSelect = document.getElementById('role');
+        const multiGymSelection = document.getElementById('multiGymSelection');
+        const singleGymSelection = document.getElementById('singleGymSelection');
+
+        function toggleGymSelection() {
+            const selectedRole = roleSelect.value;
+            if (selectedRole === 'Super Administrador' || selectedRole === 'Administrador') {
+                multiGymSelection.style.display = 'block';
+                singleGymSelection.style.display = 'none';
+            } else if (selectedRole === 'Staff' || selectedRole === 'Cliente') {
+                multiGymSelection.style.display = 'none';
+                singleGymSelection.style.display = 'block';
+            } else {
+                multiGymSelection.style.display = 'none';
+                singleGymSelection.style.display = 'none';
+            }
+        }
+
+        roleSelect.addEventListener('change', toggleGymSelection);
+        toggleGymSelection(); // Ejecutar al cargar la página
+
+        
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const roleSelect = document.getElementById('role');

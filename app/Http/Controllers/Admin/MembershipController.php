@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\DurationType;
 use App\Http\Controllers\Controller;
 use App\Models\Gym;
 use App\Models\Membership;
+use App\Models\UserMembership;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -38,6 +41,7 @@ class MembershipController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
+            'duration_type' => 'nullable|in:' . implode(',', array_column(DurationType::cases(), 'value')),
         ]);
 
         try {
@@ -81,7 +85,8 @@ class MembershipController extends Controller
     public function edit($id)
     {
         $membership = Membership::findOrFail($id);
-        return view('admin.memberships.edit', compact('membership'));
+        $gyms = Gym::all();
+        return view('admin.memberships.edit', compact('membership', 'gyms'));
     }
 
     /**
@@ -94,7 +99,7 @@ class MembershipController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
-            'duration_days' => 'required|integer|min:1',
+            'duration_type' => 'nullable|in:' . implode(',', array_column(DurationType::cases(), 'value')),
         ]);
 
         $membership = Membership::findOrFail($id);
@@ -115,4 +120,62 @@ class MembershipController extends Controller
         flash()->success('¡La Membresía se ha eliminado correctamente!');
         return redirect()->route('admin.memberships.index');
     }
+
+    
+    /**
+     * Display memberships for a specific gym.
+     */
+    public function memberships($id)
+    {
+        $gym = Gym::findOrFail($id);
+        $memberships = $gym->memberships()->paginate(10);
+
+        return view('admin.memberships.gyms', compact('gym', 'memberships'));
+    }
+
+    public function assign(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'gym_id' => 'required|exists:gyms,id',
+            'id_membership' => 'required|exists:memberships,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date)->setTime(23, 59, 0);
+            $durationDays = $startDate->diffInDays($endDate);
+
+            $activeMembership = UserMembership::where('user_id', $request->user_id)
+                                               ->where('is_active', true)
+                                               ->exists();
+
+            if ($activeMembership) {
+                return back()->withErrors(['user_id' => 'El usuario ya tiene una membresía activa.']);
+            }
+
+            UserMembership::create([
+                'user_id' => $request->user_id,
+                'gym_id' => $request->gym_id,
+                'id_membership' => $request->membership_id,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'duration_days' => $durationDays,
+                'is_active' => true,
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('admin.memberships.index')->with('success', '¡Membresía asignada correctamente!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+          
+            return back()->withErrors(['error' => 'Ocurrió un error al asignar la membresía. Por favor, inténtelo de nuevo.']);
+        }
+    }
+
 }

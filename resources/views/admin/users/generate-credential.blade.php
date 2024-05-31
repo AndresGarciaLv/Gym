@@ -6,68 +6,87 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Credencial</title>
     <style>
+      @font-face {
+            font-family: 'Rammetto One';
+            src: url('{{ public_path('fonts/RammettoOne-Regular.ttf') }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+           
         }
         .card {
-            position: relative;
-            width: 300px;
-            border-radius: 15px;
-            background-color: white;
+            width: 53.98mm;
+            height: 85.60mm;
+            border-radius: 5mm;
+            background-color: #f0f0f0;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             text-align: center;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            position: relative;
         }
         .card-header {
             background-color: #7F0001;
             color: white;
-            padding: 10px 0;
+            padding: 2mm 0;
         }
         .card-header img {
-            width: 80px;
+            width: 20mm;
             height: auto;
         }
+        .card-header h2{
+  font-family: "Rammetto One", sans-serif;
+}
+        
         .card-body {
-            padding: 20px;
+            padding: 2mm;
         }
         .card-body h4 {
-            margin: 10px 0;
-            font-size: 1.5em;
+            margin: 2mm 0;
+            font-size: 10pt;
             color: #333;
         }
-        .card-body img {
-            width: 200px;
-            height: 50px;
+        .card-footer img {
+            width: 40mm;
+            height: auto;
         }
-        .card-body p {
-            margin: 5px 0;
-            font-size: 1.2em;
+        .card-footer h5{
+            color:#7F0001;
+        }
+        .card-footer p {
+            margin: 2mm 0;
+            font-size: 12pt;
             color: #777;
         }
-        .card-footer {
-            background-color: #f0f0f0;
-            padding: 10px;
-            color: #777;
-        }
-       
     </style>
 </head>
 <body>
     <div class="card">
         <div class="card-header">
-            <img class="image" src="{{ $logoBase64 }}" alt="Logo">
+            @if($user->hasRole(['Super Administrador', 'Administrador']))
+                <img class="image" src="{{ $logoBase64 }}" alt="Logo">
+            @else
+                <h2>{{ $user->gyms->first()->name }}</h2>
+            @endif
         </div>
         <div class="card-body">
             <h4>{{ $user->name }}</h4>
+            <h4>{{ $user->email }}</h4>
+            
+        </div>
+        <div class="card-footer">
+            <div class="card-footer">
+              <h5>¡Escanea tu código!</h5>
             <img class="code" src="{{ $barcodeBase64 }}" alt="Barcode">
             <p>{{ $user->code }}</p>
+            @if($user->hasRole('Cliente'))
+            <h4>Cliente</h4>
+        @endif
         </div>
-      
     </div>
 </body>
 </html>

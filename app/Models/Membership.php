@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DurationType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,7 +15,11 @@ class Membership extends Model
         'name',
         'description',
         'price',
-        'duration_days'
+        'isActive',
+        'duration_type',
+    ];
+    protected $casts = [
+        'duration_type' => DurationType::class,
     ];
 
     /**
@@ -34,6 +39,6 @@ class Membership extends Model
      */
     public function userMemberships()
     {
-        return $this->hasMany(UserMembership::class);
+        return $this->hasMany(UserMembership::class, 'id_membership');
     }
 }

@@ -49,8 +49,9 @@ class CredentialController extends Controller
             'logoBase64' => $logoBase64,
         ];
 
-        // Genera el PDF con la vista
-        $pdf = Pdf::loadView('admin.users.generate-credential', $data);
+        // Genera el PDF con la vista y ajusta el tamaño de la página
+        $pdf = Pdf::loadView('admin.users.generate-credential', $data)
+                  ->setPaper([0, 0, 226.38, 357.17], 'portrait');
 
         // Descarga el PDF
         return $pdf->download('credencial.pdf');

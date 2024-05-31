@@ -17,7 +17,7 @@ class UserMembershipSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
+       /*  $users = User::all();
         $gyms = Gym::all();
         $memberships = Membership::all();
 
@@ -34,6 +34,6 @@ class UserMembershipSeeder extends Seeder
                     'is_active' => true,
                 ]);
             }
-        }
+        } */
     }
 }

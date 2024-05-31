@@ -5,7 +5,10 @@ use App\Http\Controllers\Admin\MembershipController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserMembershipController;
 use App\Http\Controllers\CredentialController;
+use App\Http\Controllers\Staff\StaffController;
+use GuzzleHttp\Middleware;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/iniciar-sesion', function () {
@@ -22,8 +25,7 @@ Route::middleware('auth')->group(function () {
         return view('home.staff');
     })->middleware('can:Dashboard-St')->name('Dashboard-St');
 
-    Route::get('/users/{user}/generate-credential', [CredentialController::class, 'printCredential'])
-     ->name('admin.users.generate-credential');
+    Route::get('/users/{user}/generate-credential', [CredentialController::class, 'printCredential'])->name('admin.users.generate-credential');
      Route::get('/admin/users/generate-credential/{user}/pdf', [CredentialController::class, 'generatePDF'])->name('admin.users.generate-credential.pdf');
 
 /*     Route::get('/users/{user}/generate-credential', [CredentialController::class, 'generatePDF'])->name('admin.users.generate-credential'); */
@@ -31,7 +33,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->middleware('can:admin.users')->names('admin.users');
     Route::resource('gyms', GymController::class)->middleware('can:admin.gyms')->names('admin.gyms');
     Route::get('admin/gyms/{id}/users', [GymController::class, 'users'])->middleware('can:admin.gyms.users')->name('admin.gyms.users');
+    
     Route::resource('memberships', MembershipController::class)->middleware('can:admin.memberships')->names('admin.memberships');
+    Route::get('admin/memberships/{id}/gyms', [MembershipController::class, 'memberships'])->middleware('can:admin.memberships.gyms')->name('admin.memberships.gyms');
+
+    Route::resource('user-memberships', UserMembershipController::class)->middleware('can:admin.user-memberships')->names('admin.user-memberships');
+
+    //STAFF ROUTES
+    Route::resource('staffs', StaffController::class)->middleware('can:staffs')->names('staffs');
+    Route::get('clients', [StaffController::class, 'clients'])->middleware('can:staffs.clients')->name('staffs.clients');
+
 });
 
 

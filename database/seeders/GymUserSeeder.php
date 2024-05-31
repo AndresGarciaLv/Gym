@@ -13,21 +13,28 @@ class GymUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Obtener todos los usuarios y gimnasios
-        $users = User::all();
-        $gyms = Gym::all();
+       // Obtener todos los usuarios y gimnasios
+       $users = User::all();
+       $gyms = Gym::all();
 
-        // Si no hay usuarios o gimnasios, lanzar una excepción
-        if ($users->isEmpty() || $gyms->isEmpty()) {
-            throw new \Exception('No users or gyms found to assign.');
-        }
+       // Si no hay usuarios o gimnasios, lanzar una excepción
+       if ($users->isEmpty() || $gyms->isEmpty()) {
+           throw new \Exception('No users or gyms found to assign.');
+       }
 
-        // Asignar usuarios a gimnasios de forma aleatoria
-        foreach ($users as $user) {
-            // Asignar entre 1 y 3 gimnasios aleatorios a cada usuario
-            $user->gyms()->attach(
-                $gyms->random(rand(1, 3))->pluck('id')->toArray()
-            );
-        }
-    }
+       // Asignar usuarios a gimnasios según su rol
+       foreach ($users as $user) {
+           if ($user->hasRole('Staff') || $user->hasRole('Cliente')) {
+               // Asignar un solo gimnasio aleatorio a los usuarios con rol 'Staff' o 'Cliente'
+               $user->gyms()->attach(
+                   $gyms->random(1)->pluck('id')->toArray()
+               );
+           } elseif ($user->hasRole('Super Administrador') || $user->hasRole('Administrador')) {
+               // Asignar entre 1 y 3 gimnasios aleatorios a los usuarios con rol 'Super Administrador' o 'Administrador'
+               $user->gyms()->attach(
+                   $gyms->random(rand(1, 3))->pluck('id')->toArray()
+               );
+           }
+       }
+   }
 }

@@ -38,6 +38,7 @@
                         @enderror
                     </div>
 
+
                     <div class="mb-4 w-full">
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nombre de la Membresía <b class="text-[#FF0104]">*</b></label>
                         <input
@@ -50,6 +51,23 @@
                             required
                         >
                         @error('name')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4 w-full">
+                        <label for="duration_type" class="block text-sm font-medium text-gray-700 mb-2">Tipo de Duración <span class="text-gray-400">(opcional)</span></label>
+                        <select
+                            name="duration_type"
+                            id="duration_type"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                        >
+                            <option value="" disabled selected>Selecciona el Tipo de Duración</option>
+                            @foreach(App\Enums\DurationType::cases() as $type)
+                                <option value="{{ $type->value }}">{{ $type->value }}</option>
+                            @endforeach
+                        </select>
+                        @error('duration_type')
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
@@ -84,22 +102,6 @@
                         @enderror
                     </div>
 
-                    {{-- <div class="mb-4 w-full">
-                        <label for="duration_days" class="block text-sm font-medium text-gray-700 mb-2">Duración (días) <b class="text-[#FF0104]">*</b></label>
-                        <input
-                            type="number"
-                            name="duration_days"
-                            id="duration_days"
-                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
-                            placeholder="Duración en días"
-                            value="{{ old('duration_days') }}"
-                            required
-                        >
-                        @error('duration_days')
-                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
-                        @enderror
-                    </div> --}}
-
                     <button
                         type="submit"
                         class="mt-3 w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#03A6A6] hover:bg-[#038686] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#03A6A6]"
@@ -113,13 +115,3 @@
 </div>
 @endsection
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 4000);
-        }
-    });
-</script>

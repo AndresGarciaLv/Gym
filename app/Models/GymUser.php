@@ -14,6 +14,7 @@ class GymUser extends Model
     protected $fillable = [
         'id_user',
         'id_gym',
+        'isActive',
     ];
 
     public function user()

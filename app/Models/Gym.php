@@ -22,6 +22,6 @@ class Gym extends Model
 
     public function memberships()
     {
-        return $this->hasMany(Membership::class);
+        return $this->hasMany(Membership::class, 'id_gym');
     }
 }

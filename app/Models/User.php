@@ -58,8 +58,15 @@ class User extends Authenticatable
     // Método para generar un código único
     public static function generateUniqueCode()
     {
+        // Lista de caracteres amigables
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Sin 0, O, 1, I
+        $codeLength = 6; // Longitud del código
+
         do {
-            $code = Str::random(8); // Generar un código de 8 caracteres
+            $code = '';
+            for ($i = 0; $i < $codeLength; $i++) {
+                $code .= $characters[random_int(0, strlen($characters) - 1)];
+            }
         } while (self::where('code', $code)->exists());
 
         return $code;
@@ -78,5 +85,10 @@ class User extends Authenticatable
     public function gyms()
     {
         return $this->belongsToMany(Gym::class, 'gym_users', 'id_user', 'id_gym');
+    }
+    
+    public function userMemberships()
+    {
+        return $this->hasMany(UserMembership::class, 'id_user');
     }
 }
