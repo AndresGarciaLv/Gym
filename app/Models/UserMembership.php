@@ -59,10 +59,10 @@ class UserMembership extends Model
         if ($now->isSameDay($end_date)) {
             $this->isActive = true;
             return 'Vence Hoy';
-        } elseif ($days_remaining > 7) {
+        } elseif ($days_remaining > 4) {
             $this->isActive = true;
             return 'Vigente';
-        } elseif ($days_remaining >= 1 && $days_remaining <= 7) {
+        } elseif ($days_remaining >= 1 && $days_remaining <= 4) {
             $this->isActive = true;
             return 'Por Vencer';
         } else {

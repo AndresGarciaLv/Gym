@@ -38,10 +38,13 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/memberships/{id}/gyms', [MembershipController::class, 'memberships'])->middleware('can:admin.memberships.gyms')->name('admin.memberships.gyms');
 
     Route::resource('user-memberships', UserMembershipController::class)->middleware('can:admin.user-memberships')->names('admin.user-memberships');
+    Route::get('/admin/gyms/{id}/user-memberships', [UserMembershipController::class, 'membershipsByGym'])->name('admin.gyms.user-memberships');
+    Route::get('user-memberships/create/{gym}', [UserMembershipController::class, 'create'])->name('admin.user-memberships.create');
 
     //STAFF ROUTES
     Route::resource('staffs', StaffController::class)->middleware('can:staffs')->names('staffs');
     Route::get('clients', [StaffController::class, 'clients'])->middleware('can:staffs.clients')->name('staffs.clients');
+
 
 });
 

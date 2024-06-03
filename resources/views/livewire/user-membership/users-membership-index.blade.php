@@ -2,7 +2,7 @@
     <form wire:submit.prevent="search">
         <div class="flex items-end align-middle mb-5">
             <!-- BOTÓN QUE DIRIGE AL CRUD -->
-            <a href="{{ route('admin.memberships.create') }}"
+            <a  href="{{ route('admin.user-memberships.create', $gymId) }}"
                 class="relative bg-[#34AD3C] text-white px-4 py-2 ml-5 mr-6 rounded hover:bg-[#3D7A41] transition-colors h-full">Agregar</a>
 
             <!-- SE AÑADE EL BÚSCADOR -->
@@ -79,6 +79,10 @@
                     </th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        Rol
+                    </th>
+                    <th scope="col"
+                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                         Gimnasio
                     </th>
                     <th scope="col"
@@ -108,6 +112,11 @@
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->user->name }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                        @foreach($userMembership->user->roles as $role)
+                            {{ $role->name }}<br>
+                        @endforeach
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->gym->name }}

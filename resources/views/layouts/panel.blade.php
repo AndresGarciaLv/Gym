@@ -15,6 +15,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @vite('resources/css/app.css')
     @vite('resources/js/sidebar.js')
     @vite('resources/css/sidebar.css')
@@ -50,7 +51,7 @@
     <section class="flex">
         <div class="relative sidebar fixed left-0 top-0 h-full bg-[#5E0409] p-4 z-50 transition-transform">
             <div class="">
-                <a href="/panel-staff" class="flex justify-center items-center border-b border-b-white">
+                
                     @php
                         $user = auth()->user();
                         $roles = $user->getRoleNames();
@@ -59,13 +60,17 @@
                      @php
                          $gym = $user->gyms()->first();
                      @endphp
+                     <a href="/panel-staff" class="flex justify-center items-center border-b border-b-white">
                      <h2 id="imagen" class="text-xl text-[#fff] font-bold mb-2">{{ $gym ? $gym->name : 'GYM' }}</h2>
                      <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
+                    </a>
                  @else
+                 <a href="/" class="flex justify-center items-center border-b border-b-white">
                     <img class="w-[100px]" id="imagen" src="{{ asset('images/Gym-logo.png') }}" alt="">
                     <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
-                @endif
                 </a>
+                    @endif
+                
             </div>
             <ul class="mt-4 scroll2 overflow-y-scroll" id="lista-side">
                 <!-- ADMIN Section -->
@@ -131,10 +136,17 @@
                         ]))
                         @else
                         <li>
+                            <a href="{{ route('admin.users.create') }}"
+                                class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                <i class='bx bx-user-plus  mr-3 text-xl'></i>
+                                <span>Crear Usuario</span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ route('admin.users.index') }}"
                                 class=" text-white text-sm flex items-center  p-1 rounded-md">
-                                <i class='bx bx-user mr-3 text-lg'></i>
-                                <span>Usuarios</span>
+                                <i class='bx bxs-user-detail mr-3 text-xl' ></i>
+                                <span>Lista de Usuarios</span>
                             </a>
                         </li>
                         @endif
@@ -233,57 +245,57 @@
                
                  @if (Auth::check() && !Auth::user()->hasAnyRole(['Staff']))
                  @foreach($allGyms as $gym)
-                     <li id="group-sucursales"class="mb-1 group relative z-2">
-                         <a href="#"
-                             class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
-                            
-                             <img class="w-[20px] mr-3" id="imagen" src="{{ asset('icons/gimnasio.png') }}" alt="">
-                             <span class="nav-text text-sm">{{ $gym->name }}</span>
-                             <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
-                         </a>
-                         <ul class="hidden absolute z-20 left-full top-0 w-48 text-white submenu rounded-md">
-                             @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
-                                 <!-- No mostrar nada -->
-                             @else
-                                 <li>
-                                     <a href="{{ route('admin.gyms.users', $gym->id) }}"
-                                         class="text-white text-sm flex items-center p-1 rounded-md">
-                                         <i class='bx bx-user mr-3 text-lg'></i>
-                                         <span>Usuarios del Gimnasio</span>
-                                     </a>
-                                 </li>
-                             @endif
+                 <li id="group-sucursales-{{ $gym->id }}" class="mb-1 group relative z-2">
+                     <a href="#"
+                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md">
+                         <img class="w-[20px] mr-3" id="imagen" src="{{ asset('icons/gimnasio.png') }}" alt="">
+                         <span class="nav-text text-sm">{{ $gym->name }}</span>
+                         <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
+                     </a>
+                     <ul class="hidden absolute z-20 left-full top-0 w-48 text-white submenu rounded-md">
+                         @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
+                             <!-- No mostrar nada -->
+                         @else
                              <li>
-                                 <a href="{{ route('admin.memberships.gyms', $gym->id) }}"
-                                     class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
-                                     <i class='bx bx-credit-card-front mr-3 text-lg'></i>
-                                     <span>Tipos de Membresias</span>
+                                 <a href="{{ route('admin.gyms.users', $gym->id) }}"
+                                     class="text-white text-sm flex items-center p-1 rounded-md">
+                                     <i class='bx bx-group text-xl'></i>
+                                     <span>Usuarios del Gimnasio</span>
                                  </a>
                              </li>
-                             <li>
-                                <a href="{{ route('admin.user-memberships.create') }}"
-                                    class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
-                                    <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
-                                    <span>Asignar Membresía</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.user-memberships.index') }}"
-                                    class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
-                                    <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
-                                    <span>Membresías Asignadas</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('staffs.create') }}"
-                                    class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
-                                    <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
-                                    <span>Nuevo Cliente</span>
-                                </a>
-                            </li>
-                         </ul>
-                     </li>
-                 @endforeach
+                         @endif
+                         <li>
+                             <a href="{{ route('admin.memberships.gyms', $gym->id) }}"
+                                 class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
+                                 <i class='bx bx-list-ul mr-3 text-xl'></i>
+                                 <span>Tipos de Membresias</span>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="{{ route('admin.user-memberships.create', $gym->id) }}"
+                                 class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
+                                 <i class='bx bx-calendar-plus mr-3 text-xl'></i>
+                                 <span>Asignar Membresía</span>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="{{ route('admin.gyms.user-memberships', $gym->id) }}"
+                                 class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
+                                 <i class='bx bxs-collection mr-3 text-xl'></i>
+                                 <span>Membresías Asignadas</span>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="{{ route('staffs.create') }}"
+                                 class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md">
+                                 <i class='bx bx-user-plus mr-3 text-xl'></i>
+                                 <span>Nuevo Cliente</span>
+                             </a>
+                         </li>
+                     </ul>
+                 </li>
+             @endforeach
+             
              @endif
                {{--  @foreach ($gym as $gym)
                 <li class="mb-1 group relative z-2">
@@ -405,7 +417,8 @@
                                     <a href="{{ route('logout') }}" role="menuitem"
                                         class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer"
                                         onclick="event.preventDefault();
-                                  this.closest('form').submit();">
+                                                  localStorage.clear();
+                                                  this.closest('form').submit();">
                                         Cerrar Sesión
                                     </a>
                                 </form>
@@ -417,8 +430,8 @@
             <main class="contenido relative  bg-gradient-to-r from-gray-200 via-red-100 to-gray-300 p-4">
                 @yield('contenido')
             </main>
-            <footer class= "bg-gradient-to-r from-gray-200 via-red-100 to-gray-300  p-5">
-                <div class="w-full md:w-4/12 px-4 mx-auto text-center mb-5">
+            <footer class= "bg-gradient-to-r from-gray-200 via-red-100 to-gray-300  p-5 ">
+                <div class="w-full  px-4 mx-auto text-center mb-5">
                     <div class="text-sm text-blueGray-500 font-semibold py-1">
                       Copyright © <span id="get-current-year">2024</span><a href="https://www.facebook.com/profile.php?id=61558455937047" class="hover:underline text-blueGray-500 hover:text-gray-800" target="_blank"> Erick's GYM </a>
                       <span>by</span>

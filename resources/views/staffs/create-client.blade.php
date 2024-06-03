@@ -69,16 +69,24 @@
                         @enderror
                     </div>
 
+                
                     <div class="mb-4 w-full">
                         <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento <span class="text-gray-400">(opcional)</span></label>
-                        <input
-                          type="date"
-                          name="birthdate"
-                          placeholder="Fecha de nacimiento"
-                          value="{{ old('birthdate') }}"
-                          class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
-                        />
-                      </div>
+                        <div class="relative">
+                            <input
+                                type="text"
+                                name="birthdate"
+                                id="birthdate"
+                                placeholder="Selecciona una fecha"
+                                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] pl-10"
+                                value="{{ old('birthdate') }}"
+                            >
+                            <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
+                        </div>
+                        @error('birthdate')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <div class="mb-4 w-full">
                         <label for="id_membership" class="block text-sm font-medium text-gray-700 mb-2">Membresía <b class="text-[#FF0104]">*</b></label>
@@ -102,13 +110,17 @@
 
                     <div class="mb-4 w-full">
                         <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio <b class="text-[#FF0104]">*</b></label>
-                        <input
-                            type="date"
-                            name="start_date"
-                            id="start_date"
-                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
-                            required
-                        >
+                        <div class="relative">
+                            <input
+                                type="text"
+                                name="start_date"
+                                id="start_date"
+                                placeholder="Selecciona una fecha"
+                                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] pl-10"
+                                required
+                            >
+                            <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
+                        </div>
                         @error('start_date')
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
@@ -116,17 +128,22 @@
 
                     <div class="mb-4 w-full">
                         <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Vencimiento <b class="text-[#FF0104]">*</b></label>
-                        <input
-                            type="date"
-                            name="end_date"
-                            id="end_date"
-                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
-                            required
-                        >
+                        <div class="relative">
+                            <input
+                                type="text"
+                                name="end_date"
+                                id="end_date"
+                                placeholder="Selecciona una fecha"
+                                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] pl-10"
+                                required
+                            >
+                            <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
+                        </div>
                         @error('end_date')
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+
 
                     <button
                         type="submit"
@@ -140,16 +157,30 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const startDateInput = document.getElementById('start_date');
-        const endDateInput = document.getElementById('end_date');
+        flatpickr('#birthdate', {
+            locale: 'es',
+            dateFormat: 'Y-m-d'
+        });
 
-        startDateInput.addEventListener('change', function() {
-            const startDate = new Date(startDateInput.value);
-            const endDate = new Date(startDate);
-            endDate.setMonth(endDate.getMonth() + 1); // Añadir un mes
-            endDateInput.value = endDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        flatpickr('#start_date', {
+            locale: 'es',
+            dateFormat: 'Y-m-d',
+            onChange: function(selectedDates, dateStr, instance) {
+                const endDateInput = document.getElementById('end_date');
+                const startDate = new Date(dateStr);
+                const endDate = new Date(startDate);
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDateInput._flatpickr.setDate(endDate);
+            }
+        });
+
+        flatpickr('#end_date', {
+            locale: 'es',
+            dateFormat: 'Y-m-d'
         });
     });
 </script>

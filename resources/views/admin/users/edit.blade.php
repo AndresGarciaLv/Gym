@@ -91,13 +91,20 @@
 
                     <div class="mb-4 w-full">
                         <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento</label>
-                        <input
-                            type="date"
-                            name="birthdate"
-                            placeholder="Fecha de nacimiento"
-                            value="{{ $user->birthdate }}"
-                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
-                        />
+                        <div class="relative">
+                            <input
+                                type="text"
+                                name="birthdate"
+                                id="birthdate"
+                                placeholder="Selecciona una fecha"
+                                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] pl-10"
+                                value="{{ $user->birthdate }}"
+                            >
+                            <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
+                        </div>
+                        @error('birthdate')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
             
                     <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5" for="role">Rol:</label>
@@ -205,8 +212,6 @@
     </div>
 </div>
 
-@endsection
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const alert = document.getElementById('success-alert');
@@ -249,3 +254,14 @@
         }
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr('#birthdate', {
+            locale: 'es',
+            dateFormat: 'Y-m-d'
+        });
+    });
+</script>
+@endsection

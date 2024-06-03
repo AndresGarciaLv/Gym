@@ -15,28 +15,43 @@ class UserMembershipController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $userMemberships = UserMembership::with(['user', 'gym', 'membership'])->paginate(10);
-        return view('admin.user-memberships.index', compact('userMemberships'));
+       
     }
+
+    public function membershipsByGym($id)
+    {
+        $gym = Gym::findOrFail($id);
+        $userMemberships = UserMembership::with(['user.roles', 'gym', 'membership'])
+            ->where('id_gym', $id)
+            ->paginate(10);
+    
+        return view('admin.user-memberships.index', compact('gym', 'userMemberships'));
+    }
+    
+    
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($gymId)
     {
-        // Obtener usuarios que no tengan una membresía activa
-        $users = User::whereDoesntHave('userMemberships', function($query) {
+        // Obtener el gimnasio por ID
+        $gym = Gym::with('memberships')->findOrFail($gymId);
+
+        // Obtener usuarios del gimnasio que no tengan una membresía activa
+        $users = User::whereHas('gyms', function($query) use ($gymId) {
+            $query->where('gyms.id', $gymId);
+        })
+        ->whereDoesntHave('userMemberships', function($query) {
             $query->where('isActive', true);
         })->get();
 
-        // Obtener gimnasios
-        $gyms = Gym::with('memberships')->get();
-
         // Pasar los datos a la vista
-        return view('admin.user-memberships.create', compact('users', 'gyms'));
+        return view('admin.user-memberships.create', compact('users', 'gym'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -73,7 +88,7 @@ class UserMembershipController extends Controller
 
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía asignada exitosamente!');
-        return redirect()->route('admin.user-memberships.index');
+        return redirect()->route('admin.gyms.user-memberships', $validated['id_gym']);
     }
 
     /**
@@ -143,16 +158,19 @@ class UserMembershipController extends Controller
         return redirect()->route('admin.user-memberships.index');
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
         $userMembership = UserMembership::findOrFail($id);
+        $gymId = $userMembership->id_gym;
         $userMembership->delete();
-
+    
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía eliminada exitosamente!');
-        return redirect()->route('admin.user-memberships.index');
+        return redirect()->route('admin.gyms.user-memberships', $gymId);
     }
+    
 }

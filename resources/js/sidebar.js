@@ -14,7 +14,6 @@ function ocultarDiv() {
       div.classList.add("terminar-loader");
       setTimeout(function() {
         div.style.display="none";
-        
       }, 300);
     }, 10);
 }
@@ -92,6 +91,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const group = document.getElementById(selectedGroup);
         if (group) {
             group.classList.add('selected');
+            const submenu = group.querySelector('.submenu');
+            const submenu2 = group.querySelector('.ri-arrow-right-s-line');
+            if (submenu) {
+                submenu2.classList.remove('hidden');
+                submenu.classList.remove('hidden');
+            }
         }
     }
 });
@@ -102,19 +107,31 @@ document.querySelectorAll('.sidebar-dropdown-toggle').forEach(function (item) {
         const parent = item.closest('.group');
         const groupId = parent.id;
         const isSelected = parent.classList.contains('selected');
-        
+
         if (sidebar.classList.contains('sidebar-expanded')) {
             // Cerrar todos los otros grupos
             groups.forEach(function (group) {
                 group.classList.remove('selected');
+                let submenu = group.querySelector('.submenu');
+                let submenu2 = group.querySelector('.ri-arrow-right-s-line');
+                if (submenu) {
+                    submenu2.classList.add('hidden');
+                    submenu.classList.add('hidden');
+                }
             });
-            
+
             // Alternar el grupo actual
             if (isSelected) {
                 parent.classList.remove('selected');
                 updateSelectedGroup(null);
             } else {
                 parent.classList.add('selected');
+                let submenu = parent.querySelector('.submenu');
+                let submenu2 = parent.querySelector('.ri-arrow-right-s-line');
+                if (submenu) {
+                    submenu2.classList.remove('hidden');
+                    submenu.classList.remove('hidden');
+                }
                 updateSelectedGroup(groupId);
             }
         } else {
@@ -142,6 +159,7 @@ sidebarToggle.addEventListener('click', function () {
         });
     }
 });
+
 
 const popperInstance = {};
 document.querySelectorAll('.dropdown').forEach(function (item, index) {

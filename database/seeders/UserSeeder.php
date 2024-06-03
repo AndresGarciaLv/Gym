@@ -36,6 +36,14 @@ class UserSeeder extends Seeder
               'role' => 'Administrador',
           ],
           [
+            'name' => 'Kevin Chan',
+            'email' => 'kevinc@gmail.com',
+            'birthdate' => '1980-11-25',
+            'phone_number' => '9987352189',
+            'phone_emergency' => '9987352183',
+            'role' => 'Staff',
+        ],
+          [
               'name' => 'Andrés Leyva',
               'email' => 'andresleyva@gmail.com',
               'birthdate' => '1999-05-12',
