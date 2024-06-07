@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('user-memberships', UserMembershipController::class)->middleware('can:admin.user-memberships')->names('admin.user-memberships');
     Route::get('/admin/gyms/{id}/user-memberships', [UserMembershipController::class, 'membershipsByGym'])->name('admin.gyms.user-memberships');
     Route::get('user-memberships/create/{gym}', [UserMembershipController::class, 'create'])->name('admin.user-memberships.create');
+    Route::get('admin/user-memberships/history/{userId}', [UserMembershipController::class, 'userMembershipsHistory'])->name('admin.user-memberships.history');
+
 
     //STAFF ROUTES
     Route::resource('staffs', StaffController::class)->middleware('can:staffs')->names('staffs');

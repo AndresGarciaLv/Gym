@@ -164,7 +164,6 @@ class MembershipController extends Controller
                 'id_membership' => $request->membership_id,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'duration_days' => $durationDays,
                 'is_active' => true,
             ]);
 

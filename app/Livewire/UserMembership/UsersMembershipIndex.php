@@ -29,6 +29,7 @@ class UsersMembershipIndex extends Component
         $userMemberships = UserMembership::query()
             ->with(['user.roles', 'gym', 'membership'])
             ->where('id_gym', $this->gymId)
+            ->where('isActive', true)  // Añadir condición para membresías activas
             ->where(function ($query) {
                 $query->whereHas('user', function ($query) {
                     $query->where('name', 'LIKE', '%' . $this->query . '%')

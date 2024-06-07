@@ -137,17 +137,23 @@
                     </td>
                     
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        <a href="{{ route('admin.user-memberships.edit', $userMembership) }}"
-                           class="text-yellow-600 hover:text-yellow-900">
-                            Editar
-                        </a>
-                        <form action="{{ route('admin.user-memberships.destroy', $userMembership) }}" method="POST" style="display:inline" onsubmit="return confirm('¿Estás seguro que deseas eliminar esta membresía?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-900 ml-2">
-                                Eliminar
-                            </button>
-                        </form>
+                      
+                        <div class="col-span-1 mb-2">
+                            <a href="{{ route('admin.user-memberships.edit', $userMembership) }}"
+                               class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
+                                Editar
+                            </a>
+                        </div>
+                        <div class="col-span-1">
+                            <form action="{{ route('admin.user-memberships.destroy', $userMembership) }}" method="POST" onsubmit="return confirmDeletion(event);">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full block text-center text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
+                      
                     </td>
                 </tr>
                 @endforeach
@@ -162,3 +168,23 @@
     <div class="min-w-full divide-y divide-gray-200 text-center text-2xl text-gray-500">Sin resultados</div>
     @endif
 </div>
+<script>
+    function confirmDeletion(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        Swal.fire({
+            title: '¿Estás seguro que deseas eliminar la Membresía?',
+            text: "¡No podrás revertir está acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, Eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>

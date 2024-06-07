@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeMail;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Gym; // Asegúrate de importar el modelo Gym
 use App\Models\Membership;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rule;
@@ -32,8 +34,6 @@ class UserController extends Controller
 
         return view('admin.users.create', compact('roles', 'gyms'));
     }
-
-
 
     /**
      * Store a newly created resource in storage.

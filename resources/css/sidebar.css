@@ -88,7 +88,7 @@ body{
   }
 
   .scroll2{
-    height: calc(100% - 108px);
+    height: calc(100% - 120px);
     &&::-webkit-scrollbar{
       display: none;
     }
@@ -155,8 +155,9 @@ body{
       display: none;
   }
   .group>ul>li>a:hover{
-    
+   padding: 5px;
     background-color: #5E0409;
+   
 }
 
   /* Show submenu on hover when sidebar is contracted */
@@ -181,9 +182,11 @@ body{
   /* Additional styling for submenu items */
   .submenu a {
       display: block;
-      padding: 10px;
+      padding: 5px;
       color: white;
       text-decoration: none;
+      display: flex;
+      align-items: center;
   }
 
   .submenu a:hover {
@@ -217,7 +220,4 @@ body{
   .esconder{
     display: none !important;
   }
-  .contenido{
-      width: 100%;
-      min-height: 500px;
-  }
+ 

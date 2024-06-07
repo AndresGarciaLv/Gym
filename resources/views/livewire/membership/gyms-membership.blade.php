@@ -84,7 +84,11 @@
                     <th scope="col"
                     class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                     Precio
-                </th>                    
+                </th>     
+                <th scope="col"
+                class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                Duración
+            </th>                
                     <th scope="col"
                         class="px-3 py-3  text-center text-xs font-medium text-white uppercase tracking-wider w-[10px]">
                        descripcion
@@ -107,7 +111,10 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         ${{ number_format($membership->price, 2) }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm w-[10px] text-gray-500 text-center align-middle">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                        {{ $membership->duration_type }}
+                    </td>
+                    <td class="px-6 py-4 text-sm max-w-[250px] truncate text-gray-500 text-center align-middle">
                         {{ $membership->description }}
                     </td>
                    {{--  <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">

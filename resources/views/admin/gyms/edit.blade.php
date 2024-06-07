@@ -5,8 +5,8 @@
 @endsection
 
 @section('contenido')
-<h1 class="text-3xl font-bold text-center mt-5 uppercase">Editar {{ $gym->name }}</h1>
-<div class="mb-10 mt-5">
+<h1 class="text-3xl font-bold text-center uppercase">Editar {{ $gym->name }}</h1>
+<div class="mt-5">
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
         
         <div class="overflow-hidden shadow-sm sm:rounded-lg ">
@@ -54,7 +54,7 @@
                     @enderror
 
                     <div class="flex justify-between items-center">
-                        <button type="submit" class="block mt-3 border p-2 rounded-lg text-white bg-[#03A6A6] hover:bg-[#03A696] mb-5">Actualizar Gimnasio</button>
+                        <button type="submit"  class="mt-3 w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#03A6A6] hover:bg-[#038686] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#03A6A6]">Actualizar Gimnasio</button>
                     </div>
                 </form>
             </div>

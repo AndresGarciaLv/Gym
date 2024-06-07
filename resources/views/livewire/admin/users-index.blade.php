@@ -1,3 +1,6 @@
+@php
+    $authenticatedUserId = auth()->user()->id;
+@endphp
 <div class="mt-4">
     
     <form wire:submit="search">
@@ -75,7 +78,7 @@
             <thead class="bg-[#545759] shadow-md">
                 <tr>
                     <th scope="col"
-                        class="px-3ssssssss py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                         Nombre
                     </th>
                     <th scope="col"
@@ -107,13 +110,13 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($users as $user)
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->name}}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->email}}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
 
                         @php
                         $roleNames = $user->roles->pluck('name');
@@ -123,10 +126,10 @@
 
 
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-1 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->code}}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         @php
                         $gymNames = $user->gyms->pluck('name');
                         @endphp
@@ -142,7 +145,7 @@
                         @endif
                     </td>
                     
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-center align-middle">
                         @if($user->isActive == 1)
                             <span class="text-green-500">Activo</span>
                         @else
@@ -152,7 +155,7 @@
 
                     <td class="grid grid-cols-3 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[265px] w-full">
                         <div class="col-span-3">
-                            <a href=""
+                            <a href="{{ route('admin.user-memberships.history', $user) }}"
                                class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
                                 Ver Historial Membresias
                             </a>
@@ -169,6 +172,7 @@
                                  Entrada
                             </a>
                         </div>
+                        @if($user->id != $authenticatedUserId)
                         <div class="col-span-1">
                             <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirmDeletion(event);">
                                 @csrf
@@ -178,6 +182,7 @@
                                 </button>
                             </form>
                         </div>
+                        @endif
                         <div class="col-span-3">
                             <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
                                class="block text-center text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md bg-blue-100 hover:bg-blue-200">

@@ -20,6 +20,24 @@ class UserMembershipController extends Controller
        
     }
 
+    public function userMembershipsHistory($userId)
+{
+    $user = User::with('roles')->findOrFail($userId);
+    $activeMembership = UserMembership::with(['gym', 'membership'])
+        ->where('id_user', $userId)
+        ->where('isActive', true)
+        ->first();
+    $inactiveMemberships = UserMembership::with(['gym', 'membership'])
+        ->where('id_user', $userId)
+        ->where('isActive', false)
+        ->orderBy('end_date', 'desc')
+        ->get();
+        $gymId = $activeMembership ? $activeMembership->id_gym : ($inactiveMemberships->first() ? $inactiveMemberships->first()->id_gym : null);
+
+        return view('admin.user-memberships.history', compact('user', 'activeMembership', 'inactiveMemberships', 'gymId'));
+}
+
+
     public function membershipsByGym($id)
     {
         $gym = Gym::findOrFail($id);
@@ -37,20 +55,21 @@ class UserMembershipController extends Controller
      */
     public function create($gymId)
     {
-        // Obtener el gimnasio por ID
+        // Obtener el gimnasio por ID junto con sus membresías
         $gym = Gym::with('memberships')->findOrFail($gymId);
-
-        // Obtener usuarios del gimnasio que no tengan una membresía activa
+    
+        // Obtener usuarios que pertenezcan al gimnasio y que no tengan una membresía activa en este gimnasio
         $users = User::whereHas('gyms', function($query) use ($gymId) {
             $query->where('gyms.id', $gymId);
         })
-        ->whereDoesntHave('userMemberships', function($query) {
-            $query->where('isActive', true);
+        ->whereDoesntHave('userMemberships', function($query) use ($gymId) {
+            $query->where('isActive', true)->where('id_gym', $gymId);
         })->get();
-
+    
         // Pasar los datos a la vista
         return view('admin.user-memberships.create', compact('users', 'gym'));
     }
+    
 
 
     /**
@@ -66,15 +85,34 @@ class UserMembershipController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
-
-        // Calcular duración en días
-        $startDate = Carbon::parse($validated['start_date']);
-        $endDate = Carbon::parse($validated['end_date'])->setTime(23, 59, 0);
+    
+        // Obtener el usuario y verificar su rol
+        $user = User::with('roles')->findOrFail($validated['id_user']);
+        $isSuperAdminOrAdmin = $user->roles->contains(function($role) {
+            return in_array($role->name, ['Super Administrador', 'Administrador']);
+        });
+    
+        if ($isSuperAdminOrAdmin) {
+            // Verificar si el usuario ya tiene una membresía activa en el gimnasio
+            $existingActiveMembership = UserMembership::where('id_user', $validated['id_user'])
+                ->where('id_gym', $validated['id_gym'])
+                ->where('isActive', true)
+                ->first();
+    
+            if ($existingActiveMembership) {
+                return redirect()->back()->withErrors(['id_user' => 'El usuario ya tiene una membresía activa en este gimnasio.']);
+            }
+        }
+    
+         // Calcular duración en días
+    $currentTimestamp = Carbon::now();
+    $startDate = Carbon::parse($validated['start_date'])->setTimeFrom($currentTimestamp);
+    $endDate = Carbon::parse($validated['end_date'])->setTime(23, 59, 0);
         $durationDays = $startDate->diffInDays($endDate);
-
+    
         // Determinar el estado de isActive basado en las fechas
         $isActive = $endDate->greaterThanOrEqualTo(Carbon::now());
-
+    
         // Crear la nueva membresía del usuario
         UserMembership::create([
             'id_user' => $validated['id_user'],
@@ -85,11 +123,12 @@ class UserMembershipController extends Controller
             'duration_days' => $durationDays,
             'isActive' => $isActive,
         ]);
-
+    
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía asignada exitosamente!');
         return redirect()->route('admin.gyms.user-memberships', $validated['id_gym']);
     }
+    
 
     /**
      * Display the specified resource.

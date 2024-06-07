@@ -44,7 +44,11 @@ class Breadcrumb extends Component
            /*  MEMBERSHIPS */
            'admin.memberships.index' => 'Membresias',
            'admin.memberships.create' => 'Crear Membresia',
-           'admin.memberships.gyms' => 'Membresias'
+           'admin.memberships.gyms' => 'Membresias',
+
+           /* SUCURSALES */
+            'admin.gyms.user-memberships' => 'Lista de Membresias',
+            'admin.user-memberships.create'=>'Asignar Membresia'
 
 
         ];
@@ -64,6 +68,8 @@ class Breadcrumb extends Component
 
             /*  MEMBERSHIPS */
            'admin.memberships.create' => 'admin.memberships.index',
+
+           
         ];
 
         $accumulatedRoute = '';

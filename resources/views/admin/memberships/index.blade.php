@@ -6,8 +6,8 @@
 
 @section('contenido')
 
-<h1 class="text-3xl font-bold text-center mt-5 uppercase">Lista de Membresias</h1>
-<div class="mb-10 mt-5">
+<h1 class="text-3xl font-bold text-center uppercase">Lista de Membresias</h1>
+<div class="mt-5">
     <div class="max-w-10xl  mx-auto sm:px-6 lg:px-8">
         
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
