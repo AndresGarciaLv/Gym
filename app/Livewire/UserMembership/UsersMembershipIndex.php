@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Livewire\UserMembership;
 
 use App\Models\UserMembership;
@@ -13,6 +12,7 @@ class UsersMembershipIndex extends Component
     public $query = '';
     public $gymId;
     public $role = '';
+    public $status = ''; // Nueva propiedad para el estado de la membresía
 
     public function mount($gymId)
     {
@@ -29,20 +29,19 @@ class UsersMembershipIndex extends Component
         $userMemberships = UserMembership::query()
             ->with(['user.roles', 'gym', 'membership'])
             ->where('id_gym', $this->gymId)
-            ->where('isActive', true)  // Añadir condición para membresías activas
+            ->where('isActive', true)
             ->where(function ($query) {
                 $query->whereHas('user', function ($query) {
                     $query->where('name', 'LIKE', '%' . $this->query . '%')
-                          ->orWhere('email', 'LIKE', '%' . $this->query . '%');
+                          ->orWhere('email', 'LIKE', '%' . $this->query . '%')
+                          ->orWhere('code', 'LIKE', '%' . $this->query . '%');
 
-                    // Filtro por rol
                     if ($this->role) {
                         $query->whereHas('roles', function ($roleQuery) {
                             $roleQuery->where('name', $this->role);
                         });
                     }
 
-                    // Búsqueda específica por roles
                     if (!empty($this->query)) {
                         $query->orWhereHas('roles', function ($query) {
                             if (strtolower($this->query) === 'administrador') {
@@ -76,6 +75,13 @@ class UsersMembershipIndex extends Component
                 });
             })
             ->paginate(10);
+
+        // Filtrar por estado de la membresía
+        $filteredMemberships = $userMemberships->getCollection()->filter(function ($membership) {
+            return !$this->status || $membership->status === $this->status;
+        });
+
+        $userMemberships->setCollection($filteredMemberships);
 
         return view('livewire.user-membership.users-membership-index', [
             'userMemberships' => $userMemberships

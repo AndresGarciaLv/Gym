@@ -20,10 +20,19 @@ class CredentialController extends Controller
         // Convierte el código de barras a una base64
         $barcodeBase64 = 'data:image/png;base64,' . base64_encode($barcode);
 
-        // Convierte la imagen del logo a base64
-        $logoBase64 = $this->convertImageToBase64(public_path('fotos/Logo-Ericks-500px.png'));
+        // Obtener la foto del gimnasio o el nombre del gimnasio
+        $gym = $user->gyms->first();
+        if ($user->gyms->count() > 1) {
+            $logoBase64 = $this->convertImageToBase64(public_path('fotos/EricksCredential-bn.png'));
+        } else if ($gym && $gym->photo) {
+            $logoBase64 = $this->convertImageToBase64(storage_path('app/public/' . $gym->photo));
+        } else if ($gym) {
+            $gymName = $gym->name;
+        } else {
+            $logoBase64 = $this->convertImageToBase64(public_path('fotos/EricksCredential-bn.png'));
+        }
 
-        return view('admin.users.generate-credential', compact('user', 'barcodeBase64', 'logoBase64'));
+        return view('admin.users.generate-credential', compact('user', 'barcodeBase64', 'logoBase64', 'gymName'));
     }
 
     public function generatePDF($userId)
@@ -40,13 +49,23 @@ class CredentialController extends Controller
         // Convierte el código de barras a una base64
         $barcodeBase64 = 'data:image/png;base64,' . base64_encode($barcode);
 
-        // Convierte la imagen del logo a base64
-        $logoBase64 = $this->convertImageToBase64(public_path('fotos/Gym-logo.png'));
+        // Obtener la foto del gimnasio o el nombre del gimnasio
+        $gym = $user->gyms->first();
+        if ($user->gyms->count() > 1) {
+            $logoBase64 = $this->convertImageToBase64(public_path('fotos/EricksCredential-bn.png'));
+        } else if ($gym && $gym->photo) {
+            $logoBase64 = $this->convertImageToBase64(storage_path('app/public/' . $gym->photo));
+        } else if ($gym) {
+            $gymName = $gym->name;
+        } else {
+            $logoBase64 = $this->convertImageToBase64(public_path('fotos/EricksCredential-bn.png'));
+        }
 
         $data = [
             'user' => $user,
             'barcodeBase64' => $barcodeBase64,
-            'logoBase64' => $logoBase64,
+            'logoBase64' => $logoBase64 ?? null,
+            'gymName' => $gymName ?? null,
         ];
 
         // Genera el PDF con la vista y ajusta el tamaño de la página

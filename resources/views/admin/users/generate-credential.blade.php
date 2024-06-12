@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Credencial</title>
     <style>
-      @font-face {
+        @font-face {
             font-family: 'Rammetto One';
             src: url('{{ public_path('fonts/RammettoOne-Regular.ttf') }}') format('truetype');
             font-weight: normal;
@@ -14,8 +14,9 @@
         }
 
         body {
-           
+            /* Puedes agregar estilos aquí para el body si es necesario */
         }
+
         .card {
             width: 53.98mm;
             height: 85.60mm;
@@ -29,34 +30,43 @@
             box-sizing: border-box;
             position: relative;
         }
+
         .card-header {
             background-color: #7F0001;
             color: white;
             padding: 2mm 0;
         }
+
         .card-header img {
             width: 20mm;
             height: auto;
+            border-radius: 50%; /* Hace que la imagen sea circular */
+            object-fit: cover; /* Asegura que la imagen mantenga su proporción y cubra el área del círculo */
         }
-        .card-header h2{
-  font-family: "Rammetto One", sans-serif;
-}
-        
+
+        .card-header h2 {
+            font-family: "Rammetto One", sans-serif;
+        }
+
         .card-body {
             padding: 2mm;
         }
+
         .card-body h4 {
             margin: 2mm 0;
             font-size: 10pt;
             color: #333;
         }
+
         .card-footer img {
             width: 40mm;
             height: auto;
         }
-        .card-footer h5{
-            color:#7F0001;
+
+        .card-footer h5 {
+            color: #7F0001;
         }
+
         .card-footer p {
             margin: 2mm 0;
             font-size: 12pt;
@@ -67,25 +77,27 @@
 <body>
     <div class="card">
         <div class="card-header">
-            @if($user->hasRole(['Super Administrador', 'Administrador']))
+            @if($user->hasRole(['Super Administrador', 'Administrador']) && $user->gyms->count() > 1)
                 <img class="image" src="{{ $logoBase64 }}" alt="Logo">
             @else
-                <h2>{{ $user->gyms->first()->name }}</h2>
+                @if(isset($gymName))
+                    <h2>{{ $gymName }}</h2>
+                @else
+                    <img class="image" src="{{ $logoBase64 }}" alt="Logo">
+                @endif
             @endif
         </div>
         <div class="card-body">
             <h4>{{ $user->name }}</h4>
             <h4>{{ $user->email }}</h4>
-            
         </div>
         <div class="card-footer">
-            <div class="card-footer">
-              <h5>¡Escanea tu código!</h5>
+            <h5>¡Escanea tu código!</h5>
             <img class="code" src="{{ $barcodeBase64 }}" alt="Barcode">
             <p>{{ $user->code }}</p>
             @if($user->hasRole('Cliente'))
-            <h4>Cliente</h4>
-        @endif
+                <h4>Cliente</h4>
+            @endif
         </div>
     </div>
 </body>

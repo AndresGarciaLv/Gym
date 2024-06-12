@@ -17,7 +17,7 @@
                     </div>
                 @endif
                                      
-                <form action="{{ route('admin.gyms.store') }}" method="POST">
+                <form action="{{ route('admin.gyms.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-4 w-full">
@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="mb-4 w-full">
-                        <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
+                        <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Dirección <span class="text-gray-400">(opcional)</span></label>
                         <input
                             type="text"
                             name="location"
@@ -64,6 +64,21 @@
                             <option value="0">Inactivo</option>
                         </select>
                         @error('isActive')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4 w-full">
+                        <label for="photo" class="block text-sm font-medium text-gray-700 mb-2">Logo del Gimnasio <span class="text-gray-400">(opcional)</span></label>
+                        <input
+                            type="file"
+                            name="photo"
+                            id="photo"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                            accept="image/*"
+                            
+                        >
+                        @error('photo')
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>

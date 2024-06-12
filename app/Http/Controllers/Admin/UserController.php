@@ -48,7 +48,7 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
             'password' => $role !== 'Cliente' ? 'required|string|min:8|confirmed' : 'nullable|string|min:8|confirmed',
             'isActive' => 'required|boolean',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
 
         if (in_array($role, ['Super Administrador', 'Administrador'])) {
@@ -129,7 +129,7 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|exists:roles,name',
             'isActive' => 'required|boolean',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'remove_photo' => 'nullable|boolean',
         ];
 

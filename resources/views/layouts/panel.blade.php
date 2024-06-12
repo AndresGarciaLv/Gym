@@ -437,6 +437,7 @@
     <script src="{{ asset('scripts/sidebar.js') }}"></script>
     @yield('scripts')
     @livewireScripts
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
           function updateConnectionStatus() {
@@ -477,7 +478,6 @@
         toastr.error("{{ $errors->first('inactive') }}");
     @endif
  </script>
-
 </body>
 
 </html>

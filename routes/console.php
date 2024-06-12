@@ -11,5 +11,5 @@ Artisan::command('inspire', function () {
 
 Artisan::command('schedule:work', function () {
     $schedule = app(Schedule::class);
-    $schedule->command('memberships:activate')->hourly();
+    $schedule->command('memberships:activate')->daily();
 })->purpose('Activate expired memberships automatically');

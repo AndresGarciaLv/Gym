@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class ActivateMemberships extends Command
 {
     protected $signature = 'memberships:activate';
-    protected $description = 'Activate new memberships if the old ones have expired';
+    protected $description = 'Activar nuevas membresías si las antiguas han caducado';
 
     public function __construct()
     {
@@ -35,6 +35,6 @@ class ActivateMemberships extends Command
             }
         }
 
-        $this->info('Memberships activated successfully.');
+        $this->info('Membresías activadas exitosamente.');
     }
 }

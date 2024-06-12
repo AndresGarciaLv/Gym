@@ -5,6 +5,12 @@
 @endsection
 
 @section('contenido')
+<style>
+    .cursor-not-allowed {
+        cursor: not-allowed;
+    }
+</style>
+
 <h1 class="text-3xl font-bold text-center uppercase">Renovar Membresía</h1>
 <h2 class="text-xl font-semibold text-center mt-2 uppercase">{{ $gym->name }}</h2>
 <div class="mt-5">
@@ -34,7 +40,7 @@
                         <label for="user" class="block text-sm font-medium text-gray-700 mb-2">
                             Usuario
                         </label>
-                        <input type="text" value="{{ $user->name }}" class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 bg-gray-300" disabled>
+                        <input type="text" value="{{ $user->name }}" class="cursor-not-allowed shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 bg-gray-300" disabled>
                     </div>
 
                     <div class="mb-4 w-full">
@@ -66,6 +72,7 @@
                                 id="start_date"
                                 value="{{ \Carbon\Carbon::parse($userMembership->end_date)->addDay()->format('Y-m-d') }}"
                                 class="shadow-sm rounded-md w-full px-3 py-2 bg-gray-300 border border-gray-400 focus:outline-none pl-10"
+                                style="cursor: not-allowed;"
                                 readonly
                             >
                             <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
@@ -121,7 +128,7 @@
             allowInput: false,
             clickOpens: false
         });
-
+   
         // Inicializar flatpickr para la fecha de fin
         flatpickr(endDateInput, {
             locale: 'es',

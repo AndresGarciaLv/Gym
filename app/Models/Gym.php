@@ -13,6 +13,7 @@ class Gym extends Model
         'name',
         'location',
         'isActive',
+        'photo',
     ];
 
     public function users()
