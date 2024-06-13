@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->middleware('can:admin.users')->names('admin.users');
     Route::resource('gyms', GymController::class)->middleware('can:admin.gyms')->names('admin.gyms');
     Route::get('admin/gyms/{id}/users', [GymController::class, 'users'])->middleware('can:admin.gyms.users')->name('admin.gyms.users');
-    
+
     Route::resource('memberships', MembershipController::class)->middleware('can:admin.memberships')->names('admin.memberships');
     Route::get('admin/memberships/{id}/gyms', [MembershipController::class, 'memberships'])->middleware('can:admin.memberships.gyms')->name('admin.memberships.gyms');
 
@@ -46,12 +46,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/user-memberships/{id}/renew', [UserMembershipController::class, 'storeRenewal'])->name('admin.user-memberships.storeRenewal');
 
     //REGISTRO DE ENTRADA / SALIDA
-    Route::post('admin/gym-log/entry', [GymLogController::class, 'logEntry'])->name('gym-log.entry');
-    Route::post('admin/gym-log/exit', [GymLogController::class, 'logExit'])->name('gym-log.exit');
+    Route::post('admin/gym-log/{gym}/entry', [GymLogController::class, 'logEntry'])->name('gym-log.entry');
+    Route::post('admin/gym-log/{gym}/exit', [GymLogController::class, 'logExit'])->name('gym-log.exit');
 
-    Route::get('gym-log', [GymLogController::class, 'index'])->name('admin.gym-log.index');
-    Route::post('gym-log/action', [GymLogController::class, 'logAction'])->name('admin.gym-log.logAction');
-    
+    Route::get('admin/gym-log/{gym}', [GymLogController::class, 'index'])->name('admin.gym-log.index');
+    Route::post('admin/gym-log/{gym}/action', [GymLogController::class, 'logAction'])->name('admin.gym-log.logAction');
+
     //STAFF ROUTES
     Route::resource('staffs', StaffController::class)->middleware('can:staffs')->names('staffs');
     Route::get('clients', [StaffController::class, 'clients'])->middleware('can:staffs.clients')->name('staffs.clients');

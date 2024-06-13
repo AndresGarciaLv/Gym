@@ -8,7 +8,7 @@
 <h1 class="text-3xl font-bold text-center uppercase">Editar Usuario</h1>
 <div class="mt-5">
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
-        
+
         <div class="overflow-hidden shadow-sm sm:rounded-lg ">
             <div class="p-6 bg-white border-b border-gray-200 flex flex-col items-center  justify-center w-full">
                  {{-- Alerta SUCCESS --}}
@@ -18,7 +18,7 @@
                     <i class='bx bxs-check-shield'></i> <strong class="font-bold">{{ session('success') }}</strong>
                 </div>
                 @endif
-            
+
                 <form action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('put')
@@ -26,10 +26,10 @@
  <!-- Foto de Perfil -->
  <div class="mb-5 text-center">
     <div class="mx-auto w-32 h-32 mb-2 border rounded-full relative bg-gray-100 mb-4 shadow-inset">
-        <img id="image" class="object-cover w-full h-32 rounded-full" src="{{ $user->photo ? asset('storage/' . $user->photo) : asset('fotos/avatar.webp') }}" />
+        <img id="image" class="object-cover w-full h-32 rounded-full" src="{{ $user->photo ? asset('storage/' . $user->photo) : asset('fotos/Avatar.webp') }}" />
     </div>
-    
-    <label 
+
+    <label
         for="fileInput"
         type="button"
         class="cursor-pointer border border-gray-400 py-2 px-4 mr-2 rounded-lg shadow-sm text-left text-gray-600 bg-white hover:bg-gray-400  hover:text-white transition-colors font-medium"
@@ -38,7 +38,7 @@
             <rect x="0" y="0" width="24" height="24" stroke="none"></rect>
             <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" />
             <circle cx="12" cy="13" r="3" />
-        </svg>						
+        </svg>
         Subir Foto
     </label>
     @if($user->photo)
@@ -49,7 +49,7 @@
 
     <div class="mx-auto w-48 text-gray-500 text-xs text-center mt-2">Haz Click para agregar una foto</div>
 
-    <input name="photo" id="fileInput" accept="image/*" class="hidden" type="file" 
+    <input name="photo" id="fileInput" accept="image/*" class="hidden" type="file"
            onchange="let file = document.getElementById('fileInput').files[0];
                      var reader = new FileReader();
                      reader.onload = (e) => document.getElementById('image').src = e.target.result;
@@ -58,7 +58,7 @@
         <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
     @enderror
 
-   
+
 </div>
 
 
@@ -106,7 +106,7 @@
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-            
+
                     <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5" for="role">Rol:</label>
                     <select class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
                     name="role" id="role" required>
@@ -200,11 +200,11 @@
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                    
+
                     <div class="flex justify-between items-center">
                         <button type="submit" class="block mt-3 border p-2 rounded-lg text-white bg-[#03A6A6] hover:bg-[#03A696] mb-5">Actualizar Usuario</button>
                         <a href="{{ route('admin.users.generate-credential.pdf', $user->id) }}"
-                        class="text-white p-2 rounded-md mr-1 bg-blue-600 hover:bg-blue-700">Generar Credencial</a>   
+                        class="text-white p-2 rounded-md mr-1 bg-blue-600 hover:bg-blue-700">Generar Credencial</a>
                     </div>
                 </form>
             </div>

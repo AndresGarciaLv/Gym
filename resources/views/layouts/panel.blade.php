@@ -24,6 +24,9 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+
+
 </head>
 
 <body class="text-gray-800 font-inter">
@@ -51,7 +54,7 @@
     <section class="flex">
         <div class="relative sidebar fixed left-0 top-0 h-full bg-[#5E0409] p-4 z-50 transition-transform ">
             <div class="">
-                
+
                     @php
                         $user = auth()->user();
                         $roles = $user->getRoleNames();
@@ -70,7 +73,7 @@
                     <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
                 </a>
                     @endif
-                
+
             </div>
             <ul class="mt-4 scroll2 overflow-y-scroll" id="lista-side">
                 <!-- ADMIN Section -->
@@ -106,7 +109,7 @@
                 </li>
 
 
-                    
+
                     @elseif (Auth::user()->hasAnyRole('Super Administrador', 'Administrador'))
                     <a href="/"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
@@ -116,7 +119,7 @@
                     @endif
                     @endif
 
-                   
+
 
                 @if (Auth::check() &&
                 Auth::user()->hasAnyRole(['Staff']))
@@ -135,7 +138,7 @@
                         'Staff',
                         ]))
                         @else
-                        
+
                         <li>
                             <a href="{{ route('admin.users.index') }}"
                                 class=" text-white text-sm flex items-center  p-1 rounded-md">
@@ -162,7 +165,7 @@
                     </ul>
                 </li>
                 @endif
-            
+
                 @if (Auth::check() &&
                 Auth::user()->hasAnyRole(['Staff']))
                 @else
@@ -180,7 +183,7 @@
                         'Staff',
                         ]))
                         @else
-                        
+
                         <li>
                             <a href="{{ route('admin.gyms.index') }}"
                             class=" text-white text-sm flex items-center  p-1 rounded-md">
@@ -217,7 +220,7 @@
                         'Staff',
                         ]))
                         @else
-                        
+
                         <li>
                             <a href="{{ route('admin.memberships.index') }}"
                             class=" text-white text-sm flex items-center  p-1 rounded-md">
@@ -237,13 +240,13 @@
                 </li>
                 @endif
 
-          
-          
+
+
                 @if(Auth::user()->hasAnyRole('Staff'))
-               
+
                 @else <span class="text-white font-bold nav-text">SUCURSALES</span>
                 @endif
-               
+
                  @if (Auth::check() && !Auth::user()->hasAnyRole(['Staff']))
                  @foreach($allGyms as $gym)
                  <li id="group-sucursales-{{ $gym->id }}" class="mb-1 group relative z-2 transition-all">
@@ -279,7 +282,7 @@
                                class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
                                title="Ver todas las membresías asignadas a clientes y usuarios de esta sucursal.">
                                 <i class='bx bxs-collection mr-3 text-xl'></i>
-                                <span>Membresías Asignadas</span>
+                                <span>Membresías Activas</span>
                             </a>
                         </li>
                         <li>
@@ -291,15 +294,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('staffs.create') }}"
-                               class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
-                               title="Añadir un nuevo cliente a la sucursal.">
-                                <i class='bx bx-user-plus mr-3 text-xl'></i>
-                                <span>Agregar Cliente</span>
+                            <a href="{{ route('admin.gym-log.index', $gym->id) }}"
+                                class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
+                                title="Realizar Check-in/Check-out en esta sucursal.">
+                                <i class='bx bx-barcode-reader mr-3 text-xl'></i>
+                                <span>Check-in/Check-out</span>
                             </a>
                         </li>
                     </ul>
-                    
+
                  </li>
              @endforeach
              @endif
@@ -320,10 +323,10 @@
                     </form>
                 </li>
             </ul>
-            
+
 
         </div>
-        
+
         <div class="fixed top-0 left-0 w-full h-full bg-black/50 z-40 md:hidden sidebar-overlay" id="overlay"></div>
         <!-- end sidenav -->
 
@@ -365,7 +368,7 @@
                                     <!-- Si el usuario no tiene foto de perfil, muestra un icono de usuario predeterminado -->
                                     <img id="preview" class="w-8 h-8 rounded-full" src="{{ asset('fotos/avatar.webp') }}" alt="Ícono de usuario predeterminado">
                                 @endif
-                                
+
                                     <div
                                         class="connection-status-dot top-0 left-7 absolute w-3 h-3 bg-lime-500 border-2 border-white rounded-full animate-ping">
                                     </div>
@@ -420,7 +423,7 @@
             <main class="relative bg-gradient-to-r from-gray-200 via-red-100 to-gray-300 min-h-screen w-full pt-3">
                 @yield('contenido')
             </main>
-            
+
             <footer class= "bg-gradient-to-r from-gray-200 via-red-100 to-gray-300  p-5 ">
                 <div class="w-full px-4 mx-auto text-center mb-5">
                     <div class="text-sm text-blueGray-500 font-semibold py-1">
@@ -469,11 +472,11 @@
     @if (session('success'))
         toastr.success("{{ session('success') }}");
     @endif
- 
+
     @if (session('error'))
         toastr.error("{{ session('error') }}");
     @endif
- 
+
     @if ($errors->has('inactive'))
         toastr.error("{{ $errors->first('inactive') }}");
     @endif

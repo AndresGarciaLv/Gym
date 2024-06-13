@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -7,16 +6,17 @@ use Illuminate\Http\Request;
 use App\Models\GymLog;
 use App\Models\User;
 use App\Models\UserMembership;
+use App\Models\Gym;
 use Carbon\Carbon;
 
 class GymLogController extends Controller
 {
-    public function index()
+    public function index(Gym $gym)
     {
-        return view('gym-logs.index');
+        return view('admin.gym-logs.index', compact('gym'));
     }
 
-    public function logAction(Request $request)
+    public function logAction(Request $request, Gym $gym)
     {
         $validated = $request->validate([
             'code' => 'required|exists:users,code',
@@ -25,21 +25,26 @@ class GymLogController extends Controller
 
         $user = User::where('code', $validated['code'])->first();
         $lastLog = GymLog::where('id_user', $user->id)->latest()->first();
+        $membership = $this->checkMembershipStatus($user->id, $gym->id);
 
-        if ($lastLog && $lastLog->action === 'entry') {
-            return $this->logExit($validated, $user);
+        // Verificar si la membresía pertenece al gimnasio actual
+        if (!$membership) {
+            return redirect()->back()->withErrors(['code' => 'No cuenta con una membresía activa para este gimnasio.']);
         }
 
-        return $this->logEntry($validated, $user);
+        if ($lastLog && $lastLog->action === 'entry') {
+            return $this->logExit($validated, $user, $membership);
+        }
+
+        return $this->logEntry($validated, $user, $membership);
     }
 
-    private function logEntry($validated, $user)
+    private function logEntry($validated, $user, $membership)
     {
-        $membership = $this->checkMembershipStatus($user->id);
-
         if ($membership) {
             $status = $this->getMembershipStatus($membership);
             $daysRemaining = $this->getDaysRemaining($membership);
+            $currentTime = Carbon::now()->format('H:i:s'); // Formato de hora
 
             GymLog::create([
                 'id_user' => $user->id,
@@ -49,14 +54,23 @@ class GymLogController extends Controller
             ]);
 
             $message = $this->generateMessage($status, $daysRemaining);
-            return redirect()->back()->with('message', $message);
+            return redirect()->back()->with([
+                'message' => $message,
+                'membership' => $membership,
+                'user' => $user,
+                'status' => $status,
+                'action' => 'entry',
+                'currentTime' => $currentTime, // Guardar la hora en la sesión
+            ]);
         }
 
         return redirect()->back()->withErrors(['code' => 'Membresía no válida o expirada.']);
     }
 
-    private function logExit($validated, $user)
+    private function logExit($validated, $user, $membership)
     {
+        $currentTime = Carbon::now()->format('H:i:s'); // Formato de hora
+
         GymLog::create([
             'id_user' => $user->id,
             'id_gym' => $validated['id_gym'],
@@ -64,13 +78,23 @@ class GymLogController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
-        return redirect()->back()->with('message', 'Salida registrada exitosamente.');
+        return redirect()->back()->with([
+            'message' => 'Salida registrada exitosamente. ¡Nos Vemos Pronto!',
+            'membership' => $membership,
+            'user' => $user,
+            'status' => 'exit',
+            'action' => 'exit',
+            'currentTime' => $currentTime, // Guardar la hora en la sesión
+        ]);
     }
 
-    private function checkMembershipStatus($userId)
+
+
+    private function checkMembershipStatus($userId, $gymId)
     {
         $currentDate = Carbon::now();
         return UserMembership::where('id_user', $userId)
+            ->where('id_gym', $gymId)
             ->where('start_date', '<=', $currentDate)
             ->where('end_date', '>=', $currentDate)
             ->where('isActive', true)
@@ -105,11 +129,11 @@ class GymLogController extends Controller
     {
         switch ($status) {
             case 'Vigente':
-                return "Bienvenido, disfruta tu visita. Te quedan $daysRemaining días.";
+                return "Te quedan $daysRemaining días.";
             case 'Por Vencer':
-                return "Te quedan $daysRemaining días. Te invitamos a renovar tu membresía en recepción.";
+                return "Te quedan $daysRemaining días.";
             case 'Vence Hoy':
-                return "Hoy vence tu membresía. Pasa a recepción a renovar tu membresía.";
+                return "Hoy vence tu membresía.";
             case 'Vencido':
                 return "Tu membresía ya venció. Pasa a recepción a renovar tu membresía.";
             default:
@@ -117,3 +141,4 @@ class GymLogController extends Controller
         }
     }
 }
+
