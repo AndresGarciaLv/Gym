@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('end_date');
             $table->integer('duration_days')->nullable();
             $table->boolean('isActive')->default(true);
+            $table->boolean('is_renewal')->default(false);
             $table->timestamps();
         });
     }

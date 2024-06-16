@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\DurationType;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -122,6 +123,7 @@ class UserMembershipController extends Controller
             'end_date' => $endDate,
             'duration_days' => $durationDays,
             'isActive' => $isActive,
+            'is_renewal' => false, // Nueva membresía, no es renovación
         ]);
     
         // Redirigir con un mensaje de éxito
@@ -197,6 +199,108 @@ class UserMembershipController extends Controller
         return redirect()->route('admin.user-memberships.index');
     }
 
+    public function renew($id)
+    {
+        // Obtener la membresía del usuario por ID
+        $userMembership = UserMembership::with('user', 'gym', 'membership')->findOrFail($id);
+        $user = $userMembership->user;
+        $gym = $userMembership->gym;
+        $memberships = $gym->memberships;
+
+        // Pasar los datos a la vista
+        return view('admin.user-memberships.renew', compact('userMembership', 'user', 'gym', 'memberships'));
+    }
+    
+    public function storeRenewal(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                'id_membership' => 'required|exists:memberships,id',
+            ]);
+    
+            $userMembership = UserMembership::findOrFail($id);
+    
+            $now = Carbon::now();
+            $endDateCurrent = Carbon::parse($userMembership->end_date);
+            if ($endDateCurrent->diffInDays($now, false) > 5) {
+                return redirect()->back()->withErrors(['error' => 'Solo puedes renovar tu membresía hasta 5 días antes de su vencimiento.']);
+            }
+    
+            $startDate = $endDateCurrent->copy()->addDay()->startOfDay(); // El día después de la fecha de vencimiento actual a las 00:00:00
+            $membership = Membership::findOrFail($validated['id_membership']);
+            
+            $durationType = $membership->duration_type;
+            $endDate = $this->calculateEndDate($startDate, $durationType);
+    
+            if (!$endDate) {
+                return redirect()->back()->withErrors(['error' => 'Tipo de duración de membresía no válido.']);
+            }
+    
+            $newMembership = UserMembership::create([
+                'id_user' => $userMembership->id_user,
+                'id_gym' => $userMembership->id_gym,
+                'id_membership' => $validated['id_membership'],
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'duration_days' => $startDate->diffInDays($endDate),
+                'isActive' => false, // No activa hasta que la actual termine
+                'is_renewal' => false, // Nueva membresía, no es renovación
+            ]);
+    
+            // Actualizar la membresía actual según la condición especificada
+            if (Carbon::parse($userMembership->end_date)->lessThan($now) && $userMembership->isActive) {
+                $userMembership->update(['isActive' => false, 'is_renewal' => false]);
+            } else {
+                $userMembership->update(['is_renewal' => true]);
+            }
+    
+            // Activar la nueva membresía si la actual ya está vencida
+            $this->activateNewMembership($userMembership, $newMembership);
+    
+            flash()->success('¡Membresía renovada exitosamente! La nueva membresía comenzará cuando la actual termine.');
+            return redirect()->route('admin.user-memberships.history', ['userId' => $userMembership->id_user]);
+    
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Ocurrió un error durante la renovación: ' . $e->getMessage()]);
+        }
+    }
+    
+    
+
+    private function calculateEndDate($startDate, $durationType)
+    {
+        switch ($durationType) {
+            case DurationType::SEMANAL:
+                return $startDate->copy()->addDays(7)->endOfDay();
+            case DurationType::MENSUAL:
+                return $startDate->copy()->addMonth()->endOfDay();
+            case DurationType::ANUAL:
+                return $startDate->copy()->addYear()->endOfDay();
+            case DurationType::DIARIA:
+                return $startDate->copy()->addDay()->endOfDay();
+            default:
+                return null;
+        }
+    }
+
+    private function activateNewMembership($oldMembership, $newMembership)
+    {
+        $now = Carbon::now();
+        if (Carbon::parse($oldMembership->end_date)->lessThan($now)) {
+            $oldMembership->update(['isActive' => false]);
+            $newMembership->update(['isActive' => true]);
+        }
+    }
+
+    public function getActiveMembership($userId)
+    {
+        $currentDate = Carbon::now();
+        return UserMembership::where('id_user', $userId)
+            ->where('start_date', '<=', $currentDate)
+            ->where('end_date', '>=', $currentDate)
+            ->where('isActive', true)
+            ->first();
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -212,4 +316,5 @@ class UserMembershipController extends Controller
         return redirect()->route('admin.gyms.user-memberships', $gymId);
     }
     
+
 }

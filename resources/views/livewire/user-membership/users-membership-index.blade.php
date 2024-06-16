@@ -83,10 +83,6 @@
                     </th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Gimnasio
-                    </th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                         Membresía
                     </th>
                     <th scope="col"
@@ -118,9 +114,7 @@
                             {{ $role->name }}<br>
                         @endforeach
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $userMembership->gym->name }}
-                    </td>
+             
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->membership->name }}
                     </td>
@@ -131,9 +125,12 @@
                         {{ $userMembership->end_date }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" style="background-color: {{ $userMembership->statusColor }}; color: white;">
+                        <span class="px-2 inline-flex text-s leading-5 font-semibold rounded-full" style="background-color: {{ $userMembership->statusColor }}; color: white;">
                             {{ $userMembership->status }}
                         </span>
+                        @if($userMembership->is_renewal)
+                            <div class="px-2 mt-1 text-xs leading-5 font-semibold rounded-full bg-teal-700 text-white">RENOVADO</div>
+                        @endif
                     </td>
                     
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
@@ -144,6 +141,14 @@
                                 Editar
                             </a>
                         </div>
+                        @if(!$userMembership->is_renewal && in_array($userMembership->status, ['Por Vencer', 'Vence Hoy', 'Vencido']))
+                        <div class="col-span-1 mb-2">
+                            <a href="{{ route('admin.user-memberships.renew', $userMembership) }}"
+                               class="block text-center text-teal-800 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-200 hover:bg-teal-300">
+                                Renovar
+                            </a>
+                        </div>
+                        @endif
                         <div class="col-span-1">
                             <form action="{{ route('admin.user-memberships.destroy', $userMembership) }}" method="POST" onsubmit="return confirmDeletion(event);">
                                 @csrf

@@ -124,7 +124,7 @@
                     </td>
                     <td class="grid grid-cols-3 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[265px] w-full">
                         <div class="col-span-3">
-                            <a href=""
+                            <a href="{{ route('admin.user-memberships.history', $user) }}"
                                class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
                                 Ver Historial Membresias
                             </a>

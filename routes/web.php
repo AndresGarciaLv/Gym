@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/gyms/{id}/user-memberships', [UserMembershipController::class, 'membershipsByGym'])->name('admin.gyms.user-memberships');
     Route::get('user-memberships/create/{gym}', [UserMembershipController::class, 'create'])->name('admin.user-memberships.create');
     Route::get('admin/user-memberships/history/{userId}', [UserMembershipController::class, 'userMembershipsHistory'])->name('admin.user-memberships.history');
+    Route::get('/user-memberships/{id}/renew', [UserMembershipController::class, 'renew'])->name('admin.user-memberships.renew');
+    Route::post('/user-memberships/{id}/renew', [UserMembershipController::class, 'storeRenewal'])->name('admin.user-memberships.storeRenewal');
+
+
 
 
     //STAFF ROUTES

@@ -18,6 +18,7 @@ class UserMembership extends Model
         'end_date',
         'duration_days',
         'isActive',
+        'is_renewal',
     ];
 
     /**

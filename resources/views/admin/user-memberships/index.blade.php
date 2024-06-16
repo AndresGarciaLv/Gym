@@ -5,7 +5,8 @@
 @endsection
 
 @section('contenido')
-<h1 class="text-3xl font-bold text-center uppercase">Membresías de Usuarios de {{ $gym->name }}</h1>
+<h1 class="text-3xl font-bold text-center uppercase">Membresías de Usuarios de</h1>
+<h2 class="text-xl font-semibold text-center mt-2 uppercase">{{ $gym->name }}</h2>
 <div class="mt-5">
     <div class="max-w-10xl mx-auto sm:px-6 lg:px-8">
         
