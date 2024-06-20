@@ -10,13 +10,13 @@
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white border-b border-gray-200 flex flex-col  justify-center w-full">
-                
+
                 @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                         <i class='bx bxs-check-shield'></i> <strong class="font-bold">{{ session('success') }}</strong>
                     </div>
                 @endif
-                                     
+
                 <form id="userForm" action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
@@ -46,9 +46,11 @@
                         >
                         <option value="" disabled selected>Selecciona un Rol</option>
                             @foreach ($roles as $role)
-                                <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
-                                    {{ $role->name }}
-                                </option>
+                                @if(auth()->user()->hasRole('Super Administrador') || $role->name != 'Super Administrador')
+                                    <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
+                                        {{ $role->name }}
+                                    </option>
+                                @endif
                             @endforeach
                         </select>
                         @error('role')
@@ -104,22 +106,24 @@
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                    
-                      <div id="multiGymSelection" class="mb-4 w-full">
+
+                    <div id="multiGymSelection" class="mb-4 w-full">
                         <label for="gyms" class="block text-sm font-medium text-gray-700 mb-2">Selecciona uno o más Gimnasios <b class="text-[#FF0104]">*</b></label>
                         <div class="flex flex-col space-y-2">
                             @foreach ($gyms as $gym)
-                                <div class="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="gyms[]"
-                                        id="gym-{{ $gym->id }}"
-                                        value="{{ $gym->id }}"
-                                        {{ in_array($gym->id, old('gyms', [])) ? 'checked' : '' }}
-                                        class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                                    >
-                                    <label for="gym-{{ $gym->id }}" class="ml-2 block text-sm text-gray-700">{{ $gym->name }}</label>
-                                </div>
+                                @if(auth()->user()->hasRole('Super Administrador') || in_array($gym->id, auth()->user()->gyms->pluck('id')->toArray()))
+                                    <div class="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            name="gyms[]"
+                                            id="gym-{{ $gym->id }}"
+                                            value="{{ $gym->id }}"
+                                            {{ in_array($gym->id, old('gyms', [])) ? 'checked' : '' }}
+                                            class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                        >
+                                        <label for="gym-{{ $gym->id }}" class="ml-2 block text-sm text-gray-700">{{ $gym->name }}</label>
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
                         @error('gyms')
@@ -136,9 +140,11 @@
                         >
                             <option value="" disabled selected>Selecciona un Gimnasio</option>
                             @foreach ($gyms as $gym)
-                                <option value="{{ $gym->id }}" {{ old('single_gym') == $gym->id ? 'selected' : '' }}>
-                                    {{ $gym->name }}
-                                </option>
+                                @if(auth()->user()->hasRole('Super Administrador') || in_array($gym->id, auth()->user()->gyms->pluck('id')->toArray()))
+                                    <option value="{{ $gym->id }}" {{ old('single_gym') == $gym->id ? 'selected' : '' }}>
+                                        {{ $gym->name }}
+                                    </option>
+                                @endif
                             @endforeach
                         </select>
                         @error('single_gym')
@@ -154,7 +160,7 @@
                             class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                             required
                         >
-                            
+
                             <option value="1" selected>Activo</option>
                             <option value="0">Inactivo</option>
                         </select>
@@ -201,7 +207,7 @@
                             id="photo"
                             class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                             accept="image/*"
-                            
+
                         >
                         @error('photo')
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
@@ -243,7 +249,7 @@
         roleSelect.addEventListener('change', toggleGymSelection);
         toggleGymSelection(); // Ejecutar al cargar la página
 
-        
+
     });
 </script>
 <script>

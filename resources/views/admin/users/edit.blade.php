@@ -43,9 +43,9 @@
     </label>
     @if($user->photo)
     <button type="button" id="removePhotoButton" class="rounded-lg border border-red-600 text-red-600 py-2 px-4  hover:bg-red-600 hover:text-white transition-colors">Eliminar Foto</button>
-@endif
+    @endif
 
-<input type="hidden" name="remove_photo" id="removePhotoInput" value="0">
+    <input type="hidden" name="remove_photo" id="removePhotoInput" value="0">
 
     <div class="mx-auto w-48 text-gray-500 text-xs text-center mt-2">Haz Click para agregar una foto</div>
 
@@ -57,10 +57,7 @@
     @error('photo')
         <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
     @enderror
-
-
 </div>
-
 
                     <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Nombre</label>
                     <input class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
@@ -107,59 +104,69 @@
                         @enderror
                     </div>
 
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5" for="role">Rol:</label>
-                    <select class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
-                    name="role" id="role" required>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->name }}" {{ $userRole && $userRole->name == $role->name ? 'selected' : '' }}>
-                                {{ $role->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('role')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-
-                    <div id="multiGymSelection" class="mb-4 w-full" style="display: none;">
-                        <label for="gyms" class="block text-sm font-medium text-gray-700 mb-2">Selecciona uno o más Gimnasios <b class="text-[#FF0104]">*</b></label>
-                        <div class="flex flex-col space-y-2">
-                            @foreach ($gyms as $gym)
-                                <div class="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="gyms[]"
-                                        id="gym-{{ $gym->id }}"
-                                        value="{{ $gym->id }}"
-                                        {{ in_array($gym->id, $user->gyms->pluck('id')->toArray()) ? 'checked' : '' }}
-                                        class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                                    >
-                                    <label for="gym-{{ $gym->id }}" class="ml-2 block text-sm text-gray-700">{{ $gym->name }}</label>
-                                </div>
-                            @endforeach
-                        </div>
-                        @error('gyms')
-                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div id="singleGymSelection" class="mb-4 w-full" style="display: none;">
-                        <label for="single_gym" class="block text-sm font-medium text-gray-700 mb-2">Selecciona un Gimnasio <b class="text-[#FF0104]">*</b></label>
-                        <select
-                            name="single_gym"
-                            id="single_gym"
-                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
-                        >
-                            <option value="" disabled selected>Selecciona un Gimnasio</option>
-                            @foreach ($gyms as $gym)
-                                <option value="{{ $gym->id }}" {{ $user->gyms->pluck('id')->contains($gym->id) ? 'selected' : '' }}>
-                                    {{ $gym->name }}
-                                </option>
+                    @if (auth()->user()->hasRole('Administrador') && auth()->user()->id == $user->id)
+                        <!-- Si el administrador está editando sus propios datos, no mostrar campos de gimnasios y roles -->
+                    @elseif (auth()->user()->hasRole('Super Administrador') || (auth()->user()->hasRole('Administrador') && auth()->user()->id != $user->id))
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5" for="role">Rol:</label>
+                        <select class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
+                        name="role" id="role" required>
+                            @foreach ($roles as $role)
+                                @if ($role->name != 'Super Administrador' || auth()->user()->hasRole('Super Administrador'))
+                                    <option value="{{ $role->name }}" {{ $userRole && $userRole->name == $role->name ? 'selected' : '' }}>
+                                        {{ $role->name }}
+                                    </option>
+                                @endif
                             @endforeach
                         </select>
-                        @error('single_gym')
-                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @error('role')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
                         @enderror
-                    </div>
+
+                        <div id="multiGymSelection" class="mb-4 w-full" style="display: none;">
+                            <label for="gyms" class="block text-sm font-medium text-gray-700 mb-2">Selecciona uno o más Gimnasios <b class="text-[#FF0104]">*</b></label>
+                            <div class="flex flex-col space-y-2">
+                                @foreach ($gyms as $gym)
+                                    @if (auth()->user()->hasRole('Super Administrador') || auth()->user()->gyms->contains($gym->id))
+                                        <div class="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                name="gyms[]"
+                                                id="gym-{{ $gym->id }}"
+                                                value="{{ $gym->id }}"
+                                                {{ in_array($gym->id, $user->gyms->pluck('id')->toArray()) ? 'checked' : '' }}
+                                                class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                            >
+                                            <label for="gym-{{ $gym->id }}" class="ml-2 block text-sm text-gray-700">{{ $gym->name }}</label>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                            @error('gyms')
+                                <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div id="singleGymSelection" class="mb-4 w-full" style="display: none;">
+                            <label for="single_gym" class="block text-sm font-medium text-gray-700 mb-2">Selecciona un Gimnasio <b class="text-[#FF0104]">*</b></label>
+                            <select
+                                name="single_gym"
+                                id="single_gym"
+                                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                            >
+                                <option value="" disabled selected>Selecciona un Gimnasio</option>
+                                @foreach ($gyms as $gym)
+                                    @if (auth()->user()->hasRole('Super Administrador') || auth()->user()->gyms->contains($gym->id))
+                                        <option value="{{ $gym->id }}" {{ $user->gyms->pluck('id')->contains($gym->id) ? 'selected' : '' }}>
+                                            {{ $gym->name }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                            @error('single_gym')
+                                <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
 
                     <label for="isActive" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Estado</label>
                     <select class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"

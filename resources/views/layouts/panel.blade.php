@@ -250,59 +250,43 @@
                  @if (Auth::check() && !Auth::user()->hasAnyRole(['Staff']))
                  @foreach($allGyms as $gym)
                  <li id="group-sucursales-{{ $gym->id }}" class="mb-1 group relative z-2 transition-all">
-                     <a href="#"
-                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
+                     <a href="#" class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
                          <img class="w-[20px] mr-3" id="imagen" src="{{ asset('icons/gimnasio.png') }}" alt="">
                          <span class="nav-text text-sm">{{ $gym->name }}</span>
                          <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
                      </a>
                      <ul class="hidden absolute z-20 left-full top-0 w-48 text-white submenu rounded-md">
-                        @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
-                            <!-- No mostrar nada -->
-                        @else
-                            <li>
-                                <a href="{{ route('admin.gyms.users', $gym->id) }}"
-                                   class="text-white text-sm flex items-center p-1 rounded-md"
-                                   title="Ver todos los usuarios de esta sucursal.">
-                                    <i class='bx bx-group mr-3 text-xl'></i>
-                                    <span>Ver Usuarios</span>
-                                </a>
-                            </li>
-                        @endif
-                        <li>
-                            <a href="{{ route('admin.memberships.gyms', $gym->id) }}"
-                               class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
-                               title="Ver todas las membresías disponibles en esta sucursal.">
-                                <i class='bx bx-list-ul mr-3 text-xl'></i>
-                                <span>Ver Membresías</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.gyms.user-memberships', $gym->id) }}"
-                               class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
-                               title="Ver todas las membresías asignadas a clientes y usuarios de esta sucursal.">
-                                <i class='bx bxs-collection mr-3 text-xl'></i>
-                                <span>Membresías Activas</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.user-memberships.create', $gym->id) }}"
-                               class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
-                               title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
-                                <i class='bx bx-calendar-plus mr-3 text-xl'></i>
-                                <span>Asignar Membresía</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.gym-log.index', $gym->id) }}"
-                                class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
-                                title="Realizar Check-in/Check-out en esta sucursal.">
-                                <i class='bx bx-barcode-reader mr-3 text-xl'></i>
-                                <span>Check-in/Check-out</span>
-                            </a>
-                        </li>
-                    </ul>
-
+                         <li>
+                             <a href="{{ route('admin.gyms.users', $gym->id) }}" class="text-white text-sm flex items-center p-1 rounded-md" title="Ver todos los usuarios de esta sucursal.">
+                                 <i class='bx bx-group mr-3 text-xl'></i>
+                                 <span>Ver Usuarios</span>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="{{ route('admin.memberships.gyms', $gym->id) }}" class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md" title="Ver todas las membresías disponibles en esta sucursal.">
+                                 <i class='bx bx-list-ul mr-3 text-xl'></i>
+                                 <span>Ver Membresías</span>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="{{ route('admin.gyms.user-memberships', $gym->id) }}" class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md" title="Ver todas las membresías asignadas a clientes y usuarios de esta sucursal.">
+                                 <i class='bx bxs-collection mr-3 text-xl'></i>
+                                 <span>Membresías Activas</span>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="{{ route('admin.user-memberships.create', $gym->id) }}" class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md" title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
+                                 <i class='bx bx-calendar-plus mr-3 text-xl'></i>
+                                 <span>Asignar Membresía</span>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="{{ route('admin.gym-log.index', $gym->id) }}" class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md" title="Realizar Check-in/Check-out en esta sucursal.">
+                                 <i class='bx bx-barcode-reader mr-3 text-xl'></i>
+                                 <span>Check-in/Check-out</span>
+                             </a>
+                         </li>
+                     </ul>
                  </li>
              @endforeach
              @endif

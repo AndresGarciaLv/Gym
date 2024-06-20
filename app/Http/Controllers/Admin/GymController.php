@@ -14,7 +14,7 @@ class GymController extends Controller
      */
     public function index()
     {
-        $gyms = Gym::paginate(10); 
+        $gyms = Gym::paginate(10);
         return view('admin.gyms.index', compact('gyms'));
     }
 
@@ -83,10 +83,10 @@ class GymController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'remove_photo' => 'nullable|boolean',
         ]);
-    
+
         $gym = Gym::findOrFail($id);
         $gymData = $request->all();
-    
+
         // Manejo de la foto del gimnasio
         if ($request->input('remove_photo')) {
             if ($gym->photo) {
@@ -102,13 +102,13 @@ class GymController extends Controller
             $request->file('photo')->storeAs('public/photos', $filename);
             $gymData['photo'] = 'photos/' . $filename;
         }
-    
+
         $gym->update($gymData);
-    
+
         flash()->success('¡El Gimnasio se ha actualizado correctamente!');
         return redirect()->route('admin.gyms.index');
     }
-    
+
 
     /**
      * Remove the specified resource from storage.

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('duration_type')->nullable(); // Campo para la enumeración
             $table->timestamps();
 
-            
+
             $table->unique(['id_gym', 'name']);
         });
     }

@@ -86,7 +86,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Gym::class, 'gym_users', 'id_user', 'id_gym');
     }
-    
+
     public function userMemberships()
     {
         return $this->hasMany(UserMembership::class, 'id_user');

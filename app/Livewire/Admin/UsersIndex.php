@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 class UsersIndex extends Component
 {
@@ -19,21 +20,21 @@ class UsersIndex extends Component
 
     public function render()
     {
+        $user = Auth::user(); // Obtener el usuario autenticado
+
         $users = User::query()
             ->where(function($query) {
                 $query->where('name', 'LIKE', '%' . $this->query . '%')
                       ->orWhere('email', 'LIKE', '%' . $this->query . '%')
                       ->orWhere('code', 'LIKE', '%' . $this->query . '%');
 
-                        // Filtrar por estado (isActive)
+                // Filtrar por estado (isActive)
                 if (strtolower($this->query) === 'activo') {
                     $query->orWhere('isActive', 1);
                 } elseif (strtolower($this->query) === 'inactivo') {
                     $query->orWhere('isActive', 0);
                 }
             });
-
-
 
         // Filtrar por rol
         if (!empty($this->query)) {
@@ -52,12 +53,18 @@ class UsersIndex extends Component
             });
         }
 
-      
-
         // Filtrar por gimnasio
         if (!empty($this->query)) {
             $users->orWhereHas('gyms', function ($query) {
                 $query->where('name', 'LIKE', '%' . $this->query . '%');
+            });
+        }
+
+        // Filtrar por gimnasios a los que pertenece el administrador
+        if ($user && $user->hasRole('Administrador')) {
+            $gymIds = $user->gyms->pluck('id')->toArray(); // Obtener los IDs de los gimnasios del administrador
+            $users->whereHas('gyms', function ($query) use ($gymIds) {
+                $query->whereIn('gyms.id', $gymIds);
             });
         }
 

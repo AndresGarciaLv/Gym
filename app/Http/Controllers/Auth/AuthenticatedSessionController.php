@@ -26,7 +26,7 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $request->session()->regenerate();
-    
+
         // Obtener el usuario autenticado
         $user = Auth::user();
 
@@ -39,9 +39,9 @@ class AuthenticatedSessionController extends Controller
 
         // Asumiendo que el modelo de usuario tiene una relación 'roles' que devuelve una colección
         $role = optional($user->roles->first())->name; // Usa 'optional' para manejar casos donde no hay roles
-    
+
         flash()->success('Bienvenido, ' . $user->name . '!');
-        
+
         // Redirigir según el rol del usuario
         switch ($role) {
             case 'Administrador':

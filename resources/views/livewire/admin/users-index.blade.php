@@ -1,9 +1,10 @@
 @php
     $authenticatedUserId = auth()->user()->id;
+    $authenticatedUserRole = auth()->user()->roles->pluck('name')->first();
 @endphp
 <div class="mt-4">
-    
-    <form wire:submit="search">
+
+    <form wire:submit.prevent="search">
         <div class="flex items-end align-middle mb-5">
             <!-- BOTÓN QUE DIRIGE AL CRUD -->
             <a href="{{ route('admin.users.create') }}"
@@ -123,8 +124,6 @@
                         @endphp
 
                         {{ $roleNames->isNotEmpty() ? $roleNames->join(', ') : 'Sin Rol' }}
-
-
                     </td>
                     <td class="px-1 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->code}}
@@ -133,9 +132,9 @@
                         @php
                         $gymNames = $user->gyms->pluck('name');
                         @endphp
-                    
+
                         @if ($gymNames->isNotEmpty())
-                            <ul >
+                            <ul>
                                 @foreach ($gymNames as $gymName)
                                     <li>{{ $gymName }}</li>
                                 @endforeach
@@ -144,7 +143,7 @@
                             <span>Sin Gimnasios</span>
                         @endif
                     </td>
-                    
+
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-center align-middle">
                         @if($user->isActive == 1)
                             <span class="text-green-500">Activo</span>
@@ -157,36 +156,39 @@
                         <div class="col-span-3">
                             <a href="{{ route('admin.user-memberships.history', $user) }}"
                                class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
-                                Ver Historial Membresias
+                               <i class='bx bx-history'></i>
+                               Ver Historial Membresias
                             </a>
                         </div>
-                        <div class="col-span-1">
-                            <a href="{{ route('admin.users.edit', $user) }}"
-                               class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
-                                Editar
-                            </a>
+                        <div class="col-span-3 grid grid-cols-2 gap-1">
+                            @if($authenticatedUserRole !== 'Administrador' || !$roleNames->contains('Super Administrador'))
+                            <div class="col-span-1">
+                                <a href="{{ route('admin.users.edit', $user) }}"
+                                   class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
+                                   <i class='bx bxs-edit'></i>
+                                   Editar
+                                </a>
+                            </div>
+                            @endif
+
+                            @if($user->id != $authenticatedUserId && !$roleNames->contains('Super Administrador'))
+                            <div class="col-span-1">
+                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirmDeletion(event);">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="w-full block text-center text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">
+                                        <i class='bx bx-trash'></i>
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                            @endif
                         </div>
-                        <div class="col-span-1">
-                            <a href="{{ route('admin.users.edit', $user) }}"
-                               class="block text-center text-green-600 hover:text-green-900 px-3 py-1 rounded-md bg-green-100 hover:bg-green-200">
-                                 Entrada
-                            </a>
-                        </div>
-                        @if($user->id != $authenticatedUserId)
-                        <div class="col-span-1">
-                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirmDeletion(event);">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="w-full block text-center text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">
-                                    Eliminar
-                                </button>
-                            </form>
-                        </div>
-                        @endif
                         <div class="col-span-3">
                             <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
                                class="block text-center text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md bg-blue-100 hover:bg-blue-200">
-                                Generar Credencial
+                               <i class='bx bxs-id-card'></i>
+                               Generar Credencial
                             </a>
                         </div>
                     </td>
@@ -204,7 +206,6 @@
     <div class="min-w-full divide-y divide-gray-200 text-center text-2xl text-gray-500">Sin resultados</div>
     @endif
 </div>
-
 
 <script>
     function confirmDeletion(event) {
