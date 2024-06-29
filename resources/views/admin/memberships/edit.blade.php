@@ -10,13 +10,13 @@
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white border-b border-gray-200 flex flex-col justify-center w-full">
-                
+
                 @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                         <i class='bx bx-dumbbell mr-3 text-lg'></i> <strong class="font-bold">{{ session('success') }}</strong>
                     </div>
                 @endif
-                                     
+
                 <form action="{{ route('admin.memberships.update', $membership->id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -71,9 +71,6 @@
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                    
-
-                    
 
                     <div class="mb-4 w-full">
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->text('location');
+            $table->string('email')->unique()->nullable();
+            $table->string('phone_number', 10)->default('')->nullable();
             $table->boolean('isActive')->default(true);
             $table->string('photo')->nullable();
             $table->timestamps();

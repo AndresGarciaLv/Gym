@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -17,27 +18,40 @@ class GymLogController extends Controller
     }
 
     public function logAction(Request $request, Gym $gym)
-    {
-        $validated = $request->validate([
-            'code' => 'required|exists:users,code',
-            'id_gym' => 'required|exists:gyms,id',
-        ]);
+{
+    $validated = $request->validate([
+        'code' => 'required|exists:users,code',
+        'id_gym' => 'required|exists:gyms,id',
+    ]);
 
-        $user = User::where('code', $validated['code'])->first();
-        $lastLog = GymLog::where('id_user', $user->id)->latest()->first();
-        $membership = $this->checkMembershipStatus($user->id, $gym->id);
+    $user = User::where('code', $validated['code'])->first();
+    $lastLog = GymLog::where('id_user', $user->id)->latest()->first();
+    $membership = $this->checkMembershipStatus($user->id, $gym->id);
 
-        // Verificar si la membresía pertenece al gimnasio actual
-        if (!$membership) {
-            return redirect()->back()->withErrors(['code' => 'No cuenta con una membresía activa para este gimnasio.']);
+    if ($membership) {
+        $membershipStatus = $this->getMembershipStatus($membership);
+        if ($membershipStatus == 'Vencido') {
+            return redirect()->back()->with([
+                'status' => 'Vencido',
+                'message' => 'Tu membresía está vencida. Pasa a recepción a renovarla.',
+                'membership' => $membership,
+                'user' => $user,
+                'currentTime' => Carbon::now()->format('H:i:s'),
+            ]);
         }
-
-        if ($lastLog && $lastLog->action === 'entry') {
-            return $this->logExit($validated, $user, $membership);
-        }
-
-        return $this->logEntry($validated, $user, $membership);
+    } else {
+        return redirect()->back()->withErrors(['code' => 'No cuenta con una membresía activa para este gimnasio.']);
     }
+
+    if ($lastLog && $lastLog->action === 'entry') {
+        return $this->logExit($validated, $user, $membership);
+    }
+
+    return $this->logEntry($validated, $user, $membership);
+}
+
+
+
 
     private function logEntry($validated, $user, $membership)
     {
@@ -88,15 +102,11 @@ class GymLogController extends Controller
         ]);
     }
 
-
-
     private function checkMembershipStatus($userId, $gymId)
     {
         $currentDate = Carbon::now();
         return UserMembership::where('id_user', $userId)
             ->where('id_gym', $gymId)
-            ->where('start_date', '<=', $currentDate)
-            ->where('end_date', '>=', $currentDate)
             ->where('isActive', true)
             ->first();
     }
@@ -141,4 +151,3 @@ class GymLogController extends Controller
         }
     }
 }
-

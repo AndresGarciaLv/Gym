@@ -1,3 +1,6 @@
+@php
+    $authenticatedUserRole = Auth::user()->roles->pluck('name')->first();
+@endphp
 <div class="mt-4">
     <form wire:submit="search">
         <div class="flex items-end align-middle mb-5">
@@ -82,6 +85,14 @@
                         Dirección
                     </th>
                     <th scope="col"
+                    class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                    Correo electrónico
+                </th>
+                <th scope="col"
+                class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                Teléfono
+            </th>
+                    <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                        Estado
                     </th>
@@ -94,46 +105,61 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($gyms as $gym)
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $gym->name}}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $gym->location}}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                        {{ $gym->email}}
+                    </td>
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                        {{ $gym->phone_number}}
+                    </td>
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-center align-middle">
                         @if($gym->isActive == 1)
                             <span class="text-green-500">Activo</span>
                         @else
                             <span class="text-red-500">Inactivo</span>
                         @endif
                     </td>
-                   
+
                     <td class="grid grid-cols-2 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[265px] w-full">
                         <div class="col-span-1">
                             <a href="{{ route('admin.gyms.users', $gym->id) }}"
-                                class="block text-center first-line:text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Ver usuarios</a>
+                                class="block text-center text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">
+                                <i class='bx bxs-user-detail'></i>
+                                Ver usuarios</a>
                         </div>
                         <div class="col-span-1">
                             <a href="{{ route('admin.memberships.gyms', $gym->id) }}"
                                class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
-                                Membresias
+                               <i class='bx bxs-id-card'></i>
+                               Membresias
                             </a>
                         </div>
                         <div class="col-span-1">
                             <a href="{{ route('admin.gyms.edit', $gym) }}"
-                            class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">Editar</a>
+                            class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
+                            <i class='bx bxs-edit'></i>
+                            Editar</a>
                         </div>
-                       
+
+                        @if($authenticatedUserRole !== 'Administrador')
                         <div class="col-span-1">
                             <form action="{{ route('admin.gyms.destroy', $gym->id) }}" method="POST" onsubmit="return confirmDeletion(event);">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="w-full block text-center text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">
+                                    <i class='bx bx-trash' ></i>
                                     Eliminar
                                 </button>
                             </form>
                         </div>
-                       
+                        @endif
+
+
                     </td>
 
                 </tr>

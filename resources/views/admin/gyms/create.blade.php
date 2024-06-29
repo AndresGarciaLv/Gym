@@ -10,13 +10,13 @@
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white border-b border-gray-200 flex flex-col justify-center w-full">
-                
+
                 @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                         <i class='bx bx-dumbbell mr-3 text-lg'></i> <strong class="font-bold">{{ session('success') }}</strong>
                     </div>
                 @endif
-                                     
+
                 <form action="{{ route('admin.gyms.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
@@ -52,6 +52,37 @@
                     </div>
 
                     <div class="mb-4 w-full">
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico <b class="text-[#FF0104]" id="email-label">*</b></label>
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                            placeholder="Correo Electrónico"
+                            value="{{ old('email') }}"
+                        >
+                        @error('email')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4 w-full">
+                        <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-2">Número de telefono <span class="text-gray-400">(opcional)</span></label>
+                        <input
+                            type="text"
+                            name="phone_number"
+                            id="phone_number"
+                            maxlength="10" pattern="\d{0,10}"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                            placeholder="Número de Telefono"
+                            value="{{ old('phone_number') }}"
+                        >
+                        @error('phone_number')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4 w-full">
                         <label for="isActive" class="block text-sm font-medium text-gray-700 mb-2">Estado <b class="text-[#FF0104]">*</b></label>
                         <select
                             name="isActive"
@@ -76,7 +107,7 @@
                             id="photo"
                             class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                             accept="image/*"
-                            
+
                         >
                         @error('photo')
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>

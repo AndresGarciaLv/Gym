@@ -35,6 +35,7 @@ class GymController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'email' => 'required|email|unique:gyms,email'
         ]);
 
         $gymData = $request->all();

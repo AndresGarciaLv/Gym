@@ -84,11 +84,11 @@
                     <th scope="col"
                     class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                     Precio
-                </th>   
+                </th>
                 <th scope="col"
                     class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                    Duración
-                </th>                    
+                </th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                        descripcion
@@ -125,19 +125,19 @@
                         @endif
                     </td> --}}
                     <td class=" flex justify-center px-3 py-4 text-sm text-gray-500">
-                        {{-- <a href="{{ route('admin.users.show', $user) }}"
-                            class="text-teal-600 hover:text-teal-900 px-3 py-1 mr-1 rounded-md bg-teal-100 hover:bg-teal-200">Ver
-                            Detalles</a> --}}
+
                         <a href="{{ route('admin.memberships.edit', $membership) }}"
-                            class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">Editar</a>
+                            class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">
+                            <i class='bx bxs-edit'></i>
+                            Editar</a>
+
                             <form action="{{ route('admin.memberships.destroy', $membership->id) }} " method="POST" onsubmit="return confirmDeletion(event);">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900 px-3 py-1 rounded-md mr-1 bg-red-100 hover:bg-red-200">Eliminar</button>
+                                <button type="submit" class="text-red-600 hover:text-red-900 px-3 py-1 rounded-md mr-1 bg-red-100 hover:bg-red-200">
+                                    <i class='bx bx-trash'></i>
+                                    Eliminar</button>
                             </form>
-
-                       {{--  <a href="{{ route('admin.memberships.users', $membership->id) }}"
-                        class="text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md mr-1 bg-blue-100 hover:bg-blue-200">Ver usuarios</a> --}}
                     </td>
 
                 </tr>

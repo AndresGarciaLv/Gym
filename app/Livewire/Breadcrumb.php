@@ -36,19 +36,20 @@ class Breadcrumb extends Component
             'profile.edit' => 'Editar Perfil',
 
            /*  GYMS */
-           'admin.gyms.index' => 'Gimnasios',
+           'admin.gyms.index' => 'Lista de Gimnasios',
            'admin.gyms.create' => 'Crear Gimnasio',
            'admin.gyms.edit' => 'Editar Gimnasio',
-           'admin.gyms.users' => 'Usuarios',
+           'admin.gyms.users' => 'Lista de Usuarios',
 
            /*  MEMBERSHIPS */
-           'admin.memberships.index' => 'Membresias',
-           'admin.memberships.create' => 'Crear Membresia',
-           'admin.memberships.gyms' => 'Membresias',
+           'admin.memberships.index' => 'Lista de Membresias',
+           'admin.memberships.create' => 'Crear Membresía',
+           'admin.memberships.edit' => 'Editar Membresía',
+           'admin.memberships.gyms' => 'Membresías',
 
            /* SUCURSALES */
-            'admin.gyms.user-memberships' => 'Lista de Membresias',
-            'admin.user-memberships.create'=>'Asignar Membresia'
+            'admin.gyms.user-memberships' => 'Membresías Activas',
+            'admin.user-memberships.create'=>'Asignar Membresía'
 
 
         ];
@@ -68,8 +69,9 @@ class Breadcrumb extends Component
 
             /*  MEMBERSHIPS */
            'admin.memberships.create' => 'admin.memberships.index',
+           'admin.memberships.edit' => 'admin.memberships.index',
 
-           
+
         ];
 
         $accumulatedRoute = '';

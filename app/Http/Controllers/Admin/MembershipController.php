@@ -9,6 +9,7 @@ use App\Models\Membership;
 use App\Models\UserMembership;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MembershipController extends Controller
@@ -85,7 +86,16 @@ class MembershipController extends Controller
     public function edit($id)
     {
         $membership = Membership::findOrFail($id);
-        $gyms = Gym::all();
+        $user = Auth::user();
+
+        if ($user->hasRole('Administrador')) {
+            // Si el usuario es Administrador, obtener solo los gimnasios a los que pertenece
+            $gyms = $user->gyms;
+        } else {
+            // Si el usuario no es Administrador, obtener todos los gimnasios
+            $gyms = Gym::all();
+        }
+
         return view('admin.memberships.edit', compact('membership', 'gyms'));
     }
 
@@ -121,7 +131,7 @@ class MembershipController extends Controller
         return redirect()->route('admin.memberships.index');
     }
 
-    
+
     /**
      * Display memberships for a specific gym.
      */
@@ -172,7 +182,7 @@ class MembershipController extends Controller
             return redirect()->route('admin.memberships.index')->with('success', '¡Membresía asignada correctamente!');
         } catch (\Exception $e) {
             DB::rollBack();
-          
+
             return back()->withErrors(['error' => 'Ocurrió un error al asignar la membresía. Por favor, inténtelo de nuevo.']);
         }
     }

@@ -59,12 +59,12 @@
                   <img class="w-[250px] h-[250px]" src="{{ asset('fotos/codigo-de-barras.png') }}" alt="Imagen Barcode" />
                   <form id="checkin-form" method="POST" action="{{ route('admin.gym-log.logAction', $gym->id) }}">
                       @csrf
-                      <input type="text" id="code-input" name="code" placeholder="Ingresa el código del usuario" required />
+                      <input class="text-center text-4xl" type="text" id="code-input" name="code" placeholder="Ingresa el código" required />
                       <input type="hidden" name="id_gym" value="{{ $gym->id }}"> <!-- ID del gimnasio dinámico -->
                       <button type="submit" class="ml-2 p-2 bg-blue-500 text-white rounded" style="display: none;">Buscar</button>
                       @if ($errors->has('code'))
-                          <div class="text-red-500 mt-2">{{ $errors->first('code') }}</div>
-                      @endif
+                      <div id="code-error-message" class="text-red-500 mt-2">{{ $errors->first('code') }}</div>
+                  @endif
                   </form>
 
                   @if (session('message'))
@@ -110,7 +110,13 @@
                       @elseif (session('status') == 'Vence Hoy') #007bff
                       @else #dc3545
                       @endif;">
-              <h5 class="modal-title" id="messageModalLabel">{{ session('action') == 'entry' ? 'Registro de Entrada' : 'Registro de Salida' }}</h5>
+              <h5 class="modal-title" id="messageModalLabel">
+                @if (session('status') == 'Vencido')
+                    Acceso Denegado
+                @else
+                    {{ session('action') == 'entry' ? 'Registro de Entrada' : 'Registro de Salida' }}
+                @endif
+            </h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                   </button>
@@ -139,12 +145,9 @@
                         <h5 class="text-gray-700">Por favor, pasa a recepción para renovar tú membresía.</h5>
 
                         @elseif (session('status') == 'Vencido')
-                        <h3 class="text-[#7F0001]">Acceso Denegado.</h2>
-                            <h4 class="text-[#dc3545] ">
+                            <h4 class="text-[#7F0001] ">
                                 {{ session('message') }}
                             </h4>
-                            <h5 class="text-gray-700">Te quedan pocos días, ¡No te quedes sin acceso!</h5>
-                            <h4 class="text-[#dc3545]">¡Renueva tú Membresía en Recepción!</h4>
 
                         @else
                             <h3 class="text-gray-700 ">{{ session('message') }}</h3>
@@ -188,6 +191,14 @@
                   document.getElementById('checkin-form').submit();
               }
           });
+
+            // Ocultar el mensaje de error después de 10 segundos
+        const errorMessage = document.getElementById('code-error-message');
+        if (errorMessage) {
+            setTimeout(function () {
+                errorMessage.style.display = 'none';
+            }, 10000); // 10 segundos
+        }
       });
   </script>
 </body>
