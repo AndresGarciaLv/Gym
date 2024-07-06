@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Livewire\Staff;
 
 use App\Models\UserMembership;
@@ -12,6 +11,7 @@ class Index extends Component
     use WithPagination;
 
     public $query = '';
+    public $status = ''; // Nueva propiedad para el estado de la membresía
 
     public function search()
     {
@@ -22,17 +22,14 @@ class Index extends Component
     {
         // Obtener el gimnasio del usuario staff autenticado
         $staff = Auth::user();
+        $staff->load('gyms'); // Eager load gyms relationship
         $gym = $staff->gyms()->first();
 
-        // Filtrar los registros de las membresías de clientes que pertenecen al gimnasio del staff
+        // Filtrar los registros de las membresías que pertenecen al gimnasio del staff
         $userMemberships = UserMembership::query()
             ->with(['user', 'gym', 'membership'])
             ->where('id_gym', $gym->id)
-            ->whereHas('user', function ($query) {
-                $query->whereHas('roles', function ($roleQuery) {
-                    $roleQuery->where('name', 'Cliente');
-                });
-            })
+            ->where('isActive', true)
             ->where(function ($query) {
                 $query->whereHas('user', function ($userQuery) {
                     $userQuery->where('name', 'LIKE', '%' . $this->query . '%')
@@ -43,15 +40,21 @@ class Index extends Component
                 })
                 ->orWhere('start_date', 'LIKE', '%' . $this->query . '%')
                 ->orWhere('end_date', 'LIKE', '%' . $this->query . '%')
-                ->orWhere(function ($subQuery) {
+                ->orWhere(function ($query) {
                     if (strtolower($this->query) === 'activo') {
-                        $subQuery->where('isActive', 1);
+                        $query->where('isActive', 1);
                     } elseif (strtolower($this->query) === 'inactivo') {
-                        $subQuery->where('isActive', 0);
+                        $query->where('isActive', 0);
                     }
                 });
             })
             ->paginate(10);
+
+        // Filtrar por estado de la membresía
+        $filteredMemberships = $userMemberships->getCollection()->filter(function ($membership) {
+            return !$this->status || $membership->status === $this->status;
+        });
+        $userMemberships->setCollection($filteredMemberships);
 
         return view('livewire.staff.index', [
             'userMemberships' => $userMemberships

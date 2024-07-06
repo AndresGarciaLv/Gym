@@ -9,6 +9,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserMembershipController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\Staff\StaffController;
+use App\Http\Middleware\CheckGymMembership;
+use App\Http\Middleware\CheckGymOwnership;
+use App\Http\Middleware\CheckGymUserOwnership;
 use GuzzleHttp\Middleware;
 
 Route::middleware(['guest'])->group(function () {
@@ -32,15 +35,39 @@ Route::middleware('auth')->group(function () {
 /*     Route::get('/users/{user}/generate-credential', [CredentialController::class, 'generatePDF'])->name('admin.users.generate-credential'); */
 
     Route::resource('users', UserController::class)->middleware('can:admin.users')->names('admin.users');
-    Route::resource('gyms', GymController::class)->middleware('can:admin.gyms')->names('admin.gyms');
-    Route::get('admin/gyms/{id}/users', [GymController::class, 'users'])->middleware('can:admin.gyms.users')->name('admin.gyms.users');
+
+    /* RUTAS GIMNASIOS */
+    Route::get('gyms/create', [GymController::class, 'create'])
+    ->middleware('can:admin.gyms.create')
+    ->name('admin.gyms.create');
+
+    Route::resource('gyms', GymController::class)
+    ->middleware('can:admin.gyms')
+    ->names('admin.gyms')
+    ->except(['create', 'edit', 'update']);
+
+    Route::get('gyms/{gym}/edit', [GymController::class, 'edit'])
+    ->middleware(['auth', CheckGymOwnership::class])
+    ->name('admin.gyms.edit');
+
+    Route::put('gyms/{gym}', [GymController::class, 'update'])
+    ->middleware(['auth', CheckGymOwnership::class])
+    ->name('admin.gyms.update');
+
+    Route::get('admin/gyms/{id}/users', [GymController::class, 'users'])
+    ->middleware(['auth', CheckGymUserOwnership::class])
+    ->name('admin.gyms.users');
+
+  /*   Route::get('admin/gyms/{id}/users', [GymController::class, 'users'])->middleware('can:admin.gyms.users')->name('admin.gyms.users'); */
 
     Route::resource('memberships', MembershipController::class)->middleware('can:admin.memberships')->names('admin.memberships');
     Route::get('admin/memberships/{id}/gyms', [MembershipController::class, 'memberships'])->middleware('can:admin.memberships.gyms')->name('admin.memberships.gyms');
 
     Route::resource('user-memberships', UserMembershipController::class)->middleware('can:admin.user-memberships')->names('admin.user-memberships');
     Route::get('/admin/gyms/{id}/user-memberships', [UserMembershipController::class, 'membershipsByGym'])->name('admin.gyms.user-memberships');
-    Route::get('user-memberships/create/{gym}', [UserMembershipController::class, 'create'])->name('admin.user-memberships.create');
+    Route::get('user-memberships/create/{gym}', [UserMembershipController::class, 'create'])
+    ->middleware(['auth', CheckGymMembership::class])
+    ->name('admin.user-memberships.create');
     Route::get('admin/user-memberships/history/{userId}', [UserMembershipController::class, 'userMembershipsHistory'])->name('admin.user-memberships.history');
     Route::get('/user-memberships/{id}/renew', [UserMembershipController::class, 'renew'])->name('admin.user-memberships.renew');
     Route::post('/user-memberships/{id}/renew', [UserMembershipController::class, 'storeRenewal'])->name('admin.user-memberships.storeRenewal');

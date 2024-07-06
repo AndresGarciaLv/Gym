@@ -21,6 +21,8 @@ class GymComposer
 
         if ($user) {
             if ($user->hasRole('Administrador')) {
+                // Eager load the gyms relationship
+                $user->load('gyms');
                 $allGyms = $user->gyms;
             } elseif ($user->hasRole('Super Administrador')) {
                 $allGyms = Gym::all();
@@ -33,4 +35,5 @@ class GymComposer
 
         $view->with('allGyms', $allGyms);
     }
+
 }

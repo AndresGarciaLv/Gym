@@ -14,26 +14,24 @@ use Illuminate\Support\Facades\Hash;
 
 class StaffController extends Controller
 {
-    
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $staff = Auth::user();
-        $gym = $staff->gyms()->first(); // Asumimos que el Staff pertenece a un solo gimnasio
+        $gym = $staff->gyms()->first(); // El Staff pertenece a un solo gimnasio
 
-        // Obtener las membresías de los usuarios clientes del gimnasio del Staff y que estén activas
+        // Obtener todas las membresías activas de los usuarios que pertenecen al mismo gimnasio
         $userMemberships = UserMembership::where('id_gym', $gym->id)
             ->where('isActive', true)
-            ->whereHas('user', function ($query) {
-                $query->role('Cliente');
-            })
             ->with(['user', 'gym', 'membership'])
             ->paginate(10);
 
         return view('staffs.index', compact('userMemberships'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -128,7 +126,7 @@ class StaffController extends Controller
     public function clients()
     {
         $staff = Auth::user();
-        $gym = $staff->gyms()->first(); // Asumimos que el Staff pertenece a un solo gimnasio
+        $gym = $staff->gyms()->first(); // El Staff pertenece a un solo gimnasio
 
         // Obtener todos los usuarios con el rol de 'Cliente' que pertenecen al mismo gimnasio
         $users = User::whereHas('roles', function($query) {

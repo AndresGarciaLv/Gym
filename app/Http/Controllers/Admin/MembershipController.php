@@ -27,10 +27,20 @@ class MembershipController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
+{
+    $user = Auth::user();
+
+    if ($user->hasRole('Super Administrador')) {
         $gyms = Gym::all();
-        return view('admin.memberships.create', compact('gyms'));
+    } elseif ($user->hasRole('Administrador')) {
+        $gyms = $user->load('gyms')->gyms; // Eager loading gyms relation
+    } else {
+        $gyms = collect(); // Empty collection if the user is not Super Administrador or Administrador
     }
+
+    return view('admin.memberships.create', compact('gyms'));
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -89,15 +99,16 @@ class MembershipController extends Controller
         $user = Auth::user();
 
         if ($user->hasRole('Administrador')) {
-            // Si el usuario es Administrador, obtener solo los gimnasios a los que pertenece
-            $gyms = $user->gyms;
+            // If the user is an Administrador, eager load only the gyms the user belongs to
+            $gyms = $user->load('gyms')->gyms;
         } else {
-            // Si el usuario no es Administrador, obtener todos los gimnasios
+            // If the user is not an Administrador, get all gyms
             $gyms = Gym::all();
         }
 
         return view('admin.memberships.edit', compact('membership', 'gyms'));
     }
+
 
     /**
      * Update the specified resource in storage.

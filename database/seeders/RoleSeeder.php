@@ -30,12 +30,22 @@ class RoleSeeder extends Seeder
         $permissions = [
             'Dashboard-Adm' => ['Super Administrador', 'Administrador'],
             'admin.users' => ['Super Administrador', 'Administrador'],
+
+            //GIMNASIOS
             'admin.gyms' => ['Super Administrador', 'Administrador'],
+            'admin.gyms.create' => ['Super Administrador'],
+            'admin.gyms.edit' => ['Super Administrador', 'Administrador'],
+            'admin.gyms.update' => ['Super Administrador', 'Administrador'],
             'admin.gyms.users' => ['Super Administrador', 'Administrador'],
+
+            //MEMBRESÍAS
             'admin.memberships' => ['Super Administrador', 'Administrador'],
             'admin.memberships.gyms' => ['Super Administrador', 'Administrador'],
 
-            'admin.user-memberships' => ['Super Administrador', 'Administrador'],
+            //Recursos de User-Memberships
+            'admin.user-memberships' => ['Super Administrador', 'Administrador','Staff'],
+            //Asignar Membresía
+            'admin.user-memberships.create' => ['Super Administrador', 'Administrador', 'Staff'],
 
             'staffs' => ['Staff'],
             'Dashboard-St' => ['Staff'],

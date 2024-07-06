@@ -25,7 +25,8 @@ class UsersGym extends Component
 
     public function render()
     {
-        $users = User::query()
+        // Eager load the 'gyms' and 'roles' relationships
+        $users = User::with(['gyms', 'roles'])
             ->whereHas('gyms', function($query) {
                 $query->where('gyms.id', $this->gymId); // Filtra por gimnasio
             })
@@ -34,7 +35,7 @@ class UsersGym extends Component
                     ->orWhere('email', 'LIKE', '%' . $this->query . '%')
                     ->orWhere('code', 'LIKE', '%' . $this->query . '%');
 
-                        // Filtrar por estado (isActive)
+                // Filtrar por estado (isActive)
                 if (strtolower($this->query) === 'activo') {
                     $query->orWhere('isActive', 1);
                 } elseif (strtolower($this->query) === 'inactivo') {

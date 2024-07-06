@@ -22,6 +22,11 @@ class GymsIndex extends Component
     {
         $user = Auth::user(); // Obtener el usuario autenticado
 
+        // Eager load the gyms relationship for the authenticated user
+        if ($user && $user->hasRole('Administrador')) {
+            $user->load('gyms'); // Eager load gyms relationship
+        }
+
         $gyms = Gym::query()
             ->where(function($query) {
                 $query->where('name', 'LIKE', '%' . $this->query . '%')

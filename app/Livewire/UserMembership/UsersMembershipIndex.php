@@ -31,46 +31,46 @@ class UsersMembershipIndex extends Component
             ->where('id_gym', $this->gymId)
             ->where('isActive', true)
             ->where(function ($query) {
-                $query->whereHas('user', function ($query) {
-                    $query->where('name', 'LIKE', '%' . $this->query . '%')
-                          ->orWhere('email', 'LIKE', '%' . $this->query . '%')
-                          ->orWhere('code', 'LIKE', '%' . $this->query . '%');
+                $query->whereHas('user', function ($userQuery) {
+                    $userQuery->where('name', 'LIKE', '%' . $this->query . '%')
+                              ->orWhere('email', 'LIKE', '%' . $this->query . '%')
+                              ->orWhere('code', 'LIKE', '%' . $this->query . '%');
 
                     if ($this->role) {
-                        $query->whereHas('roles', function ($roleQuery) {
+                        $userQuery->whereHas('roles', function ($roleQuery) {
                             $roleQuery->where('name', $this->role);
                         });
                     }
 
                     if (!empty($this->query)) {
-                        $query->orWhereHas('roles', function ($query) {
+                        $userQuery->orWhereHas('roles', function ($roleQuery) {
                             if (strtolower($this->query) === 'administrador') {
-                                $query->where('name', 'Administrador');
+                                $roleQuery->where('name', 'Administrador');
                             } elseif (strtolower($this->query) === 'super administrador') {
-                                $query->where('name', 'Super Administrador');
+                                $roleQuery->where('name', 'Super Administrador');
                             } elseif (strtolower($this->query) === 'staff') {
-                                $query->where('name', 'Staff');
+                                $roleQuery->where('name', 'Staff');
                             } elseif (strtolower($this->query) === 'cliente') {
-                                $query->where('name', 'Cliente');
+                                $roleQuery->where('name', 'Cliente');
                             } else {
-                                $query->where('name', 'LIKE', '%' . $this->query . '%');
+                                $roleQuery->where('name', 'LIKE', '%' . $this->query . '%');
                             }
                         });
                     }
                 })
-                ->orWhereHas('gym', function ($query) {
-                    $query->where('name', 'LIKE', '%' . $this->query . '%');
+                ->orWhereHas('gym', function ($gymQuery) {
+                    $gymQuery->where('name', 'LIKE', '%' . $this->query . '%');
                 })
-                ->orWhereHas('membership', function ($query) {
-                    $query->where('name', 'LIKE', '%' . $this->query . '%');
+                ->orWhereHas('membership', function ($membershipQuery) {
+                    $membershipQuery->where('name', 'LIKE', '%' . $this->query . '%');
                 })
                 ->orWhere('start_date', 'LIKE', '%' . $this->query . '%')
                 ->orWhere('end_date', 'LIKE', '%' . $this->query . '%')
-                ->orWhere(function ($query) {
+                ->orWhere(function ($statusQuery) {
                     if (strtolower($this->query) === 'activo') {
-                        $query->where('isActive', 1);
+                        $statusQuery->where('isActive', 1);
                     } elseif (strtolower($this->query) === 'inactivo') {
-                        $query->where('isActive', 0);
+                        $statusQuery->where('isActive', 0);
                     }
                 });
             })

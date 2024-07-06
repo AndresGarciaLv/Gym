@@ -22,7 +22,7 @@ class UsersIndex extends Component
     {
         $user = Auth::user(); // Obtener el usuario autenticado
 
-        $users = User::query()
+        $users = User::with(['roles', 'gyms']) // Eager load roles and gyms
             ->where(function($query) {
                 $query->where('name', 'LIKE', '%' . $this->query . '%')
                       ->orWhere('email', 'LIKE', '%' . $this->query . '%')

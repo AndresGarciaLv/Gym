@@ -18,7 +18,7 @@ class UserMembershipController extends Controller
      */
     public function index(Request $request)
     {
-       
+
     }
 
     public function userMembershipsHistory($userId)
@@ -45,11 +45,11 @@ class UserMembershipController extends Controller
         $userMemberships = UserMembership::with(['user.roles', 'gym', 'membership'])
             ->where('id_gym', $id)
             ->paginate(10);
-    
+
         return view('admin.user-memberships.index', compact('gym', 'userMemberships'));
     }
-    
-    
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -58,7 +58,7 @@ class UserMembershipController extends Controller
     {
         // Obtener el gimnasio por ID junto con sus membresías
         $gym = Gym::with('memberships')->findOrFail($gymId);
-    
+
         // Obtener usuarios que pertenezcan al gimnasio y que no tengan una membresía activa en este gimnasio
         $users = User::whereHas('gyms', function($query) use ($gymId) {
             $query->where('gyms.id', $gymId);
@@ -66,11 +66,11 @@ class UserMembershipController extends Controller
         ->whereDoesntHave('userMemberships', function($query) use ($gymId) {
             $query->where('isActive', true)->where('id_gym', $gymId);
         })->get();
-    
+
         // Pasar los datos a la vista
         return view('admin.user-memberships.create', compact('users', 'gym'));
     }
-    
+
 
 
     /**
@@ -86,34 +86,34 @@ class UserMembershipController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
-    
+
         // Obtener el usuario y verificar su rol
         $user = User::with('roles')->findOrFail($validated['id_user']);
         $isSuperAdminOrAdmin = $user->roles->contains(function($role) {
             return in_array($role->name, ['Super Administrador', 'Administrador']);
         });
-    
+
         if ($isSuperAdminOrAdmin) {
             // Verificar si el usuario ya tiene una membresía activa en el gimnasio
             $existingActiveMembership = UserMembership::where('id_user', $validated['id_user'])
                 ->where('id_gym', $validated['id_gym'])
                 ->where('isActive', true)
                 ->first();
-    
+
             if ($existingActiveMembership) {
                 return redirect()->back()->withErrors(['id_user' => 'El usuario ya tiene una membresía activa en este gimnasio.']);
             }
         }
-    
+
          // Calcular duración en días
     $currentTimestamp = Carbon::now();
     $startDate = Carbon::parse($validated['start_date'])->setTimeFrom($currentTimestamp);
     $endDate = Carbon::parse($validated['end_date'])->setTime(23, 59, 0);
         $durationDays = $startDate->diffInDays($endDate);
-    
+
         // Determinar el estado de isActive basado en las fechas
         $isActive = $endDate->greaterThanOrEqualTo(Carbon::now());
-    
+
         // Crear la nueva membresía del usuario
         UserMembership::create([
             'id_user' => $validated['id_user'],
@@ -125,12 +125,12 @@ class UserMembershipController extends Controller
             'isActive' => $isActive,
             'is_renewal' => false, // Nueva membresía, no es renovación
         ]);
-    
+
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía asignada exitosamente!');
         return redirect()->route('admin.gyms.user-memberships', $validated['id_gym']);
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -153,51 +153,59 @@ class UserMembershipController extends Controller
             $query->where('isActive', true)->where('id', '!=', $userMembership->id);
         })->get();
 
+        // Obtener el gimnasio relacionado con la membresía actual
+        $gym = $userMembership->gym;
+
         // Obtener gimnasios
         $gyms = Gym::with('memberships')->get();
 
         // Pasar los datos a la vista
-        return view('admin.user-memberships.edit', compact('userMembership', 'users', 'gyms'));
+        return view('admin.user-memberships.edit', compact('userMembership', 'users', 'gyms', 'gym'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        // Validar los datos del request
-        $validated = $request->validate([
-            'id_user' => 'required|exists:users,id',
-            'id_gym' => 'required|exists:gyms,id',
-            'id_membership' => 'required|exists:memberships,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-        ]);
+{
+    // Validar los datos del request
+    $validated = $request->validate([
+        'id_user' => 'required|exists:users,id',
+        'id_gym' => 'required|exists:gyms,id',
+        'id_membership' => 'required|exists:memberships,id',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after:start_date',
+    ]);
 
-        // Calcular duración en días
-        $startDate = Carbon::parse($validated['start_date']);
-        $endDate = Carbon::parse($validated['end_date'])->setTime(23, 59, 0);
-        $durationDays = $startDate->diffInDays($endDate);
+    // Calcular duración en días
+    $startDate = Carbon::parse($validated['start_date']);
+    $endDate = Carbon::parse($validated['end_date'])->setTime(23, 59, 0);
+    $durationDays = $startDate->diffInDays($endDate);
 
-        // Determinar el estado de isActive basado en las fechas
-        $isActive = $endDate->greaterThanOrEqualTo(Carbon::now());
+    // Determinar el estado de isActive basado en las fechas
+    $isActive = $endDate->greaterThanOrEqualTo(Carbon::now());
 
-        // Actualizar la membresía del usuario
-        $userMembership = UserMembership::findOrFail($id);
-        $userMembership->update([
-            'id_user' => $validated['id_user'],
-            'id_gym' => $validated['id_gym'],
-            'id_membership' => $validated['id_membership'],
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'duration_days' => $durationDays,
-            'isActive' => $isActive,
-        ]);
+    // Actualizar la membresía del usuario
+    $userMembership = UserMembership::findOrFail($id);
+    $userMembership->update([
+        'id_user' => $validated['id_user'],
+        'id_gym' => $validated['id_gym'],
+        'id_membership' => $validated['id_membership'],
+        'start_date' => $startDate,
+        'end_date' => $endDate,
+        'duration_days' => $durationDays,
+        'isActive' => $isActive,
+    ]);
 
-        // Redirigir con un mensaje de éxito
-        flash()->success('¡Membresía actualizada exitosamente!');
-        return redirect()->route('admin.user-memberships.index');
-    }
+    // Obtener el ID del gimnasio de la membresía actualizada
+    $gymId = $validated['id_gym'];
+
+    // Redirigir con un mensaje de éxito
+    flash()->success('¡Membresía actualizada exitosamente!');
+    return redirect()->route('admin.gyms.user-memberships', ['id' => $gymId]);
+}
+
 
     public function renew($id)
     {
@@ -210,32 +218,32 @@ class UserMembershipController extends Controller
         // Pasar los datos a la vista
         return view('admin.user-memberships.renew', compact('userMembership', 'user', 'gym', 'memberships'));
     }
-    
+
     public function storeRenewal(Request $request, $id)
     {
         try {
             $validated = $request->validate([
                 'id_membership' => 'required|exists:memberships,id',
             ]);
-    
+
             $userMembership = UserMembership::findOrFail($id);
-    
+
             $now = Carbon::now();
             $endDateCurrent = Carbon::parse($userMembership->end_date);
             if ($endDateCurrent->diffInDays($now, false) > 5) {
                 return redirect()->back()->withErrors(['error' => 'Solo puedes renovar tu membresía hasta 5 días antes de su vencimiento.']);
             }
-    
+
             $startDate = $endDateCurrent->copy()->addDay()->startOfDay(); // El día después de la fecha de vencimiento actual a las 00:00:00
             $membership = Membership::findOrFail($validated['id_membership']);
-            
+
             $durationType = $membership->duration_type;
             $endDate = $this->calculateEndDate($startDate, $durationType);
-    
+
             if (!$endDate) {
                 return redirect()->back()->withErrors(['error' => 'Tipo de duración de membresía no válido.']);
             }
-    
+
             $newMembership = UserMembership::create([
                 'id_user' => $userMembership->id_user,
                 'id_gym' => $userMembership->id_gym,
@@ -246,26 +254,26 @@ class UserMembershipController extends Controller
                 'isActive' => false, // No activa hasta que la actual termine
                 'is_renewal' => false, // Nueva membresía, no es renovación
             ]);
-    
+
             // Actualizar la membresía actual según la condición especificada
             if (Carbon::parse($userMembership->end_date)->lessThan($now) && $userMembership->isActive) {
                 $userMembership->update(['isActive' => false, 'is_renewal' => false]);
             } else {
                 $userMembership->update(['is_renewal' => true]);
             }
-    
+
             // Activar la nueva membresía si la actual ya está vencida
             $this->activateNewMembership($userMembership, $newMembership);
-    
+
             flash()->success('¡Membresía renovada exitosamente! La nueva membresía comenzará cuando la actual termine.');
             return redirect()->route('admin.user-memberships.history', ['userId' => $userMembership->id_user]);
-    
+
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Ocurrió un error durante la renovación: ' . $e->getMessage()]);
         }
     }
-    
-    
+
+
 
     private function calculateEndDate($startDate, $durationType)
     {
@@ -310,11 +318,11 @@ class UserMembershipController extends Controller
         $userMembership = UserMembership::findOrFail($id);
         $gymId = $userMembership->id_gym;
         $userMembership->delete();
-    
+
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía eliminada exitosamente!');
         return redirect()->route('admin.gyms.user-memberships', $gymId);
     }
-    
+
 
 }

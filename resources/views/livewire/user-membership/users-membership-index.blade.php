@@ -7,7 +7,7 @@
                 class="relative bg-[#34AD3C] text-white px-4 py-2 ml-5 mr-6 rounded hover:bg-[#3D7A41] transition-colors h-full">Agregar</a>
 
             <!-- SE AÑADE EL BÚSCADOR -->
-            <div class="relative ml-5 w-[500px] z-10 flex items-center">
+            <div class="relative ml-5 w-[450px] z-10 flex items-center">
                 <label for="Search" class="sr-only">Search</label>
                 <input wire:model="query" placeholder="Buscar"
                     class="w-full rounded border border-gray-300 py-2.5 px-4 sm:text-sm h-full outline-gray-400" />
@@ -28,13 +28,14 @@
     <div class="custom-select-wrapper min-w-[150px]">
         <div class="custom-select min-w-[150px] relative" wire:ignore>
             <div class="custom-select-trigger flex justify-between items-center px-4 py-2.5 border border-gray-300 rounded sm:text-sm h-full bg-white cursor-pointer">
-                <span class="">Todos los estados</span>
+                <span class="">Todos los Estados
+                </span>
                 <div class="arrow"></div>
             </div>
             <div class="custom-options absolute min-w-[150px] border border-gray-300 rounded-t-none rounded-b bg-white hidden z-10">
                 <span class=" hover:bg-gray-300  custom-option selected flex items-center px-4 py-2.5 cursor-pointer" data-value="">
                     <span class="dot bg-gray-500 inline-block w-2 h-2 rounded-full mr-2"></span>
-                    Todos los estados
+                    Todos los Estados
                 </span>
                 <span class="hover:bg-gray-300  custom-option flex items-center px-4 py-2.5 cursor-pointer" data-value="Vigente">
                     <span class="dot bg-green-500 inline-block w-2 h-2 rounded-full mr-2"></span>
@@ -175,7 +176,7 @@
                             {{ $role->name }}<br>
                         @endforeach
                     </td>
-             
+
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->membership->name }}
                     </td>
@@ -193,9 +194,9 @@
                             <div class="px-2 mt-1 text-xs leading-5 font-semibold rounded-full bg-teal-700 text-white">RENOVADO</div>
                         @endif
                     </td>
-                    
+
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                      
+
                         <div class="col-span-1 mb-2">
                             <a href="{{ route('admin.user-memberships.edit', $userMembership) }}"
                                class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
@@ -219,7 +220,7 @@
                                 </button>
                             </form>
                         </div>
-                      
+
                     </td>
                 </tr>
                 @endforeach
@@ -253,7 +254,7 @@
             }
         });
     }
-    
+
 </script>
 <script>document.addEventListener('DOMContentLoaded', function () {
     const customSelectWrapper = document.querySelector('.custom-select-wrapper');
@@ -274,7 +275,7 @@
                 const value = this.getAttribute('data-value');
                 selectElement.value = value;
                 selectElement.dispatchEvent(new Event('change'));
-               
+
             }
         });
     }

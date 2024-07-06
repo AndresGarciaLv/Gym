@@ -99,14 +99,28 @@
                             <span class="nav-text text-sm">Lista de Clientes</span>
                         </a>
                     </li>
+                    <li class="mb-1 group">
+                        <a href="{{ route('admin.user-memberships.create', $gym->id) }}" class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors" title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
+                            <i class='bx bx-calendar-plus mr-3 text-lg'></i>
+                            <span class="nav-text text-sm">Asignar Membresía</span>
+                        </a>
+                    </li>
+                    <li class="mb-1 group">
+                        <a href="{{ route('staffs.index') }}"
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
+                            <i class='bx bx-list-ul mr-3 text-lg'></i>
+                            <span class="nav-text text-sm">Lista de Membresías</span>
+                        </a>
+                    </li>
+                    <li class="mb-1 group">
+                        <a href="{{ route('admin.gym-log.index', $gym->id) }}" class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors" title="Realizar Check-in/Check-out en esta sucursal.">
+                            <i class='bx bx-barcode-reader mr-3 text-lg'></i>
+                            <span class="nav-text text-sm">Check-in/Check-out</span>
+                        </a>
+                    </li>
+
                 </li>
-                <li class="mb-1 group">
-                    <a href="{{ route('staffs.index') }}"
-                    class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                        <i class='bx bx-list-ul mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Lista de Membresías</span>
-                    </a>
-                </li>
+
 
 
 
@@ -191,6 +205,7 @@
                                 <span >Lista de Gimnasios</span>
                             </a>
                         </li>
+                        @if (Auth::user()->hasAnyRole('Super Administrador'))
                         <li>
                             <a href="{{ route('admin.gyms.create') }}"
                                 class=" text-white text-sm flex items-center  p-1 rounded-md">
@@ -198,6 +213,7 @@
                                 <span>Crear Gimnasio</span>
                             </a>
                         </li>
+                        @endif
                         @endif
                     </ul>
                 </li>

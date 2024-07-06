@@ -1,5 +1,9 @@
+@php
+    $authenticatedUserId = auth()->user()->id;
+    $authenticatedUserRole = auth()->user()->roles->pluck('name')->first();
+@endphp
 <div class="mt-4">
-    
+
     <form wire:submit.prevent="search">
         <div class="flex items-end align-middle mb-5">
             <!-- BOTÓN QUE DIRIGE AL CRUD -->
@@ -126,26 +130,30 @@
                         <div class="col-span-3">
                             <a href="{{ route('admin.user-memberships.history', $user) }}"
                                class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
-                                Ver Historial Membresias
+                               <i class='bx bx-history'></i>
+                               Ver Historial Membresias
                             </a>
                         </div>
+
+                        @php
+                        $roleNames = $user->roles->pluck('name');
+                        @endphp
+                        @if(!$roleNames->contains('Super Administrador') && !$roleNames->contains('Administrador'))
                         <div class="col-span-1">
-                            <a href=""
+                            <a href="{{ route('admin.users.edit', $user) }}"
                                class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
-                                Editar
+                               <i class='bx bxs-edit'></i>
+                               Editar
                             </a>
                         </div>
-                        <div class="col-span-1">
-                            <a href=""
-                               class="block text-center text-green-600 hover:text-green-900 px-3 py-1 rounded-md bg-green-100 hover:bg-green-200">
-                                 Entrada
-                            </a>
-                        </div>
-                       
-                        <div class="col-span-3">
+                        @endif
+
+
+                        <div class="col-span-2">
                             <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
                                class="block text-center text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md bg-blue-100 hover:bg-blue-200">
-                                Generar Credencial
+                               <i class='bx bxs-id-card'></i>
+                               Generar Credencial
                             </a>
                         </div>
                     </td>

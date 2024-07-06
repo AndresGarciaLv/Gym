@@ -21,10 +21,10 @@ class GymLogController extends Controller
         ]);
 
         $code = $request->input('code');
-        $user = User::where('code', $code)->first();
+        $user = User::where('code', $code)->with('memberships')->first();
 
         if ($user) {
-            $membership = UserMembership::where('id_user', $user->id)
+            $membership = $user->memberships()
                 ->where('start_date', '<=', Carbon::now())
                 ->where('end_date', '>=', Carbon::now())
                 ->where('isActive', true)

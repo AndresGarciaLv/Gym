@@ -20,15 +20,13 @@ class Clients extends Component
 
     public function render()
     {
-        // Obtener el gimnasio del usuario staff autenticado
+        // Obtener el gimnasio del usuario staff autenticado con eager loading
         $staff = Auth::user();
-        $gym = $staff->gyms()->first();
+        $staff->load('gyms'); // Eager load gyms relationship
+        $gym = $staff->gyms->first();
 
         // Filtrar los usuarios clientes que pertenecen al gimnasio del staff
         $users = User::query()
-            ->whereHas('roles', function ($query) {
-                $query->where('name', 'Cliente');
-            })
             ->whereHas('gyms', function ($query) use ($gym) {
                 $query->where('gyms.id', $gym->id);
             })

@@ -5,8 +5,10 @@
     <form wire:submit="search">
         <div class="flex items-end align-middle mb-5">
             <!-- BOTÓN QUE DIRIGE AL CRUD -->
+            @if (Auth::user()->hasAnyRole('Super Administrador'))
             <a href="{{ route('admin.gyms.create') }}"
                 class="relative bg-[#34AD3C] text-white px-4 py-2 ml-5 mr-6 rounded hover:bg-[#3D7A41] transition-colors h-full">Agregar</a>
+            @endif
 
             <!-- SE AÑADE EL BÚSCADOR -->
             <div class="relative ml-5 w-[600px] z-10 flex items-center">
