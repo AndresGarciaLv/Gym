@@ -168,13 +168,13 @@
                             </a>
                         </li>
                         @endif
-                        <li>
+                     {{--    <li>
                             <a href="/roles-permisos"
                                 class=" text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md ">
                                 <i class='bx bx-lock-open mr-3 text-lg'></i>
                                 <span>Roles y Permisos</span>
                             </a>
-                        </li>
+                        </li> --}}
 
                     </ul>
                 </li>

@@ -12,6 +12,7 @@ use App\Http\Controllers\Staff\StaffController;
 use App\Http\Middleware\CheckGymMembership;
 use App\Http\Middleware\CheckGymOwnership;
 use App\Http\Middleware\CheckGymUserOwnership;
+use App\Http\Middleware\CheckUserEditPermissions;
 use GuzzleHttp\Middleware;
 
 Route::middleware(['guest'])->group(function () {
@@ -33,8 +34,17 @@ Route::middleware('auth')->group(function () {
      Route::get('/admin/users/generate-credential/{user}/pdf', [CredentialController::class, 'generatePDF'])->name('admin.users.generate-credential.pdf');
 
 /*     Route::get('/users/{user}/generate-credential', [CredentialController::class, 'generatePDF'])->name('admin.users.generate-credential'); */
+/*
+    Route::resource('users', UserController::class)->middleware('can:admin.users')->names('admin.users'); */
+  /* RUTAS DE USUARIOS */
+    Route::resource('users', UserController::class)
+    ->middleware('can:admin.users')
+    ->names('admin.users')
+    ->except(['edit']);
 
-    Route::resource('users', UserController::class)->middleware('can:admin.users')->names('admin.users');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])
+    ->middleware(['auth', CheckUserEditPermissions::class])
+    ->name('admin.users.edit');
 
     /* RUTAS GIMNASIOS */
     Route::get('gyms/create', [GymController::class, 'create'])
