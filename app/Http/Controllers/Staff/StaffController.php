@@ -52,24 +52,36 @@ class StaffController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'name_contact' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email',
             'phone_number' => 'nullable|string|max:10',
+            'phone_emergency' => 'nullable|string|max:10',
             'birthdate' => 'nullable|date',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'id_membership' => 'required|exists:memberships,id',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $userData = [
             'name' => $request->name,
+            'name_contact' => $request->name_contact,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
+            'phone_emergency' => $request->phone_emergency,
             'birthdate' => $request->birthdate,
             'isActive' => true,
         ];
 
         $user = User::create($userData);
         $user->assignRole('Cliente');
+        if ($request->hasFile('photo')) {
+            $extension = $request->file('photo')->getClientOriginalExtension();
+            $filename = $user->code . '.' . $extension;
+            $request->file('photo')->storeAs('public/photos', $filename);
+            $user->photo = 'photos/' . $filename;
+            $user->save();
+        }
 
         $gym = Auth::user()->gyms()->first(); // Asumimos que el Staff pertenece a un solo gimnasio
         $user->gyms()->attach($gym->id);

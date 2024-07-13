@@ -42,6 +42,12 @@
                         </label>
                         <input type="text" value="{{ $user->name }}" class="cursor-not-allowed shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 bg-gray-300" disabled>
                     </div>
+                    <div class="mb-4 w-full">
+                        <label for="user" class="block text-sm font-medium text-gray-700 mb-2">
+                            Código de Usuario
+                        </label>
+                        <input type="text" value="{{ $user->code }}" class="cursor-not-allowed shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 bg-gray-300" disabled>
+                    </div>
 
                     <div class="mb-4 w-full">
                         <label for="id_membership" class="block text-sm font-medium text-gray-700 mb-2">Membresía <b class="text-[#FF0104]">*</b></label>
@@ -99,7 +105,7 @@
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                    
+
                     <button
                         type="submit"
                         class="mt-3 w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#03A6A6] hover:bg-[#038686] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#03A6A6]"
@@ -128,7 +134,7 @@
             allowInput: false,
             clickOpens: false
         });
-   
+
         // Inicializar flatpickr para la fecha de fin
         flatpickr(endDateInput, {
             locale: 'es',
@@ -146,10 +152,22 @@
             if (selectedMembership) {
                 switch (selectedMembership.duration_type) {
                     case 'Semanal':
-                        endDate.setDate(startDate.getDate() + 7);
+                        endDate.setDate(startDate.getDate() + 8);
                         break;
-                    case 'Mensual':
-                        endDate.setMonth(startDate.getMonth() + 1);
+                        case 'Mensual':
+                            // Calculate end date based on the start date
+                            endDate.setDate(startDate.getDate() + 32);
+
+                            // Ajustar la fecha de finalización para días en febrero
+                            if (startDate.getMonth() === 1 && endDate.getMonth() === 2 && endDate.getDate() !== startDate.getDate()) {
+                                endDate.setDate(startDate.getDate()+1);
+                            }
+
+                            // Manejar casos especiales en febrero
+                            if (startDate.getDate() > endDate.getDate()) {
+                                endDate.setDate(1); // Esto establece el último día del mes anterior
+                                endDate.setDate(startDate.getDate() - (startDate.getDate() - endDate.getDate()));
+                            }
                         break;
                     case 'Anual':
                         endDate.setFullYear(startDate.getFullYear() + 1);

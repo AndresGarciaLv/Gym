@@ -5,7 +5,7 @@
 @endsection
 
 @section('contenido')
-<h1 class="text-3xl font-bold text-center uppercase">Asignar Membresía222</h1>
+<h1 class="text-3xl font-bold text-center uppercase">Asignar Membresía</h1>
 <h2 class="text-xl font-semibold text-center mt-2 uppercase">{{ $gym->name }}</h2>
 <div class="mt-5">
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
@@ -29,7 +29,7 @@
                                     <div class="cursor-pointer w-full border-gray-100 border-b hover:bg-teal-100" data-user-id="{{ $user->id }}">
                                         <div class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-100">
                                             <div class="w-6 flex flex-col items-center">
-                                                <div class="flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 mt-1 rounded-full">
+                                                <div class="flex relative w-5 h-5 bg-green-500 justify-center items-center m-1 mr-2 mt-1 rounded-full">
                                                     <img id="image" class="object-cover rounded-full" src="{{ $user->photo ? asset('storage/' . $user->photo) : asset('fotos/avatar.webp') }}" />
                                                 </div>
                                             </div>
@@ -78,7 +78,7 @@
                         >
                             <option value="" disabled selected>Selecciona una Membresía</option>
                             @foreach ($gym->memberships as $membership)
-                                <option value="{{ $membership->id }}" data-duration-type="{{ $membership->duration_type }}">
+                                <option value="{{ $membership->id }}" data-duration-type="{{ $membership->duration_type }}" data-price="{{ $membership->price }}">
                                     {{ $membership->name }}
                                 </option>
                             @endforeach
@@ -88,7 +88,19 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4 w-full" id="start_date_container">
+                    <div class="mb-4 w-full">
+                        <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Precio de la Membresía</label>
+                        <input
+                            type="text"
+                            name="price"
+                            id="price"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border bg-gray-100 border-gray-500 focus:outline-none cursor-not-allowed"
+                            placeholder="Precio"
+                            readonly
+                        >
+                    </div>
+
+                    <div class="mb-4 w-full" id="start_date_container" style="display: none;">
                         <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio <b class="text-[#FF0104]">*</b></label>
                         <div class="relative">
                             <input
@@ -97,7 +109,6 @@
                                 id="start_date"
                                 placeholder="Selecciona una fecha"
                                 class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] pl-10"
-                                required
                             >
                             <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
                         </div>
@@ -106,7 +117,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4 w-full" id="end_date_container">
+                    <div class="mb-4 w-full" id="end_date_container" style="display: none;">
                         <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Vencimiento <b class="text-[#FF0104]">*</b></label>
                         <div class="relative">
                             <input
@@ -115,7 +126,6 @@
                                 id="end_date"
                                 placeholder="Selecciona una fecha"
                                 class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] pl-10"
-                                required
                             >
                             <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
                         </div>
@@ -139,11 +149,12 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <script>
-   document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const userSearchInput = document.getElementById('userSearch');
     const userDropdown = document.getElementById('userDropdown');
     const userIdInput = document.getElementById('id_user');
     const membershipSelect = document.getElementById('id_membership');
+    const priceInput = document.getElementById('price');
     const startDateInput = document.getElementById('start_date');
     const endDateInput = document.getElementById('end_date');
     const startDateContainer = document.getElementById('start_date_container');
@@ -200,42 +211,12 @@
     });
 
     const startDatePicker = flatpickr(startDateInput, {
-            locale: 'es',
-            dateFormat: 'Y-m-d',
-            onChange: function(selectedDates, dateStr, instance) {
-                const selectedMembership = membershipSelect.options[membershipSelect.selectedIndex];
-                const durationType = selectedMembership.getAttribute('data-duration-type');
-                const startDate = new Date(dateStr);
-                let endDate = new Date(startDate);
-
-                switch (durationType) {
-                    case 'Semanal':
-                        endDate.setDate(startDate.getDate() + 7);
-                        break;
-                    case 'Mensual':
-                    endDate.setMonth(startDate.getMonth() + 1);
-                        if (endDate.getDate() !== startDate.getDate()) {
-                            endDate.setDate(0); // Set to the last day of the previous month
-                        }
-                        break;
-                    case 'Anual':
-                        endDate.setFullYear(startDate.getFullYear() + 1);
-                        break;
-                    case 'Diaria':
-                        const today = new Date();
-                        startDatePicker.setDate(today);
-                        endDatePicker.setDate(today.setHours(23, 59, 0, 0));
-                        break;
-                    default:
-                        endDate = null;
-                }
-
-                if (endDate) {
-                    endDate.setHours(23, 59, 0);
-                    endDateInput._flatpickr.setDate(endDate);
-                }
-            }
-        });
+        locale: 'es',
+        dateFormat: 'Y-m-d',
+        onChange: function(selectedDates, dateStr, instance) {
+            updateEndDate();
+        }
+    });
 
     const endDatePicker = flatpickr(endDateInput, {
         locale: 'es',
@@ -245,17 +226,79 @@
     membershipSelect.addEventListener('change', function() {
         const selectedMembership = this.options[this.selectedIndex];
         const durationType = selectedMembership.getAttribute('data-duration-type');
+        const price = selectedMembership.getAttribute('data-price');
+
+        // Mostrar el precio de la membresía seleccionada
+        priceInput.value = "$" + price;
+
         if (durationType === 'Diaria') {
-            const today = new Date();
-            startDatePicker.setDate(today);
-            endDatePicker.setDate(today.setHours(23, 59, 0, 0));
             startDateContainer.style.display = 'none';
             endDateContainer.style.display = 'none';
-        } else {
+            setDailyDates();
+        } else if (durationType) {
             startDateContainer.style.display = 'block';
             endDateContainer.style.display = 'block';
+            updateEndDate();
+        } else {
+            startDateContainer.style.display = 'none';
+            endDateContainer.style.display = 'none';
         }
     });
+
+    function updateEndDate() {
+        const startDateStr = startDateInput.value;
+        const selectedMembership = membershipSelect.options[membershipSelect.selectedIndex];
+        const durationType = selectedMembership.getAttribute('data-duration-type');
+
+        if (startDateStr && durationType) {
+            const startDate = new Date(startDateStr);
+            let endDate = new Date(startDateStr);
+
+            switch (durationType) {
+                case 'Semanal':
+                    endDate.setDate(startDate.getDate() + 8);
+                    break;
+                case 'Mensual':
+                    // Calculate end date based on the start date
+                    endDate.setDate(startDate.getDate() + 32);
+
+                    // Ajustar la fecha de finalización para días en febrero
+                    if (startDate.getMonth() === 1 && endDate.getMonth() === 2 && endDate.getDate() !== startDate.getDate()) {
+                        endDate.setDate(startDate.getDate() + 1);
+                    }
+
+                    // Manejar casos especiales en febrero
+                    if (startDate.getDate() > endDate.getDate()) {
+                        endDate.setDate(1); // Esto establece el último día del mes anterior
+                        endDate.setDate(startDate.getDate() - (startDate.getDate() - endDate.getDate()));
+                    }
+                    break;
+                case 'Anual':
+                    endDate.setFullYear(startDate.getFullYear() + 1);
+                    break;
+                case 'Diaria':
+                setDailyDates();
+                    break;
+                default:
+                    endDate = null;
+            }
+
+            if (endDate) {
+                endDate.setHours(23, 59, 0);
+                endDateInput._flatpickr.setDate(endDate);
+            }
+        }
+    }
+
+    function setDailyDates() {
+        const today = new Date();
+        startDatePicker.setDate(today);
+        endDatePicker.setDate(today.setHours(23, 59, 0, 0));
+    }
+
+    // Ocultar campos de fecha hasta que se seleccione una membresía
+    startDateContainer.style.display = 'none';
+    endDateContainer.style.display = 'none';
 });
 
 </script>

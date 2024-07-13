@@ -124,8 +124,10 @@ class UserController extends Controller
 
         $rules = [
             'name' => 'required|string|max:255',
+            'name_contact' => 'nullable|string|max:255',
             'email' => ['nullable', 'email', Rule::unique('users')->ignore($user->id)], // Ajustar para permitir el mismo correo del usuario actual
             'phone_number' => 'nullable|string|max:10',
+            'phone_emergency' => 'nullable|string|max:10',
             'birthdate' => 'nullable|string',
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|exists:roles,name',
@@ -153,8 +155,10 @@ class UserController extends Controller
         // Actualizar los datos del usuario
         $userData = [
             'name' => $request->name,
+            'name_contact' => $request->name_contact,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
+            'phone_emergency' => $request->phone_emergency,
             'birthdate' => $request->birthdate,
             'isActive' => $request->isActive,
         ];

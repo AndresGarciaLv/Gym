@@ -58,6 +58,7 @@ class UserMembershipController extends Controller
     {
         // Obtener el gimnasio por ID junto con sus membresías
         $gym = Gym::with('memberships')->findOrFail($gymId);
+        $memberships = $gym->memberships;
 
         // Obtener usuarios que pertenezcan al gimnasio y que no tengan una membresía activa en este gimnasio
         $users = User::whereHas('gyms', function($query) use ($gymId) {
@@ -68,7 +69,7 @@ class UserMembershipController extends Controller
         })->get();
 
         // Pasar los datos a la vista
-        return view('admin.user-memberships.create', compact('users', 'gym'));
+        return view('admin.user-memberships.create', compact('users', 'gym', 'memberships'));
     }
 
 
@@ -146,6 +147,11 @@ class UserMembershipController extends Controller
 
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía asignada exitosamente!');
+
+    // Verificar si el usuario autenticado es Staff y redirigir en consecuencia
+    if (auth()->user()->hasRole('Staff')) {
+        return redirect()->route('staffs.index');
+    }
         return redirect()->route('admin.gyms.user-memberships', $validated['id_gym']);
     }
 
@@ -293,7 +299,7 @@ class UserMembershipController extends Controller
 
 
 
-    private function calculateEndDate($startDate, $durationType)
+   /*  private function calculateEndDate($startDate, $durationType)
     {
         switch ($durationType) {
             case DurationType::SEMANAL:
@@ -309,7 +315,7 @@ class UserMembershipController extends Controller
             default:
                 return null;
         }
-    }
+    } */
 
     private function activateNewMembership($oldMembership, $newMembership)
     {
