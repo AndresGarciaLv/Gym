@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Gym; // Asegúrate de importar el modelo Gym
 use App\Models\Membership;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
@@ -41,7 +42,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $role = $request->input('role');
-    
+
         $rules = [
             'name' => 'required|string|max:255',
             'email' => $role !== 'Cliente' ? 'required|email|unique:users,email' : 'nullable|email|unique:users,email',
@@ -68,11 +69,11 @@ class UserController extends Controller
                 'birthdate' => $request->birthdate,
                 'isActive' => $request->isActive,
             ];
-    
+
             if ($role !== 'Cliente') {
                 $userData['password'] = bcrypt($request->password);
             }
-    
+
             $user = User::create($userData);
             $user->assignRole($request->role);
 
@@ -89,7 +90,7 @@ class UserController extends Controller
             } else {
                 $user->gyms()->attach($request->single_gym);
             }
-    
+
             flash()->success('¡El Usuario se ha Creado correctamente!');
         } catch (\Exception $e) {
             flash()->error('Ocurrió un error al crear el usuario: ' . $e->getMessage());
@@ -98,7 +99,7 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index');
     }
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -141,7 +142,13 @@ class UserController extends Controller
             $rules['single_gym'] = 'required|exists:gyms,id';
         }
 
-        $request->validate($rules);
+        try {
+            $request->validate($rules);
+        } catch (ValidationException $e) {
+            // Redirigir con los errores y los datos antiguos
+            return redirect()->back()->withErrors($e->errors())->withInput()->with('error', 'Por favor corrija los errores en el formulario.');
+        }
+
 
         // Actualizar los datos del usuario
         $userData = [
@@ -189,7 +196,7 @@ class UserController extends Controller
         return redirect()->route('admin.users.edit', $user->id);
     }
 
-    
+
 
     /**
      * Remove the specified resource from storage.

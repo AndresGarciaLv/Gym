@@ -56,7 +56,7 @@ class StaffController extends Controller
             'phone_number' => 'nullable|string|max:10',
             'birthdate' => 'nullable|date',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'id_membership' => 'required|exists:memberships,id',
         ]);
 
@@ -74,8 +74,16 @@ class StaffController extends Controller
         $gym = Auth::user()->gyms()->first(); // Asumimos que el Staff pertenece a un solo gimnasio
         $user->gyms()->attach($gym->id);
 
-        $startDate = Carbon::parse($request->start_date)->setTimeFromTimeString(now()->toTimeString());
-        $endDate = Carbon::parse($request->end_date)->setTime(23, 59, 0);
+        $membership = Membership::findOrFail($request->id_membership);
+
+        if ($membership->duration_type === 'Diaria') {
+            $startDate = now()->startOfDay();
+            $endDate = $startDate->copy()->endOfDay();
+        } else {
+            $startDate = Carbon::parse($request->start_date)->setTimeFromTimeString(now()->toTimeString());
+            $endDate = Carbon::parse($request->end_date)->setTime(23, 59, 0);
+        }
+
         $durationDays = $startDate->diffInDays($endDate);
 
         UserMembership::create([
@@ -87,10 +95,10 @@ class StaffController extends Controller
             'duration_days' => $durationDays,
             'isActive' => true,
         ]);
+
         flash()->success('¡Cliente creado y membresía asignada exitosamente!');
         return redirect()->route('staffs.index');
     }
-
     /**
      * Display the specified resource.
      */

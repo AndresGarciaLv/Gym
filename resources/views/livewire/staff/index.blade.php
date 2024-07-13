@@ -161,19 +161,19 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($userMemberships as $userMembership)
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->user->name }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->user->code }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->membership->name }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->start_date }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $userMembership->end_date }}
                     </td>
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-center align-middle">
@@ -189,14 +189,16 @@
                         <div class="col-span-1 mb-2">
                             <a href="{{ route('admin.user-memberships.edit', $userMembership) }}"
                                class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
-                                Editar
+                               <i class='bx bxs-edit'></i>
+                               Editar
                             </a>
                         </div>
                         @if(!$userMembership->is_renewal && in_array($userMembership->status, ['Por Vencer', 'Vence Hoy', 'Vencido']))
                         <div class="col-span-1 mb-2">
                             <a href="{{ route('admin.user-memberships.renew', $userMembership) }}"
                                class="block text-center text-teal-800 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-200 hover:bg-teal-300">
-                                Renovar
+                               <i class='bx bxs-zap'></i>
+                               Renovar
                             </a>
                         </div>
                         @endif

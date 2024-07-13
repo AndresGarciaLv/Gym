@@ -25,12 +25,28 @@ class CheckUserEditPermissions
             abort(403, 'No tienes permiso para editar este usuario.');
         }
 
-        // Verifica si el usuario autenticado es un Administrador y pertenece al mismo gimnasio que el usuario a editar
+        // Obtener los IDs de los gimnasios a los que pertenece el usuario autenticado y el usuario a editar
         $authUserGymIds = $authUser->gyms()->pluck('gyms.id');
         $userToEditGymIds = $userToEdit->gyms()->pluck('gyms.id');
 
+        // Verifica si el usuario autenticado es un Administrador y pertenece al mismo gimnasio que el usuario a editar
         if ($authUser->hasRole('Administrador') && $authUserGymIds->intersect($userToEditGymIds)->isNotEmpty()) {
             return $next($request);
+        }
+
+        // Verifica si el usuario autenticado es un Staff y cumple con las restricciones adicionales
+        if ($authUser->hasRole('Staff')) {
+            // Verificar si el usuario a editar tiene rol de Administrador o Super Administrador
+            if ($userToEdit->hasRole('Administrador') || $userToEdit->hasRole('Super Administrador') || $userToEdit->hasRole('Staff')) {
+                abort(403, 'No tienes permiso para editar este usuario.');
+            }
+
+            // Verificar si el usuario a editar tiene rol de Staff o Cliente
+            if ($userToEdit->hasAnyRole(['Cliente']) && $authUserGymIds->intersect($userToEditGymIds)->isNotEmpty()) {
+                return $next($request);
+            }
+
+            abort(403, 'No tienes permiso para editar este usuario.');
         }
 
         abort(403, 'No tienes permiso para editar este usuario.');

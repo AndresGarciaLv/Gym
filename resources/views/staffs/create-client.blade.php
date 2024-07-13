@@ -6,7 +6,7 @@
 
 @section('contenido')
 <h1 class="text-3xl font-bold text-center mt-5 uppercase">Nuevo Cliente</h1>
-<div class="mb-10 mt-5">
+<div class="mt-5">
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white border-b border-gray-200 flex flex-col justify-center w-full">
@@ -69,7 +69,7 @@
                         @enderror
                     </div>
 
-                
+
                     <div class="mb-4 w-full">
                         <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento <span class="text-gray-400">(opcional)</span></label>
                         <div class="relative">
@@ -95,10 +95,11 @@
                             id="id_membership"
                             class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                             required
+                            onchange="setMembershipDates(this)"
                         >
                             <option value="" disabled selected>Selecciona una Membresía</option>
-                            @foreach ($memberships as $membership)
-                                <option value="{{ $membership->id }}">
+                            @foreach ($gym->memberships as $membership)
+                                <option value="{{ $membership->id }}" data-duration-type="{{ $membership->duration_type }}">
                                     {{ $membership->name }}
                                 </option>
                             @endforeach
@@ -108,7 +109,8 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4 w-full">
+
+                    <div class="mb-4 w-full" id="start_date_container">
                         <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio <b class="text-[#FF0104]">*</b></label>
                         <div class="relative">
                             <input
@@ -126,7 +128,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4 w-full">
+                    <div class="mb-4 w-full" id="end_date_container">
                         <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Vencimiento <b class="text-[#FF0104]">*</b></label>
                         <div class="relative">
                             <input
@@ -149,7 +151,7 @@
                         type="submit"
                         class="mt-3 w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#03A6A6] hover:bg-[#038686] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#03A6A6]"
                     >
-                        Asignar Membresía
+                        Crear Cliente
                     </button>
                 </form>
             </div>
@@ -161,26 +163,65 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        flatpickr('#birthdate', {
-            locale: 'es',
-            dateFormat: 'Y-m-d'
-        });
+        const membershipSelect = document.getElementById('id_membership');
+        const startDateInput = document.getElementById('start_date');
+        const endDateInput = document.getElementById('end_date');
+        const startDateContainer = document.getElementById('start_date_container');
+        const endDateContainer = document.getElementById('end_date_container');
 
-        flatpickr('#start_date', {
+        const startDatePicker = flatpickr(startDateInput, {
             locale: 'es',
             dateFormat: 'Y-m-d',
             onChange: function(selectedDates, dateStr, instance) {
-                const endDateInput = document.getElementById('end_date');
+                const selectedMembership = membershipSelect.options[membershipSelect.selectedIndex];
+                const durationType = selectedMembership.getAttribute('data-duration-type');
                 const startDate = new Date(dateStr);
-                const endDate = new Date(startDate);
-                endDate.setMonth(endDate.getMonth() + 1);
-                endDateInput._flatpickr.setDate(endDate);
+                let endDate = new Date(startDate);
+
+                switch (durationType) {
+                    case 'Semanal':
+                        endDate.setDate(startDate.getDate() + 7);
+                        break;
+                    case 'Mensual':
+                        endDate.setMonth(startDate.getMonth() + 1);
+                        break;
+                    case 'Anual':
+                        endDate.setFullYear(startDate.getFullYear() + 1);
+                        break;
+                    case 'Diaria':
+                        const today = new Date();
+                        startDatePicker.setDate(today);
+                        endDatePicker.setDate(today.setHours(23, 59, 0, 0));
+                        break;
+                    default:
+                        endDate = null;
+                }
+
+                if (endDate) {
+                    endDate.setHours(23, 59, 0);
+                    endDateInput._flatpickr.setDate(endDate);
+                }
             }
         });
 
-        flatpickr('#end_date', {
+        const endDatePicker = flatpickr(endDateInput, {
             locale: 'es',
             dateFormat: 'Y-m-d'
+        });
+
+        membershipSelect.addEventListener('change', function() {
+            const selectedMembership = this.options[this.selectedIndex];
+            const durationType = selectedMembership.getAttribute('data-duration-type');
+            if (durationType === 'Diaria') {
+                const today = new Date();
+                startDatePicker.setDate(today);
+                endDatePicker.setDate(today.setHours(23, 59, 0, 0));
+                startDateContainer.style.display = 'none';
+                endDateContainer.style.display = 'none';
+            } else {
+                startDateContainer.style.display = 'block';
+                endDateContainer.style.display = 'block';
+            }
         });
     });
 </script>

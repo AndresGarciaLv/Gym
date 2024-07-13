@@ -80,7 +80,16 @@
                 <tr>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Nombre
+                        <a href="#" wire:click.prevent="sortBy('name')" title="ordenar A-Z">Nombre</a>
+                        @if($sortField == 'name')
+                            <span>
+                                @if($sortDirection == 'asc')
+                                    &#9650;
+                                @else
+                                    &#9660;
+                                @endif
+                            </span>
+                        @endif
                     </th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
@@ -107,19 +116,19 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($users as $user)
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->name }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->email }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->code }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->phone_number }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-center align-middle">
                         @if($user->isActive == 1)
                             <span class="text-green-500">Activo</span>
                         @else
@@ -138,7 +147,7 @@
                         @php
                         $roleNames = $user->roles->pluck('name');
                         @endphp
-                        @if(!$roleNames->contains('Super Administrador') && !$roleNames->contains('Administrador'))
+                        @if($authenticatedUserRole == 'Staff' && ($roleNames->contains('Cliente') || $user->id == $authenticatedUserId))
                         <div class="col-span-1">
                             <a href="{{ route('admin.users.edit', $user) }}"
                                class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">

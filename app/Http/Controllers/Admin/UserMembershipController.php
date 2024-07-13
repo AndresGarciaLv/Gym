@@ -84,35 +84,53 @@ class UserMembershipController extends Controller
             'id_gym' => 'required|exists:gyms,id',
             'id_membership' => 'required|exists:memberships,id',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date',
         ]);
 
-        // Obtener el usuario y verificar su rol
-        $user = User::with('roles')->findOrFail($validated['id_user']);
-        $isSuperAdminOrAdmin = $user->roles->contains(function($role) {
-            return in_array($role->name, ['Super Administrador', 'Administrador']);
-        });
+      // Obtener el usuario y verificar su rol
+    $user = User::with('roles')->findOrFail($validated['id_user']);
+    $isSuperAdminOrAdmin = $user->roles->contains(function($role) {
+        return in_array($role->name, ['Super Administrador', 'Administrador']);
+    });
 
-        if ($isSuperAdminOrAdmin) {
-            // Verificar si el usuario ya tiene una membresía activa en el gimnasio
-            $existingActiveMembership = UserMembership::where('id_user', $validated['id_user'])
-                ->where('id_gym', $validated['id_gym'])
-                ->where('isActive', true)
-                ->first();
+    if ($isSuperAdminOrAdmin) {
+        // Verificar si el usuario ya tiene una membresía activa en el gimnasio
+        $existingActiveMembership = UserMembership::where('id_user', $validated['id_user'])
+            ->where('id_gym', $validated['id_gym'])
+            ->where('isActive', true)
+            ->first();
 
-            if ($existingActiveMembership) {
-                return redirect()->back()->withErrors(['id_user' => 'El usuario ya tiene una membresía activa en este gimnasio.']);
-            }
+        if ($existingActiveMembership) {
+            return redirect()->back()->withErrors(['id_user' => 'El usuario ya tiene una membresía activa en este gimnasio.']);
         }
+    }
 
-         // Calcular duración en días
-    $currentTimestamp = Carbon::now();
-    $startDate = Carbon::parse($validated['start_date'])->setTimeFrom($currentTimestamp);
-    $endDate = Carbon::parse($validated['end_date'])->setTime(23, 59, 0);
-        $durationDays = $startDate->diffInDays($endDate);
+    // Obtener la membresía y determinar las fechas de inicio y fin
+    $membership = Membership::findOrFail($validated['id_membership']);
 
-        // Determinar el estado de isActive basado en las fechas
-        $isActive = $endDate->greaterThanOrEqualTo(Carbon::now());
+    if ($membership->duration_type === 'Diaria') {
+        $startDate = now()->startOfDay();
+        $endDate = $startDate->copy()->endOfDay();
+    } elseif ($membership->duration_type === 'Mensual') {
+        $startDate = Carbon::parse($validated['start_date'])->setTimeFromTimeString(now()->toTimeString());
+        $endDate = $startDate->copy()->addMonth();
+
+        // Ajustar para meses con diferentes números de días
+        if ($endDate->day != $startDate->day) {
+            $endDate = $startDate->copy()->addMonth()->endOfMonth()->setTime(23, 59, 0);
+        } else {
+            $endDate->setTime(23, 59, 0);
+        }
+    } else {
+        $startDate = Carbon::parse($validated['start_date'])->setTimeFromTimeString(now()->toTimeString());
+        $endDate = Carbon::parse($validated['end_date'])->setTime(23, 59, 0);
+    }
+
+    // Calcular duración en días
+    $durationDays = $startDate->diffInDays($endDate);
+
+    // Determinar el estado de isActive basado en las fechas
+    $isActive = $endDate->greaterThanOrEqualTo(Carbon::now());
 
         // Crear la nueva membresía del usuario
         UserMembership::create([
@@ -281,7 +299,9 @@ class UserMembershipController extends Controller
             case DurationType::SEMANAL:
                 return $startDate->copy()->addDays(7)->endOfDay();
             case DurationType::MENSUAL:
-                return $startDate->copy()->addMonth()->endOfDay();
+                    $endDate = $startDate->copy()->addMonth();
+                    $endDate->addDay(); // Agregar un día adicional
+                    return $endDate->endOfDay();
             case DurationType::ANUAL:
                 return $startDate->copy()->addYear()->endOfDay();
             case DurationType::DIARIA:

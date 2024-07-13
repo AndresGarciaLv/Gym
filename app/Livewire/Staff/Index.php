@@ -33,7 +33,8 @@ class Index extends Component
             ->where(function ($query) {
                 $query->whereHas('user', function ($userQuery) {
                     $userQuery->where('name', 'LIKE', '%' . $this->query . '%')
-                              ->orWhere('email', 'LIKE', '%' . $this->query . '%');
+                                ->orWhere('code', 'LIKE', '%' . $this->query . '%')
+                                ->orWhere('email', 'LIKE', '%' . $this->query . '%');
                 })
                 ->orWhereHas('membership', function ($subQuery) {
                     $subQuery->where('name', 'LIKE', '%' . $this->query . '%');

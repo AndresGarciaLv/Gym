@@ -23,7 +23,7 @@ class MembershipSeeder extends Seeder
                 'description' => 'Acceso basico a todo el equipo del GYM por 7 días',
                 'price' => 350.00,
                 'duration_type' => 'Semanal',
-            
+
             ]);
 
             Membership::create([
@@ -32,7 +32,7 @@ class MembershipSeeder extends Seeder
                 'description' => 'Acceso basico a todo el equipo del GYM',
                 'price' => 350.00,
                 'duration_type' => 'Mensual',
-             
+
             ]);
 
             Membership::create([
@@ -41,16 +41,16 @@ class MembershipSeeder extends Seeder
                 'description' => 'Acceso total al GYM, y personalizado.',
                 'price' => 750.00,
                 'duration_type' => 'Mensual',
-              
+
             ]);
-            
+
             Membership::create([
                 'id_gym' => $gym->id,
                 'name' => 'Membresia VIP',
                 'description' => 'Acceso total al GYM, con Entrenador personal y acceso a bebidas',
                 'price' => 900.00,
                 'duration_type' => 'Mensual',
-                
+
             ]);
 
             Membership::create([
@@ -59,15 +59,15 @@ class MembershipSeeder extends Seeder
                 'description' => 'Acceso total al GYM, con Entrenador personal y acceso a bebidas',
                 'price' => 1000.00,
                 'duration_type' => 'Mensual',
-               
+
             ]);
             Membership::create([
                 'id_gym' => $gym->id,
                 'name' => 'Visita',
                 'description' => 'Acceso basico a todo el equipo del GYM por 1 día',
-                'price' => 350.00,
+                'price' => 50.00,
                 'duration_type' => 'Diaria',
-            
+
             ]);
         }
 

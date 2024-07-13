@@ -37,10 +37,14 @@ Route::middleware('auth')->group(function () {
 /*
     Route::resource('users', UserController::class)->middleware('can:admin.users')->names('admin.users'); */
   /* RUTAS DE USUARIOS */
+  Route::get('users/create', [UserController::class, 'create'])
+    ->middleware('can:admin.users.create')
+    ->name('admin.users.create');
+
     Route::resource('users', UserController::class)
     ->middleware('can:admin.users')
     ->names('admin.users')
-    ->except(['edit']);
+    ->except(['create','edit']);
 
     Route::get('users/{user}/edit', [UserController::class, 'edit'])
     ->middleware(['auth', CheckUserEditPermissions::class])
@@ -73,11 +77,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('memberships', MembershipController::class)->middleware('can:admin.memberships')->names('admin.memberships');
     Route::get('admin/memberships/{id}/gyms', [MembershipController::class, 'memberships'])->middleware('can:admin.memberships.gyms')->name('admin.memberships.gyms');
 
-    Route::resource('user-memberships', UserMembershipController::class)->middleware('can:admin.user-memberships')->names('admin.user-memberships');
-    Route::get('/admin/gyms/{id}/user-memberships', [UserMembershipController::class, 'membershipsByGym'])->name('admin.gyms.user-memberships');
     Route::get('user-memberships/create/{gym}', [UserMembershipController::class, 'create'])
     ->middleware(['auth', CheckGymMembership::class])
     ->name('admin.user-memberships.create');
+    Route::resource('user-memberships', UserMembershipController::class)->middleware('can:admin.user-memberships')->names('admin.user-memberships')->except(['create']);;
+    Route::get('/admin/gyms/{id}/user-memberships', [UserMembershipController::class, 'membershipsByGym'])->name('admin.gyms.user-memberships');
+
     Route::get('admin/user-memberships/history/{userId}', [UserMembershipController::class, 'userMembershipsHistory'])->name('admin.user-memberships.history');
     Route::get('/user-memberships/{id}/renew', [UserMembershipController::class, 'renew'])->name('admin.user-memberships.renew');
     Route::post('/user-memberships/{id}/renew', [UserMembershipController::class, 'storeRenewal'])->name('admin.user-memberships.storeRenewal');

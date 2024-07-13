@@ -5,7 +5,7 @@
 @endsection
 
 @section('contenido')
-<h1 class="text-3xl font-bold text-center uppercase">Asignar Membresía</h1>
+<h1 class="text-3xl font-bold text-center uppercase">Asignar Membresía222</h1>
 <h2 class="text-xl font-semibold text-center mt-2 uppercase">{{ $gym->name }}</h2>
 <div class="mt-5">
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
@@ -29,7 +29,7 @@
                                     <div class="cursor-pointer w-full border-gray-100 border-b hover:bg-teal-100" data-user-id="{{ $user->id }}">
                                         <div class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-100">
                                             <div class="w-6 flex flex-col items-center">
-                                                <div class="flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 w-4 h-4 mt-1 rounded-full">
+                                                <div class="flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 mt-1 rounded-full">
                                                     <img id="image" class="object-cover rounded-full" src="{{ $user->photo ? asset('storage/' . $user->photo) : asset('fotos/avatar.webp') }}" />
                                                 </div>
                                             </div>
@@ -88,7 +88,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4 w-full">
+                    <div class="mb-4 w-full" id="start_date_container">
                         <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio <b class="text-[#FF0104]">*</b></label>
                         <div class="relative">
                             <input
@@ -106,7 +106,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4 w-full">
+                    <div class="mb-4 w-full" id="end_date_container">
                         <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Vencimiento <b class="text-[#FF0104]">*</b></label>
                         <div class="relative">
                             <input
@@ -139,66 +139,67 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const userSearchInput = document.getElementById('userSearch');
-        const userDropdown = document.getElementById('userDropdown');
-        const userIdInput = document.getElementById('id_user');
-        const membershipSelect = document.getElementById('id_membership');
-        const startDateInput = document.getElementById('start_date');
-        const endDateInput = document.getElementById('end_date');
-        const noResultsDiv = document.getElementById('noResults');
+   document.addEventListener('DOMContentLoaded', function () {
+    const userSearchInput = document.getElementById('userSearch');
+    const userDropdown = document.getElementById('userDropdown');
+    const userIdInput = document.getElementById('id_user');
+    const membershipSelect = document.getElementById('id_membership');
+    const startDateInput = document.getElementById('start_date');
+    const endDateInput = document.getElementById('end_date');
+    const startDateContainer = document.getElementById('start_date_container');
+    const endDateContainer = document.getElementById('end_date_container');
+    const noResultsDiv = document.getElementById('noResults');
 
+    userSearchInput.addEventListener('focus', function() {
+        userDropdown.style.display = 'block';
+    });
 
-        userSearchInput.addEventListener('focus', function() {
-            userDropdown.style.display = 'block';
-        });
+    userSearchInput.addEventListener('blur', function() {
+        setTimeout(function() {
+            userDropdown.style.display = 'none';
+        }, 200);
+    });
 
-        userSearchInput.addEventListener('blur', function() {
-            setTimeout(function() {
-                userDropdown.style.display = 'none';
-            }, 200);
-        });
+    userSearchInput.addEventListener('input', function() {
+        const filter = userSearchInput.value.toLowerCase();
+        const users = userDropdown.querySelectorAll('[data-user-id]');
+        let hasResults = false;
 
-        userSearchInput.addEventListener('input', function() {
-            const filter = userSearchInput.value.toLowerCase();
-            const users = userDropdown.querySelectorAll('[data-user-id]');
-            let hasResults = false;
-
-            users.forEach(function(user) {
-                const userName = user.querySelector('.mx-2').textContent.toLowerCase();
-                const userEmail = user.querySelector('.text-gray-500').textContent.toLowerCase();
-                if (userName.includes(filter) || userEmail.includes(filter)) {
-                    user.style.display = 'flex';
-                    hasResults = true;
-                } else {
-                    user.style.display = 'none';
-                }
-            });
-
-            if (hasResults) {
-                noResultsDiv.style.display = 'none';
+        users.forEach(function(user) {
+            const userName = user.querySelector('.mx-2').textContent.toLowerCase();
+            const userEmail = user.querySelector('.text-gray-500').textContent.toLowerCase();
+            if (userName.includes(filter) || userEmail.includes(filter)) {
+                user.style.display = 'flex';
+                hasResults = true;
             } else {
-                noResultsDiv.style.display = 'block';
+                user.style.display = 'none';
             }
         });
 
-        userDropdown.addEventListener('click', function(e) {
-            const target = e.target.closest('[data-user-id]');
-            if (target) {
-                const userId = target.getAttribute('data-user-id');
-                const userName = target.querySelector('.mx-2').textContent.trim();
-                userSearchInput.value = userName;
-                userIdInput.value = userId;
-            }
-        });
+        if (hasResults) {
+            noResultsDiv.style.display = 'none';
+        } else {
+            noResultsDiv.style.display = 'block';
+        }
+    });
 
-        userSearchInput.addEventListener('dblclick', function() {
-            userSearchInput.value = '';
-            userIdInput.value = '';
-            userDropdown.style.display = 'block';
-        });
+    userDropdown.addEventListener('click', function(e) {
+        const target = e.target.closest('[data-user-id]');
+        if (target) {
+            const userId = target.getAttribute('data-user-id');
+            const userName = target.querySelector('.mx-2').textContent.trim();
+            userSearchInput.value = userName;
+            userIdInput.value = userId;
+        }
+    });
 
-        flatpickr(startDateInput, {
+    userSearchInput.addEventListener('dblclick', function() {
+        userSearchInput.value = '';
+        userIdInput.value = '';
+        userDropdown.style.display = 'block';
+    });
+
+    const startDatePicker = flatpickr(startDateInput, {
             locale: 'es',
             dateFormat: 'Y-m-d',
             onChange: function(selectedDates, dateStr, instance) {
@@ -209,7 +210,7 @@
 
                 switch (durationType) {
                     case 'Semanal':
-                        endDate.setDate(startDate.getDate() + 8);
+                        endDate.setDate(startDate.getDate() + 7);
                         break;
                     case 'Mensual':
                     endDate.setMonth(startDate.getMonth() + 1);
@@ -219,9 +220,11 @@
                         break;
                     case 'Anual':
                         endDate.setFullYear(startDate.getFullYear() + 1);
-                        if (endDate.getDate() !== startDate.getDate()) {
-                            endDate.setDate(0); // Set to the last day of the previous month
-                        }
+                        break;
+                    case 'Diaria':
+                        const today = new Date();
+                        startDatePicker.setDate(today);
+                        endDatePicker.setDate(today.setHours(23, 59, 0, 0));
                         break;
                     default:
                         endDate = null;
@@ -234,10 +237,26 @@
             }
         });
 
-        flatpickr(endDateInput, {
-            locale: 'es',
-            dateFormat: 'Y-m-d'
-        });
+    const endDatePicker = flatpickr(endDateInput, {
+        locale: 'es',
+        dateFormat: 'Y-m-d'
     });
+
+    membershipSelect.addEventListener('change', function() {
+        const selectedMembership = this.options[this.selectedIndex];
+        const durationType = selectedMembership.getAttribute('data-duration-type');
+        if (durationType === 'Diaria') {
+            const today = new Date();
+            startDatePicker.setDate(today);
+            endDatePicker.setDate(today.setHours(23, 59, 0, 0));
+            startDateContainer.style.display = 'none';
+            endDateContainer.style.display = 'none';
+        } else {
+            startDateContainer.style.display = 'block';
+            endDateContainer.style.display = 'block';
+        }
+    });
+});
+
 </script>
 @endsection

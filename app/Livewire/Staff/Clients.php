@@ -12,10 +12,22 @@ class Clients extends Component
     use WithPagination;
 
     public $query = '';
+    public $sortField = 'name'; // Campo por el cual ordenar
+    public $sortDirection = 'asc'; // Dirección del ordenamiento
 
     public function search()
     {
         $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
     }
 
     public function render()
@@ -43,6 +55,7 @@ class Clients extends Component
                         }
                     });
             })
+            ->orderBy($this->sortField, $this->sortDirection) // Ordenar por el campo y la dirección seleccionados
             ->paginate(10);
 
         return view('livewire.staff.clients', [

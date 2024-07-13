@@ -207,7 +207,8 @@
                         <div class="col-span-1 mb-2">
                             <a href="{{ route('admin.user-memberships.renew', $userMembership) }}"
                                class="block text-center text-teal-800 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-200 hover:bg-teal-300">
-                                Renovar
+                               <i class='bx bxs-zap'></i>
+                               Renovar
                             </a>
                         </div>
                         @endif
