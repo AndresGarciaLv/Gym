@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class ActivateMemberships extends Command
 {
     protected $signature = 'memberships:activate';
-    protected $description = 'Activar nuevas membresías si las antiguas han caducado';
+    protected $description = 'Activar membresías renovadas y desactivar la membresía caducada';
 
     public function __construct()
     {

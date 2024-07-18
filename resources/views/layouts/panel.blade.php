@@ -55,120 +55,132 @@
         <div class="relative sidebar fixed left-0 top-0 h-full bg-[#5E0409] p-4 z-50 transition-transform ">
             <div class="">
 
+                @php
+                    $user = auth()->user();
+                    $roles = $user->getRoleNames();
+                @endphp
+                @if ($roles->contains('Staff'))
                     @php
-                        $user = auth()->user();
-                        $roles = $user->getRoleNames();
+                        $gym = $user->gyms()->first();
                     @endphp
-                     @if ($roles->contains('Staff'))
-                     @php
-                         $gym = $user->gyms()->first();
-                     @endphp
-                     <a href="/panel-staff" class="flex justify-center items-center border-b border-b-white">
-                     <h2 id="imagen" class="text-xl text-[#fff] font-bold mb-2">{{ $gym ? $gym->name : 'GYM' }}</h2>
-                     <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
+                    <a href="/panel-staff" class="flex justify-center items-center border-b border-b-white">
+                        <h2 id="imagen" class="text-xl text-[#fff] font-bold mb-2">{{ $gym ? $gym->name : 'GYM' }}
+                        </h2>
+                        <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
                     </a>
-                 @else
-                 <a href="/" class="flex justify-center items-center border-b border-b-white">
-                    <img class="w-[80px] mb-2" id="imagen" src="{{ asset('fotos/Gym-logo.png') }}" alt="">
-                    <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
-                </a>
-                    @endif
+                @else
+                    <a href="/" class="flex justify-center items-center border-b border-b-white">
+                        <img class="w-[80px] mb-2" id="imagen" src="{{ asset('fotos/Gym-logo.png') }}"
+                            alt="">
+                        <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
+                    </a>
+                @endif
 
             </div>
             <ul class="mt-4 scroll2 overflow-y-scroll" id="lista-side">
                 <!-- ADMIN Section -->
                 <li class="mb-1 group">
                     @if (Auth::check())
-                    @if (Auth::user()->hasRole('Staff'))
-                    <a href="/panel-staff"
+                        @if (Auth::user()->hasRole('Staff'))
+                            <a href="/panel-staff"
+                                class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
+                                <i class='bx bxs-dashboard mr-3 text-lg'></i>
+                                <span class="nav-text text-sm">Dashboard</span>
+                            </a>
+                <li class="mb-1 group">
+                    <a href="{{ route('staffs.create') }}"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                        <i class='bx bxs-dashboard mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Dashboard</span>
+                        <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
+                        <span class="nav-text text-sm">Nuevo Cliente</span>
                     </a>
-                    <li class="mb-1 group">
-                        <a href="{{ route('staffs.create') }}"
+                </li>
+                <li class="mb-1 group">
+                    <a href="{{ route('staffs.clients') }}"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                            <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
-                            <span class="nav-text text-sm">Nuevo Cliente</span>
-                        </a>
-                    </li>
-                    <li class="mb-1 group">
-                        <a href="{{ route('staffs.clients') }}"
+                        <i class='bx bxs-user-detail mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">Lista de Clientes</span>
+                    </a>
+                </li>
+                <li class="mb-1 group">
+                    <a href="{{ route('admin.user-memberships.create', $gym->id) }}"
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors"
+                        title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
+                        <i class='bx bx-calendar-plus mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">Asignar Membresía</span>
+                    </a>
+                </li>
+                <li class="mb-1 group">
+                    <a href="{{ route('staffs.index') }}"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                            <i class='bx bxs-user-detail mr-3 text-lg'></i>
-                            <span class="nav-text text-sm">Lista de Clientes</span>
-                        </a>
-                    </li>
-                    <li class="mb-1 group">
-                        <a href="{{ route('admin.user-memberships.create', $gym->id) }}" class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors" title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
-                            <i class='bx bx-calendar-plus mr-3 text-lg'></i>
-                            <span class="nav-text text-sm">Asignar Membresía</span>
-                        </a>
-                    </li>
-                    <li class="mb-1 group">
-                        <a href="{{ route('staffs.index') }}"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                            <i class='bx bx-list-ul mr-3 text-lg'></i>
-                            <span class="nav-text text-sm">Membresías Activas</span>
-                        </a>
-                    </li>
-                    <li class="mb-1 group">
-                        <a href="{{ route('admin.gym-log.index', $gym->id) }}" class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors" title="Realizar Check-in/Check-out en esta sucursal.">
-                            <i class='bx bx-barcode-reader mr-3 text-lg'></i>
-                            <span class="nav-text text-sm">Check-in/Check-out</span>
-                        </a>
-                    </li>
+                        <i class='bx bx-list-ul mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">Membresías Activas</span>
+                    </a>
+                </li>
+                <li class="mb-1 group">
+                    <a href="{{ route('admin.gym-log.index', $gym->id) }}"
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors"
+                        title="Realizar Check-in/Check-out en esta sucursal."
+                        target="_blank">
+                        <i class='bx bx-barcode-reader mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">Check-in/Check-out</span>
+                    </a>
+                </li>
 
                 </li>
 
 
 
 
-                    @elseif (Auth::user()->hasAnyRole('Super Administrador', 'Administrador'))
-                    <a href="/"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                        <i class='bx bxs-dashboard mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Dashboard</span>
-                    </a>
-                    @endif
-                    @endif
+            @elseif (Auth::user()->hasAnyRole('Super Administrador', 'Administrador'))
+            @if (Auth::user()->hasAnyRole('Super Administrador'))
+            <a href="/dashboard"
+            class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
+            <i class='bx bxs-dashboard mr-3 text-lg'></i>
+            <span class="nav-text text-sm">Dashboard</span>
+        </a>
+            @endif
+
+            @if (Auth::user()->hasRole('Administrador'))
+                <a href="/"
+                class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
+                <i class='bx bxs-dashboard mr-3 text-lg'></i>
+                <span class="nav-text text-sm">Dashboard</span>
+            </a>
+                @endif
+                @endif
+                @endif
 
 
 
-                @if (Auth::check() &&
-                Auth::user()->hasAnyRole(['Staff']))
+                @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
                 @else
-                <li id="group-usuarios" class="mb-1 group relative z-2 transition-all">
-                    <a href=""
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
-                        <i class='bx bx-sitemap mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Administración</span>
-                        <i
-                            class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
-                    </a>
-                    <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
-                        @if (Auth::check() &&
-                        Auth::user()->hasAnyRole([
-                        'Staff',
-                        ]))
-                        @else
-
-                        <li>
-                            <a href="{{ route('admin.users.index') }}"
-                                class=" text-white text-sm flex items-center  p-1 rounded-md">
-                                <i class='bx bxs-user-detail mr-3 text-xl' ></i>
-                                <span>Lista de Usuarios</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.users.create') }}"
-                                class=" text-white text-sm flex items-center  p-1 rounded-md">
-                                <i class='bx bx-user-plus  mr-3 text-xl'></i>
-                                <span>Crear Usuario</span>
-                            </a>
-                        </li>
-                        @endif
-                     {{--    <li>
+                    <li id="group-usuarios" class="mb-1 group relative z-2 transition-all">
+                        <a href=""
+                            class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
+                            <i class='bx bx-sitemap mr-3 text-lg'></i>
+                            <span class="nav-text text-sm">Administración</span>
+                            <i
+                                class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
+                        </a>
+                        <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
+                            @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
+                            @else
+                                <li>
+                                    <a href="{{ route('admin.users.index') }}"
+                                        class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                        <i class='bx bxs-user-detail mr-3 text-xl'></i>
+                                        <span>Lista de Usuarios</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.users.create') }}"
+                                        class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                        <i class='bx bx-user-plus  mr-3 text-xl'></i>
+                                        <span>Crear Usuario</span>
+                                    </a>
+                                </li>
+                            @endif
+                            {{--    <li>
                             <a href="/roles-permisos"
                                 class=" text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md ">
                                 <i class='bx bx-lock-open mr-3 text-lg'></i>
@@ -176,136 +188,140 @@
                             </a>
                         </li> --}}
 
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
                 @endif
 
-                @if (Auth::check() &&
-                Auth::user()->hasAnyRole(['Staff']))
+                @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
                 @else
-                <li id="group-gyms" class="mb-1 group relative z-2 transition-all">
-                    <a href=""
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
-                        <i class='bx bx-building-house mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Gimnasios</span>
-                        <i
-                            class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
-                    </a>
-                    <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
-                        @if (Auth::check() &&
-                        Auth::user()->hasAnyRole([
-                        'Staff',
-                        ]))
-                        @else
-
-                        <li>
-                            <a href="{{ route('admin.gyms.index') }}"
-                            class=" text-white text-sm flex items-center  p-1 rounded-md">
-                                <i class='bx bx-dumbbell mr-3 text-lg'></i>
-                                <span >Lista de Gimnasios</span>
-                            </a>
-                        </li>
-                        @if (Auth::user()->hasAnyRole('Super Administrador'))
-                        <li>
-                            <a href="{{ route('admin.gyms.create') }}"
-                                class=" text-white text-sm flex items-center  p-1 rounded-md">
-                                <i class='bx bx-list-plus mr-3 text-lg'></i>
-                                <span>Crear Gimnasio</span>
-                            </a>
-                        </li>
-                        @endif
-                        @endif
-                    </ul>
-                </li>
+                    <li id="group-gyms" class="mb-1 group relative z-2 transition-all">
+                        <a href=""
+                            class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
+                            <i class='bx bx-building-house mr-3 text-lg'></i>
+                            <span class="nav-text text-sm">Gimnasios</span>
+                            <i
+                                class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
+                        </a>
+                        <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
+                            @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
+                            @else
+                                <li>
+                                    <a href="{{ route('admin.gyms.index') }}"
+                                        class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                        <i class='bx bx-dumbbell mr-3 text-lg'></i>
+                                        <span>Lista de Gimnasios</span>
+                                    </a>
+                                </li>
+                                @if (Auth::user()->hasAnyRole('Super Administrador'))
+                                    <li>
+                                        <a href="{{ route('admin.gyms.create') }}"
+                                            class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                            <i class='bx bx-list-plus mr-3 text-lg'></i>
+                                            <span>Crear Gimnasio</span>
+                                        </a>
+                                    </li>
+                                @endif
+                            @endif
+                        </ul>
+                    </li>
                 @endif
 
-                @if (Auth::check() &&
-                Auth::user()->hasAnyRole(['Staff']))
+                @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
                 @else
-                <li id="group-membresias" class="mb-1 group relative z-2 transition-all">
-                    <a href=""
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
-                        <i class='bx bx-credit-card-front mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Membresias</span>
-                        <i
-                            class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
-                    </a>
-                    <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
-                        @if (Auth::check() &&
-                        Auth::user()->hasAnyRole([
-                        'Staff',
-                        ]))
-                        @else
-
-                        <li>
-                            <a href="{{ route('admin.memberships.index') }}"
-                            class=" text-white text-sm flex items-center  p-1 rounded-md">
-                                <i class='bx bx-list-ul mr-3 text-lg'></i>
-                                <span >Lista de Membresias</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.memberships.create') }}"
-                                class=" text-white text-sm flex items-center  p-1 rounded-md">
-                                <i class='bx bx-list-plus mr-3 text-lg'></i>
-                                <span>Crear Membresia</span>
-                            </a>
-                        </li>
-                        @endif
-                    </ul>
-                </li>
+                    <li id="group-membresias" class="mb-1 group relative z-2 transition-all">
+                        <a href=""
+                            class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
+                            <i class='bx bx-credit-card-front mr-3 text-lg'></i>
+                            <span class="nav-text text-sm">Membresias</span>
+                            <i
+                                class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
+                        </a>
+                        <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
+                            @if (Auth::check() && Auth::user()->hasAnyRole(['Staff']))
+                            @else
+                                <li>
+                                    <a href="{{ route('admin.memberships.index') }}"
+                                        class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                        <i class='bx bx-list-ul mr-3 text-lg'></i>
+                                        <span>Lista de Membresias</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.memberships.create') }}"
+                                        class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                        <i class='bx bx-list-plus mr-3 text-lg'></i>
+                                        <span>Crear Membresia</span>
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
                 @endif
 
 
 
-                @if(Auth::user()->hasAnyRole('Staff'))
-
-                @else <span class="text-white font-bold nav-text">SUCURSALES</span>
+                @if (Auth::user()->hasAnyRole('Staff'))
+                @else
+                    <span class="text-white font-bold nav-text">SUCURSALES</span>
                 @endif
 
-                 @if (Auth::check() && !Auth::user()->hasAnyRole(['Staff']))
-                 @foreach($allGyms as $gym)
-                 <li id="group-sucursales-{{ $gym->id }}" class="mb-1 group relative z-2 transition-all">
-                     <a href="#" class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
-                         <img class="w-[20px] mr-3" id="imagen" src="{{ asset('icons/gimnasio.png') }}" alt="">
-                         <span class="nav-text text-sm">{{ $gym->name }}</span>
-                         <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
-                     </a>
-                     <ul class="hidden absolute z-20 left-full top-0 w-48 text-white submenu rounded-md">
-                         <li>
-                             <a href="{{ route('admin.gyms.users', $gym->id) }}" class="text-white text-sm flex items-center p-1 rounded-md" title="Ver todos los usuarios de esta sucursal.">
-                                 <i class='bx bx-group mr-3 text-xl'></i>
-                                 <span>Ver Usuarios</span>
-                             </a>
-                         </li>
-                         <li>
-                             <a href="{{ route('admin.memberships.gyms', $gym->id) }}" class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md" title="Ver todas las membresías disponibles en esta sucursal.">
-                                 <i class='bx bx-list-ul mr-3 text-xl'></i>
-                                 <span>Ver Membresías</span>
-                             </a>
-                         </li>
-                         <li>
-                             <a href="{{ route('admin.gyms.user-memberships', $gym->id) }}" class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md" title="Ver todas las membresías asignadas a clientes y usuarios de esta sucursal.">
-                                 <i class='bx bxs-collection mr-3 text-xl'></i>
-                                 <span>Membresías Activas</span>
-                             </a>
-                         </li>
-                         <li>
-                             <a href="{{ route('admin.user-memberships.create', $gym->id) }}" class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md" title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
-                                 <i class='bx bx-calendar-plus mr-3 text-xl'></i>
-                                 <span>Asignar Membresía</span>
-                             </a>
-                         </li>
-                         <li>
-                             <a href="{{ route('admin.gym-log.index', $gym->id) }}" class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md" title="Realizar Check-in/Check-out en esta sucursal.">
-                                 <i class='bx bx-barcode-reader mr-3 text-xl'></i>
-                                 <span>Check-in/Check-out</span>
-                             </a>
-                         </li>
-                     </ul>
-                 </li>
-             @endforeach
-             @endif
+                @if (Auth::check() && !Auth::user()->hasAnyRole(['Staff']))
+                    @foreach ($allGyms as $gym)
+                        <li id="group-sucursales-{{ $gym->id }}" class="mb-1 group relative z-2 transition-all">
+                            <a href="#"
+                                class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
+                                <img class="w-[20px] mr-3" id="imagen" src="{{ asset('icons/gimnasio.png') }}"
+                                    alt="">
+                                <span class="nav-text text-sm">{{ $gym->name }}</span>
+                                <i
+                                    class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
+                            </a>
+                            <ul class="hidden absolute z-20 left-full top-0 w-48 text-white submenu rounded-md">
+                                <li>
+                                    <a href="{{ route('admin.gyms.users', $gym->id) }}"
+                                        class="text-white text-sm flex items-center p-1 rounded-md"
+                                        title="Ver todos los usuarios de esta sucursal.">
+                                        <i class='bx bx-group mr-3 text-xl'></i>
+                                        <span>Ver Usuarios</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.memberships.gyms', $gym->id) }}"
+                                        class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
+                                        title="Ver todas las membresías disponibles en esta sucursal.">
+                                        <i class='bx bx-list-ul mr-3 text-xl'></i>
+                                        <span>Ver Membresías</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.gyms.user-memberships', $gym->id) }}"
+                                        class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
+                                        title="Ver todas las membresías asignadas a clientes y usuarios de esta sucursal.">
+                                        <i class='bx bxs-collection mr-3 text-xl'></i>
+                                        <span>Membresías Activas</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.user-memberships.create', $gym->id) }}"
+                                        class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
+                                        title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
+                                        <i class='bx bx-calendar-plus mr-3 text-xl'></i>
+                                        <span>Asignar Membresía</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.gym-log.index', $gym->id) }}"
+                                        class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
+                                        title="Realizar Check-in/Check-out en esta sucursal."
+                                        target="_blank">
+                                        <i class='bx bx-barcode-reader mr-3 text-xl'></i>
+                                        <span>Check-in/Check-out</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endforeach
+                @endif
             </ul>
 
             <ul>
@@ -331,7 +347,8 @@
         <!-- end sidenav -->
 
 
-        <main class="main-content w-full bg-gray-200 h-screen min-h-[500px] overflow-y-scroll transition-all" id="main">
+        <main class="main-content w-full bg-gray-200 h-screen min-h-[500px] overflow-y-scroll transition-all"
+            id="main">
             <!-- navbar -->
             <div class="py-2 px-6 bg-[#f8f4f3] flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-20">
 
@@ -363,11 +380,15 @@
                             <div class="flex-shrink-0 w-10 h-10 relative">
                                 <div class="p-1 bg-white rounded-full focus:outline-none focus:ring">
                                     @if (auth()->user()->photo)
-                                    <img class="w-8 h-8 rounded-full" src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Foto de perfil" />
-                                @else
-                                    <!-- Si el usuario no tiene foto de perfil, muestra un icono de usuario predeterminado -->
-                                    <img id="preview" class="w-8 h-8 rounded-full" src="{{ asset('fotos/avatar.webp') }}" alt="Ícono de usuario predeterminado">
-                                @endif
+                                        <img class="w-8 h-8 rounded-full"
+                                            src="{{ asset('storage/' . auth()->user()->photo) }}"
+                                            alt="Foto de perfil" />
+                                    @else
+                                        <!-- Si el usuario no tiene foto de perfil, muestra un icono de usuario predeterminado -->
+                                        <img id="preview" class="w-8 h-8 rounded-full"
+                                            src="{{ asset('fotos/avatar.webp') }}"
+                                            alt="Ícono de usuario predeterminado">
+                                    @endif
 
                                     <div
                                         class="connection-status-dot top-0 left-7 absolute w-3 h-3 bg-lime-500 border-2 border-white rounded-full animate-ping">
@@ -380,14 +401,14 @@
                             <div class="p-2 hidden md:block text-left">
                                 <h2 class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</h2>
                                 @php
-                                $user = auth()->user();
-                                $roles = $user->getRoleNames();
+                                    $user = auth()->user();
+                                    $roles = $user->getRoleNames();
                                 @endphp
 
                                 @if ($roles->isNotEmpty())
-                                <p class="text-xs text-gray-500">{{ $roles->first() }}</p>
+                                    <p class="text-xs text-gray-500">{{ $roles->first() }}</p>
                                 @else
-                                <p class="text-xs text-gray-500">Invitado</p>
+                                    <p class="text-xs text-gray-500">Invitado</p>
                                 @endif
                             </div>
 
@@ -399,11 +420,7 @@
                                     class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#7F0001] hover:bg-gray-50">Ver
                                     Perfil</a>
                             </li>
-                            <li>
-                                <a href=""
-                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#7F0001] hover:bg-gray-50">Configurar
-                                    Cuenta</a>
-                            </li>
+
                             <li>
                                 <form method="POST" action="{{ route('logout') }}" class="">
                                     @csrf
@@ -427,11 +444,15 @@
             <footer class= "bg-gradient-to-r from-gray-200 via-red-100 to-gray-300  p-5 ">
                 <div class="w-full px-4 mx-auto text-center mb-5">
                     <div class="text-sm text-blueGray-500 font-semibold py-1">
-                      Copyright © <span id="get-current-year">2024</span><a href="https://www.facebook.com/profile.php?id=61558455937047" class="hover:underline text-blueGray-500 hover:text-gray-800" target="_blank"> Erick's GYM </a>
-                      <span>by</span>
-                      <a href="https://www.firenow.com" class="text-blueGray-500 hover:text-blueGray-800 hover:underline">Firenow Solutions</a>.
+                        Copyright © <span id="get-current-year">2024</span><a
+                            href="https://www.facebook.com/profile.php?id=61558455937047"
+                            class="hover:underline text-blueGray-500 hover:text-gray-800" target="_blank"> Erick's GYM
+                        </a>
+                        <span>by</span>
+                        <a href="https://www.firenow.com"
+                            class="text-blueGray-500 hover:text-blueGray-800 hover:underline">Firenow Solutions</a>.
                     </div>
-                  </div>
+                </div>
             </footer>
         </main>
 
@@ -443,44 +464,44 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
-          function updateConnectionStatus() {
-            const connectionStatusDots = document.querySelectorAll('.connection-status-dot');
-            if (navigator.onLine) {
-              connectionStatusDots.forEach(function(dot) {
-                dot.classList.remove('bg-red-500');
-                dot.classList.add('bg-lime-500');
-              });
-            } else {
-              connectionStatusDots.forEach(function(dot) {
-                dot.classList.remove('bg-lime-500');
-                dot.classList.add('bg-red-500');
-              });
+            function updateConnectionStatus() {
+                const connectionStatusDots = document.querySelectorAll('.connection-status-dot');
+                if (navigator.onLine) {
+                    connectionStatusDots.forEach(function(dot) {
+                        dot.classList.remove('bg-red-500');
+                        dot.classList.add('bg-lime-500');
+                    });
+                } else {
+                    connectionStatusDots.forEach(function(dot) {
+                        dot.classList.remove('bg-lime-500');
+                        dot.classList.add('bg-red-500');
+                    });
+                }
+
+                console.log('The connection status has changed:', navigator.onLine ? 'Online' : 'Offline');
             }
 
-            console.log('The connection status has changed:', navigator.onLine ? 'Online' : 'Offline');
-          }
+            window.addEventListener('online', updateConnectionStatus);
+            window.addEventListener('offline', updateConnectionStatus);
 
-          window.addEventListener('online', updateConnectionStatus);
-          window.addEventListener('offline', updateConnectionStatus);
-
-          // Ejecutar inmediatamente al cargar
-          updateConnectionStatus();
+            // Ejecutar inmediatamente al cargar
+            updateConnectionStatus();
         });
     </script>
 
-<script>
-    @if (session('success'))
-        toastr.success("{{ session('success') }}");
-    @endif
+    <script>
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
 
-    @if (session('error'))
-        toastr.error("{{ session('error') }}");
-    @endif
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
 
-    @if ($errors->has('inactive'))
-        toastr.error("{{ $errors->first('inactive') }}");
-    @endif
- </script>
+        @if ($errors->has('inactive'))
+            toastr.error("{{ $errors->first('inactive') }}");
+        @endif
+    </script>
 </body>
 
 </html>

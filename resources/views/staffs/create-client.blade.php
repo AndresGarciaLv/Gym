@@ -71,7 +71,7 @@
 
 
                     <div class="mb-4 w-full">
-                        <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento <span class="text-gray-400">(opcional)</span></label>
+                        <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento (año-mes-día) <span class="text-gray-400">(opcional)</span></label>
                         <div class="relative">
                             <input
                                 type="text"
@@ -172,7 +172,7 @@
                     </div>
 
                     <div class="mb-4 w-full" id="start_date_container" style="display: none;">
-                        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio <b class="text-[#FF0104]">*</b></label>
+                        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio (año-mes-día) <b class="text-[#FF0104]">*</b></label>
                         <div class="relative">
                             <input
                                 type="text"
@@ -189,7 +189,7 @@
                     </div>
 
                     <div class="mb-4 w-full" id="end_date_container" style="display: none;">
-                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Vencimiento <b class="text-[#FF0104]">*</b></label>
+                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Vencimiento (año-mes-día) <b class="text-[#FF0104]">*</b></label>
                         <div class="relative">
                             <input
                                 type="text"
@@ -233,6 +233,7 @@
             dateFormat: 'Y-m-d'
         });
 
+
         const startDatePicker = flatpickr(startDateInput, {
         locale: 'es',
         dateFormat: 'Y-m-d',
@@ -257,6 +258,7 @@
         if (durationType === 'Diaria') {
             startDateContainer.style.display = 'none';
             endDateContainer.style.display = 'none';
+            setDailyDates();
         } else if (durationType) {
             startDateContainer.style.display = 'block';
             endDateContainer.style.display = 'block';
@@ -280,28 +282,45 @@
                 case 'Semanal':
                     endDate.setDate(startDate.getDate() + 8);
                     break;
-                case 'Mensual':
-                    // Calculate end date based on the start date
-                    endDate.setDate(startDate.getDate() + 32);
+                    case 'Mensual':
+    // Calculate end date based on the start date
+    const currentMonth = startDate.getMonth();
+    const nextMonth = new Date(startDate);
+    nextMonth.setMonth(currentMonth + 1);
 
-                    // Ajustar la fecha de finalización para días en febrero
-                    if (startDate.getMonth() === 1 && endDate.getMonth() === 2 && endDate.getDate() !== startDate.getDate()) {
-                        endDate.setDate(startDate.getDate() + 1);
-                    }
+    // Condición: Si el mes actual tiene 31 días y el mes siguiente tiene 30 o viceversa
+    if ((currentMonthDays(currentMonth) === 31 && currentMonthDays(nextMonth.getMonth()) === 30)) {
+        endDate.setDate(startDate.getDate() + 32);
+    }
+    else if((currentMonthDays(currentMonth) === 30 && currentMonthDays(nextMonth.getMonth()) === 31))
+    {
+        endDate.setDate(startDate.getDate() + 31);
+    }
+    // Condición: Si el mes actual y el mes siguiente ambos tienen 31 días
+    else if (currentMonthDays(currentMonth) === 31 && currentMonthDays(nextMonth.getMonth()) === 31) {
+        endDate.setDate(startDate.getDate() + 32);
+    }
+    else {
+        endDate.setDate(startDate.getDate() + 32);
+    }
 
-                    // Manejar casos especiales en febrero
-                    if (startDate.getDate() > endDate.getDate()) {
-                        endDate.setDate(1); // Esto establece el último día del mes anterior
-                        endDate.setDate(startDate.getDate() - (startDate.getDate() - endDate.getDate()));
-                    }
-                    break;
+    // Ajustar la fecha de finalización para días en febrero
+    if (startDate.getMonth() === 1 && endDate.getMonth() === 2 && endDate.getDate() !== startDate.getDate()) {
+        endDate.setDate(startDate.getDate() + 1);
+    }
+
+    // Manejar casos especiales en febrero
+    if (startDate.getDate() > endDate.getDate()) {
+        endDate.setDate(1); // Esto establece el último día del mes anterior
+        endDate.setDate(startDate.getDate() - (startDate.getDate() - endDate.getDate()));
+    }
+    break;
+
                 case 'Anual':
                     endDate.setFullYear(startDate.getFullYear() + 1);
                     break;
                 case 'Diaria':
-                    const today = new Date();
-                    startDatePicker.setDate(today);
-                    endDatePicker.setDate(today.setHours(23, 59, 0, 0));
+                setDailyDates();
                     break;
                 default:
                     endDate = null;
@@ -313,6 +332,18 @@
             }
         }
     }
+
+    function setDailyDates() {
+        const today = new Date();
+        startDatePicker.setDate(today);
+        endDatePicker.setDate(today.setHours(23, 59, 0, 0));
+    }
+
+    function currentMonthDays(month) {
+    return new Date(new Date().getFullYear(), month + 1, 0).getDate();
+    }
+
+
 
     // Ocultar campos de fecha hasta que se seleccione una membresía
     startDateContainer.style.display = 'none';

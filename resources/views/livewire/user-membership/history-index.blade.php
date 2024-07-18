@@ -42,7 +42,9 @@
         <table class="min-w-full divide-y divide-gray-600">
             <thead class="bg-[#545759] shadow-md">
                 <tr>
+                    <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Código</th>
                     <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Usuario</th>
+
                     <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Rol</th>
                     <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Gimnasio</th>
                     <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Membresía</th>
@@ -54,7 +56,9 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($activeMemberships as $activeMembership)
                 <tr class="bg-green-100">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">{{ $user->code }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">{{ $user->name }}</td>
+
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         @foreach($user->roles as $role)
                             {{ $role->name }}<br>
@@ -74,6 +78,7 @@
 
                 @foreach($inactiveMemberships as $inactiveMembership)
                 <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">{{ $user->code }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">{{ $user->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         @foreach($user->roles as $role)

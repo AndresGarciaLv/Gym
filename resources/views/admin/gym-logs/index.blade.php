@@ -59,7 +59,7 @@
                   <img class="w-[250px] h-[250px]" src="{{ asset('fotos/codigo-de-barras.png') }}" alt="Imagen Barcode" />
                   <form id="checkin-form" method="POST" action="{{ route('admin.gym-log.logAction', $gym->id) }}">
                       @csrf
-                      <input class="text-center text-4xl" type="text" id="code-input" name="code" placeholder="Ingresa el código" required />
+                      <input class="text-center text-4xl" type="text" id="code-input" name="code" placeholder="Ingresa el código" maxlength="6" required />
                       <input type="hidden" name="id_gym" value="{{ $gym->id }}"> <!-- ID del gimnasio dinámico -->
                       <button type="submit" class="ml-2 p-2 bg-blue-500 text-white rounded" style="display: none;">Buscar</button>
                       @if ($errors->has('code'))
@@ -155,7 +155,9 @@
 
                   @if(session('membership') && session('user'))
                       <div class="mt-4 flex flex-col justify-center items-center">
-                          <p><strong>{{ session('membership')->membership->name }}</strong> </p>
+                          <p class="text-xl"><strong>{{ session('membership')->membership->name }}</strong> </p>
+                          <p><strong>Fecha de Vencimiento:</strong> {{ \Carbon\Carbon::parse(session('membership')->end_date)->format('d-m-Y') }}</p>
+
                           <p><strong>Gimnasio:</strong> {{ session('membership')->gym->name }}</p>
                           <p><strong>Usuario:</strong> {{ session('user')->name }}</p>
                           <p><strong>Hora:</strong> {{ session('currentTime') }}</p>
@@ -186,7 +188,18 @@
               }, 0);
           });
 
-          codeInput.addEventListener('input', function () {
+
+        codeInput.addEventListener('input', function (e) {
+              let value = codeInput.value;
+              // Eliminar caracteres no alfanuméricos y convertirlos a mayúsculas
+
+              value = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+              // Limite de 6 caracteres
+              if (value.length > 6) {
+                  value = value.slice(0, 6);
+              }
+              codeInput.value = value;
+
               if (codeInput.value.length === 6) { // Suponiendo un código de 6 caracteres
                   document.getElementById('checkin-form').submit();
               }

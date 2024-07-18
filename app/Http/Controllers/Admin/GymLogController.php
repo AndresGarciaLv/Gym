@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserMembership;
 use App\Models\Gym;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class GymLogController extends Controller
 {
@@ -18,37 +19,52 @@ class GymLogController extends Controller
     }
 
     public function logAction(Request $request, Gym $gym)
-{
-    $validated = $request->validate([
-        'code' => 'required|exists:users,code',
-        'id_gym' => 'required|exists:gyms,id',
-    ]);
+    {
+        // Validación con mensaje de error personalizado
+        $rules = [
+            'code' => 'required|exists:users,code',
+            'id_gym' => 'required|exists:gyms,id',
+        ];
 
-    $user = User::where('code', $validated['code'])->first();
-    $lastLog = GymLog::where('id_user', $user->id)->latest()->first();
-    $membership = $this->checkMembershipStatus($user->id, $gym->id);
+        $messages = [
+            'code.exists' => 'El código no existe en nuestro sistema.',
+        ];
 
-    if ($membership) {
-        $membershipStatus = $this->getMembershipStatus($membership);
-        if ($membershipStatus == 'Vencido') {
-            return redirect()->back()->with([
-                'status' => 'Vencido',
-                'message' => 'Tu membresía está vencida. Pasa a recepción a renovarla.',
-                'membership' => $membership,
-                'user' => $user,
-                'currentTime' => Carbon::now()->format('H:i:s'),
-            ]);
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
-    } else {
-        return redirect()->back()->withErrors(['code' => 'No cuenta con una membresía activa para este gimnasio.']);
-    }
 
-    if ($lastLog && $lastLog->action === 'entry') {
-        return $this->logExit($validated, $user, $membership);
-    }
+        $validated = $validator->validated();
 
-    return $this->logEntry($validated, $user, $membership);
-}
+        $user = User::where('code', $validated['code'])->first();
+        $lastLog = GymLog::where('id_user', $user->id)->latest()->first();
+        $membership = $this->checkMembershipStatus($user->id, $gym->id);
+
+        if ($membership) {
+            $membershipStatus = $this->getMembershipStatus($membership);
+            if ($membershipStatus == 'Vencido') {
+                return redirect()->back()->with([
+                    'status' => 'Vencido',
+                    'message' => 'Tu membresía está vencida. Pasa a recepción a renovarla.',
+                    'membership' => $membership,
+                    'user' => $user,
+                    'currentTime' => Carbon::now()->format('H:i:s'),
+                ]);
+            }
+        } else {
+            return redirect()->back()->withErrors(['code' => 'No cuenta con una membresía activa para este gimnasio.']);
+        }
+
+        if ($lastLog && $lastLog->action === 'entry') {
+            return $this->logExit($validated, $user, $membership);
+        }
+
+        return $this->logEntry($validated, $user, $membership);
+    }
 
 
 

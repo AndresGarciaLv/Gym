@@ -216,11 +216,17 @@
 
                         <label for="name_contact" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Nombre</label>
                     <input class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
-                    type="text" name="name" placeholder="Nombre de contacto de Emergencia" value="{{ $user->name_contact }}">
-                    <label for="name_contact" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Teléfono</label>
+                    type="text" name="name_contact" placeholder="Nombre de contacto de Emergencia" value="{{ $user->name_contact }}">
+                    @error('name_contact')
+                    <div style="color:red">
+                        {{ $message }}
+                    </div>
+                    @enderror
+
+                    <label for="phone_emergency" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Teléfono</label>
                     <input class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
-                    type="text" name="phone_number" maxlength="10" pattern="\d{0,10}" placeholder="Numero de telefono" value="{{ $user->phone_emergency }}">
-                    @error('name_contact'||'phone_emergency')
+                    type="text" name="phone_emergency" maxlength="10" pattern="\d{0,10}" placeholder="Numero de telefono" value="{{ $user->phone_emergency }}">
+                    @error('phone_emergency')
                     <div style="color:red">
                         {{ $message }}
                     </div>

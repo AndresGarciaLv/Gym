@@ -68,6 +68,7 @@ class UserController extends Controller
                 'phone_number' => $request->phone_number,
                 'birthdate' => $request->birthdate,
                 'isActive' => $request->isActive,
+                'created_by' => auth()->user()->id,
             ];
 
             if ($role !== 'Cliente') {
@@ -161,6 +162,7 @@ class UserController extends Controller
             'phone_emergency' => $request->phone_emergency,
             'birthdate' => $request->birthdate,
             'isActive' => $request->isActive,
+            'updated_by' => auth()->user()->id,
         ];
 
         // Si se proporciona una nueva contraseña, actualizarla

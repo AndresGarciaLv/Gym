@@ -1,7 +1,7 @@
 @extends('layouts.panel')
 
 @section('titulo')
-    Membresías de Usuarios
+    Membresías Activas de Clientes
 @endsection
 
 @section('contenido')

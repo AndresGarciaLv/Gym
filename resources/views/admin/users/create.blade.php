@@ -90,7 +90,7 @@
                     </div>
 
                     <div class="mb-4 w-full">
-                        <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento <span class="text-gray-400">(opcional)</span></label>
+                        <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento (año-mes-día) <span class="text-gray-400">(opcional)</span></label>
                         <div class="relative">
                             <input
                                 type="text"

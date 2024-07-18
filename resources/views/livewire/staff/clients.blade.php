@@ -79,7 +79,12 @@
             <thead class="bg-[#545759] shadow-md">
                 <tr>
                     <th scope="col"
+                    class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                    Código
+                </th>
+                    <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+
                         <a href="#" wire:click.prevent="sortBy('name')" title="ordenar A-Z">Nombre</a>
                         @if($sortField == 'name')
                             <span>
@@ -95,10 +100,7 @@
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                         Correo electrónico
                     </th>
-                    <th scope="col"
-                    class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    Código
-                </th>
+
                     <th scope="col"
                         class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                         Teléfono
@@ -117,14 +119,15 @@
                 @foreach($users as $user)
                 <tr>
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                        {{ $user->code }}
+                    </td>
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->name }}
                     </td>
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->email }}
                     </td>
-                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->code }}
-                    </td>
+
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $user->phone_number }}
                     </td>

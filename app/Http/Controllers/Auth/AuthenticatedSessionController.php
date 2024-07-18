@@ -42,8 +42,10 @@ class AuthenticatedSessionController extends Controller
 
         flash()->success('Bienvenido, ' . $user->name . '!');
 
-        // Redirigir según el rol del usuario
+        // Redirigir según el rol del usuarioDashboard-SupAdm
         switch ($role) {
+            case 'Super Administrador':
+                return redirect()->route('Dashboard-SupAdm');
             case 'Administrador':
                 return redirect()->route('Dashboard-Adm');
             case 'Staff':

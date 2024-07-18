@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserMembershipController;
 use App\Http\Controllers\CredentialController;
+use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Staff\StaffController;
 use App\Http\Middleware\CheckGymMembership;
 use App\Http\Middleware\CheckGymOwnership;
@@ -22,6 +23,11 @@ Route::middleware(['guest'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/dashboard', [Dashboard::class, 'superAdmin'])
+        ->middleware('can:Dashboard-SupAdm')
+        ->name('Dashboard-SupAdm');
+
     Route::get('/', function () {
         return view('home.administrador');
     })->middleware('can:Dashboard-Adm')->name('Dashboard-Adm');

@@ -71,6 +71,7 @@ class StaffController extends Controller
             'phone_emergency' => $request->phone_emergency,
             'birthdate' => $request->birthdate,
             'isActive' => true,
+            'created_by' => auth()->id(),
         ];
 
         $user = User::create($userData);

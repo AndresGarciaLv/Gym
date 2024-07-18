@@ -28,7 +28,8 @@ class RoleSeeder extends Seeder
 
         // Definir permisos y asignar roles
         $permissions = [
-            'Dashboard-Adm' => ['Super Administrador', 'Administrador'],
+            'Dashboard-SupAdm' => ['Super Administrador'],
+            'Dashboard-Adm' => ['Administrador'],
             //USUARIOS
             'admin.users' => ['Super Administrador', 'Administrador', 'Staff'],
             'admin.users.create' => ['Super Administrador','Administrador'],

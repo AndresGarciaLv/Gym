@@ -299,7 +299,7 @@ class UserMembershipController extends Controller
 
 
 
-   /*  private function calculateEndDate($startDate, $durationType)
+    private function calculateEndDate($startDate, $durationType)
     {
         switch ($durationType) {
             case DurationType::SEMANAL:
@@ -315,7 +315,7 @@ class UserMembershipController extends Controller
             default:
                 return null;
         }
-    } */
+    }
 
     private function activateNewMembership($oldMembership, $newMembership)
     {

@@ -28,7 +28,7 @@
                 </span>
             </div>
 
-             <!-- BOTÓN QUE NOS SIRVE PARA EXPORTAR LOS ARCHIVOS -->
+            <!-- BOTÓN QUE NOS SIRVE PARA EXPORTAR LOS ARCHIVOS -->
             <div x-data="{ isActive: false }" class="relative ml-auto mr-6">
                 <div class="inline-flex items-center overflow-hidden rounded-md border bg-white">
                     <a href="javascript:void(0);"
@@ -73,137 +73,142 @@
         </div>
     </form>
 
-    @if($users->count())
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-600">
-            <thead class="bg-[#545759] shadow-md">
-                <tr>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Nombre
-                    </th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Correo electrónico
-                    </th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Rol
-                    </th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Código
-                    </th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Gimnasio (s)
-                    </th>
-                    <th scope="col"
-                    class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    Estado
-                </th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                        Acciones
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($users as $user)
-                <tr>
-                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->name}}
-                    </td>
-                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->email}}
-                    </td>
-                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+    @if ($users->count())
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-600">
+                <thead class="bg-[#545759] shadow-md">
+                    <tr>
+                        <th scope="col"
+                            class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Código
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Nombre
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Correo electrónico
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Rol
+                        </th>
 
-                        @php
-                        $roleNames = $user->roles->pluck('name');
-                        @endphp
+                        <th scope="col"
+                            class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Gimnasio (s)
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Estado
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach ($users as $user)
+                        <tr>
+                            <td class="px-1 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                                {{ $user->code }}
+                            </td>
+                            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                                {{ $user->name }}
+                            </td>
+                            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                                {{ $user->email }}
+                            </td>
+                            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
 
-                        {{ $roleNames->isNotEmpty() ? $roleNames->join(', ') : 'Sin Rol' }}
-                    </td>
-                    <td class="px-1 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        {{ $user->code}}
-                    </td>
-                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
-                        @php
-                        $gymNames = $user->gyms->pluck('name');
-                        @endphp
+                                @php
+                                    $roleNames = $user->roles->pluck('name');
+                                @endphp
 
-                        @if ($gymNames->isNotEmpty())
-                            <ul>
-                                @foreach ($gymNames as $gymName)
-                                    <li>{{ $gymName }}</li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <span>Sin Gimnasios</span>
-                        @endif
-                    </td>
+                                {{ $roleNames->isNotEmpty() ? $roleNames->join(', ') : 'Sin Rol' }}
+                            </td>
 
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-center align-middle">
-                        @if($user->isActive == 1)
-                            <span class="text-green-500">Activo</span>
-                        @else
-                            <span class="text-red-500">Inactivo</span>
-                        @endif
-                    </td>
+                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
+                                @php
+                                    $gymNames = $user->gyms->pluck('name');
+                                @endphp
 
-                    <td class="grid grid-cols-3 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[265px] w-full">
-                        <div class="col-span-3">
-                            <a href="{{ route('admin.user-memberships.history', $user) }}"
-                               class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
-                               <i class='bx bx-history'></i>
-                               Ver Historial Membresias
-                            </a>
-                        </div>
-                        <div class="col-span-3 grid grid-cols-2 gap-1">
-                            @if($authenticatedUserRole !== 'Administrador' || !$roleNames->contains('Super Administrador'))
-                            <div class="col-span-1">
-                                <a href="{{ route('admin.users.edit', $user) }}"
-                                   class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
-                                   <i class='bx bxs-edit'></i>
-                                   Editar
-                                </a>
-                            </div>
-                            @endif
+                                @if ($gymNames->isNotEmpty())
+                                    <ul>
+                                        @foreach ($gymNames as $gymName)
+                                            <li>{{ $gymName }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <span>Sin Gimnasios</span>
+                                @endif
+                            </td>
 
-                            @if($user->id != $authenticatedUserId && !$roleNames->contains('Super Administrador'))
-                            <div class="col-span-1">
-                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirmDeletion(event);">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="w-full block text-center text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">
-                                        <i class='bx bx-trash'></i>
-                                        Eliminar
-                                    </button>
-                                </form>
-                            </div>
-                            @endif
-                        </div>
-                        <div class="col-span-3">
-                            <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
-                               class="block text-center text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md bg-blue-100 hover:bg-blue-200">
-                               <i class='bx bxs-id-card'></i>
-                               Generar Credencial
-                            </a>
-                        </div>
-                    </td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-center align-middle">
+                                @if ($user->isActive == 1)
+                                    <span class="text-green-500">Activo</span>
+                                @else
+                                    <span class="text-red-500">Inactivo</span>
+                                @endif
+                            </td>
 
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                            <td
+                                class="grid grid-cols-3 gap-1 mt-2 mb-2 px-6 text-sm text-gray-500 min-w-[265px] w-full">
+                                <div class="col-span-3">
+                                    <a href="{{ route('admin.user-memberships.history', $user) }}"
+                                        class="block text-center text-teal-600 hover:text-teal-900 px-3 py-1 rounded-md bg-teal-100 hover:bg-teal-200">
+                                        <i class='bx bx-history'></i>
+                                        Ver Historial Membresias
+                                    </a>
+                                </div>
+                                <div class="col-span-3 grid grid-cols-2 gap-1">
+                                    @if ($authenticatedUserRole !== 'Administrador' || !$roleNames->contains('Super Administrador'))
+                                        <div class="col-span-1">
+                                            <a href="{{ route('admin.users.edit', $user) }}"
+                                                class="block text-center text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md bg-yellow-100 hover:bg-yellow-200">
+                                                <i class='bx bxs-edit'></i>
+                                                Editar
+                                            </a>
+                                        </div>
+                                    @endif
 
-    <div class="mt-5">
-        {{ $users->links() }}
-    </div>
+                                    @if ($user->id != $authenticatedUserId && !$roleNames->contains('Super Administrador'))
+                                        <div class="col-span-1">
+                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                                onsubmit="return confirmDeletion(event);">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="w-full block text-center text-red-600 hover:text-red-900 px-3 py-1 rounded-md bg-red-100 hover:bg-red-200">
+                                                    <i class='bx bx-trash'></i>
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="col-span-3">
+                                    <a href="{{ route('admin.users.generate-credential.pdf', $user) }}"
+                                        class="block text-center text-blue-600 hover:text-blue-900 px-3 py-1 rounded-md bg-blue-100 hover:bg-blue-200">
+                                        <i class='bx bxs-id-card'></i>
+                                        Generar Credencial
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-5">
+            {{ $users->links() }}
+        </div>
     @else
-    <div class="min-w-full divide-y divide-gray-200 text-center text-2xl text-gray-500">Sin resultados</div>
+        <div class="min-w-full divide-y divide-gray-200 text-center text-2xl text-gray-500">Sin resultados</div>
     @endif
 </div>
 

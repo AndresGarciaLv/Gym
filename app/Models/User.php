@@ -31,6 +31,8 @@ class User extends Authenticatable
         'isActive',
         'code',
         'birthdate',
+        'created_by',
+        'updated_by'
     ];
 
     /**
@@ -91,5 +93,21 @@ class User extends Authenticatable
     public function userMemberships()
     {
         return $this->hasMany(UserMembership::class, 'id_user');
+    }
+
+     /**
+     * Relación con el usuario que creó este usuario.
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Relación con el usuario que actualizó este usuario por última vez.
+     */
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }
