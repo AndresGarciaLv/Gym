@@ -44,6 +44,18 @@
             box-shadow: 0 0 5px rgba(127, 0, 1, 0.5);
             outline: none;
         }
+
+        /* Hacer que el modal ocupe todo el ancho de la pantalla */
+        .modal-dialog {
+            max-width: 100%;
+            margin: 0;
+        }
+        .modal-content {
+            height: 100vh;
+        }
+        .modal-body {
+            overflow-y: auto;
+        }
     </style>
 </head>
 
