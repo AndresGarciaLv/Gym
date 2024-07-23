@@ -88,9 +88,13 @@
                 <th scope="col"
                 class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                 Duración
-            </th>                
+            </th>  
+            <th scope="col"
+                    class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                   Estado
+                </th>              
                     <th scope="col"
-                        class="px-3 py-3  text-center text-xs font-medium text-white uppercase tracking-wider w-[10px]">
+                        class="px-3 py-3  text-center text-xs font-medium text-white uppercase tracking-wider">
                        descripcion
                     </th>
                     <th scope="col"
@@ -114,7 +118,14 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $membership->duration_type }}
                     </td>
-                    <td class="px-6 py-4 text-sm max-w-[250px] truncate text-gray-500 text-center align-middle">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-center align-middle">
+                        @if ($membership->isActive == 1)
+                            <span class="text-green-500">Activo</span>
+                        @else
+                            <span class="text-red-500">Inactivo</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500 text-center align-middle whitespace-normal max-w-xs">
                         {{ $membership->description }}
                     </td>
                    {{--  <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">

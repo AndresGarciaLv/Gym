@@ -73,6 +73,22 @@
                     </div>
 
                     <div class="mb-4 w-full">
+                        <label for="isActive" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Estado</label>
+                    <select class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
+                            name="isActive" id="isActive" required>
+                        <option value="1" {{ $membership->isActive ? 'selected' : '' }}>Activo</option>
+                        <option value="0" {{ !$membership->isActive ? 'selected' : '' }}>Inactivo</option>
+                    </select>
+                    @error('isActive')
+                    <div style="color:red">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                    </div>
+
+
+
+                    <div class="mb-4 w-full">
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
                         <textarea
                             name="description"

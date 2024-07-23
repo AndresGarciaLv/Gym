@@ -132,7 +132,9 @@ class GymController extends Controller
     }
 
     public function getMemberships(Gym $gym)
-    {
-        return response()->json($gym->memberships);
-    }
+{
+    $activeMemberships = $gym->memberships()->where('isActive', true)->get();
+    return response()->json($activeMemberships);
+}
+
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->string('duration_type')->nullable(); // Campo para la enumeración
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
 
 

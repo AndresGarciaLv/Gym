@@ -5,11 +5,35 @@
 @endsection
 
 @section('contenido')
+<style>
+    .loader-memberships {
+ width: 15px;
+ height: 15px;
+}
+
+.loader-memberships::before {
+ content: "";
+ box-sizing: border-box;
+ position: absolute;
+ width: 20px;
+ height: 20px;
+ border-radius: 50%;
+ border-top: 2px solid #7F0001;
+ border-right: 2px solid transparent;
+ animation: spinner8217 0.8s linear infinite;
+}
+
+@keyframes spinner8217 {
+ to {
+  transform: rotate(360deg);
+ }
+}
+</style>
 <h1 class="text-3xl font-bold text-center uppercase">Crear Usuario</h1>
 <div class="mt-5">
     <div class="w-[600px] mx-auto sm:px-6 lg:px-8">
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200 flex flex-col  justify-center w-full">
+            <div class="p-6 bg-white border-b border-gray-200 flex flex-col justify-center w-full">
 
                 @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
@@ -106,7 +130,7 @@
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                    
+
                     <div class="mb-4 w-full">
                         <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Dirección <span class="text-gray-400">(opcional)</span></label>
                         <input
@@ -165,6 +189,90 @@
     @enderror
 </div>
 
+<div id="singleGymSelection" class="mb-4 w-full" style="display: none;">
+    <label for="single_gym" class="block text-sm font-medium text-gray-700 mb-2">Selecciona un Gimnasio <b class="text-[#FF0104]">*</b></label>
+    <select
+        name="single_gym"
+        id="single_gym"
+        class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+    >
+        <option value="" disabled selected>Selecciona un Gimnasio</option>
+        @foreach ($gyms as $gym)
+            <option value="{{ $gym->id }}" {{ old('single_gym') == $gym->id ? 'selected' : '' }}>
+                {{ $gym->name }}
+            </option>
+        @endforeach
+    </select>
+    @error('single_gym')
+        <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+    @enderror
+</div>
+
+<div id="customerFields" style="display: none;">
+    <div class="mb-4 w-full">
+        <label for="id_membership" class="block text-sm font-medium text-gray-700 mb-2">Membresía <b class="text-[#FF0104]">*</b></label>
+        <select
+            name="id_membership"
+            id="id_membership"
+            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+            required
+        >
+            <option value="" disabled selected>Selecciona una Membresía</option>
+        </select>
+        <div id="membershipLoader" class="hidden flex text-center text-gray-500">
+            <div class="loader-memberships ml-2 mt-3"></div> <div class="ml-7 mt-3"> Cargando Membresías...</div>
+        </div>
+        @error('id_membership')
+            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="mb-4 w-full">
+        <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Precio de la Membresía</label>
+        <input
+            type="text"
+            name="price"
+            id="price"
+            class="shadow-sm rounded-md w-full px-3 py-2 border bg-gray-100 border-gray-500 focus:outline-none cursor-not-allowed"
+            placeholder="Precio"
+            readonly
+        >
+    </div>
+
+    <div class="mb-4 w-full" id="start_date_container" style="display: none;">
+        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio (año-mes-día) <b class="text-[#FF0104]">*</b></label>
+        <div class="relative">
+            <input
+                type="text"
+                name="start_date"
+                id="start_date"
+                placeholder="Selecciona una fecha"
+                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] pl-10"
+            >
+            <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
+        </div>
+        @error('start_date')
+            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="mb-4 w-full" id="end_date_container" style="display: none;">
+        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Vencimiento (año-mes-día) <b class="text-[#FF0104]">*</b></label>
+        <div class="relative">
+            <input
+                type="text"
+                name="end_date"
+                id="end_date"
+                placeholder="Selecciona una fecha"
+                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] pl-10"
+            >
+            <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
+        </div>
+        @error('end_date')
+            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
 
                     <div id="multiGymSelection" class="mb-4 w-full">
                         <label for="gyms" class="block text-sm font-medium text-gray-700 mb-2">Selecciona uno o más Gimnasios <b class="text-[#FF0104]">*</b></label>
@@ -190,26 +298,7 @@
                         @enderror
                     </div>
 
-                    <div id="singleGymSelection" class="mb-4 w-full" style="display: none;">
-                        <label for="single_gym" class="block text-sm font-medium text-gray-700 mb-2">Selecciona un Gimnasio <b class="text-[#FF0104]">*</b></label>
-                        <select
-                            name="single_gym"
-                            id="single_gym"
-                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
-                        >
-                            <option value="" disabled selected>Selecciona un Gimnasio</option>
-                            @foreach ($gyms as $gym)
-                                @if(auth()->user()->hasRole('Super Administrador') || in_array($gym->id, auth()->user()->gyms->pluck('id')->toArray()))
-                                    <option value="{{ $gym->id }}" {{ old('single_gym') == $gym->id ? 'selected' : '' }}>
-                                        {{ $gym->name }}
-                                    </option>
-                                @endif
-                            @endforeach
-                        </select>
-                        @error('single_gym')
-                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
+
 
                     <div class="mb-4 w-full">
                         <label for="isActive" class="block text-sm font-medium text-gray-700 mb-2">Estado <b class="text-[#FF0104]">*</b></label>
@@ -219,7 +308,6 @@
                             class="shadow-sm rounded-md w-full px-3 py-2 border cursor-pointer border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                             required
                         >
-
                             <option value="1" selected>Activo</option>
                             <option value="0">Inactivo</option>
                         </select>
@@ -266,7 +354,6 @@
                             id="photo"
                             class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
                             accept="image/*"
-
                         >
                         @error('photo')
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
@@ -290,27 +377,49 @@
         const roleSelect = document.getElementById('role');
         const multiGymSelection = document.getElementById('multiGymSelection');
         const singleGymSelection = document.getElementById('singleGymSelection');
+        const customerFields = document.getElementById('customerFields');
 
         function toggleGymSelection() {
             const selectedRole = roleSelect.value;
             if (selectedRole === 'Super Administrador' || selectedRole === 'Administrador') {
                 multiGymSelection.style.display = 'block';
                 singleGymSelection.style.display = 'none';
+                customerFields.style.display = 'none';
+                clearMembershipFields();
             } else if (selectedRole === 'Staff' || selectedRole === 'Cliente' || selectedRole === 'Checador') {
                 multiGymSelection.style.display = 'none';
                 singleGymSelection.style.display = 'block';
+                if (selectedRole === 'Cliente') {
+                    customerFields.style.display = 'block';
+                } else {
+                    customerFields.style.display = 'none';
+                    clearMembershipFields();
+                }
             } else {
                 multiGymSelection.style.display = 'none';
                 singleGymSelection.style.display = 'none';
+                customerFields.style.display = 'none';
+                clearMembershipFields();
             }
+        }
+
+        function clearMembershipFields() {
+            const membershipSelect = document.getElementById('id_membership');
+            const priceInput = document.getElementById('price');
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+
+            membershipSelect.innerHTML = '<option value="" disabled selected>Selecciona una Membresía</option>';
+            priceInput.value = '';
+            startDateInput.value = '';
+            endDateInput.value = '';
         }
 
         roleSelect.addEventListener('change', toggleGymSelection);
         toggleGymSelection(); // Ejecutar al cargar la página
-
-
     });
 </script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const roleSelect = document.getElementById('role');
@@ -319,7 +428,15 @@
         const emailInput = document.getElementById('email');
         const passwordConfirmationInput = document.getElementById('password_confirmation');
         const emailLabel = document.getElementById('email-label');
-        const gymsLabel = document.getElementById('gyms-label');
+
+        const singleGymSelect = document.getElementById('single_gym');
+        const membershipSelect = document.getElementById('id_membership');
+        const priceInput = document.getElementById('price');
+        const startDateInput = document.getElementById('start_date');
+        const endDateInput = document.getElementById('end_date');
+        const startDateContainer = document.getElementById('start_date_container');
+        const endDateContainer = document.getElementById('end_date_container');
+        const membershipLoader = document.getElementById('membershipLoader');
 
         function toggleFields() {
             if (roleSelect.value === 'Cliente') {
@@ -330,8 +447,13 @@
                 passwordInput.value = '';
                 passwordConfirmationInput.value = '';
                 emailLabel.innerHTML = '<span class="text-gray-400">(opcional)</span>';
-
             } else {
+                membershipSelect.removeAttribute('required');
+                membershipSelect.value = '';
+                startDateInput.removeAttribute('required');
+                startDateInput.value = '';
+                endDateInput.removeAttribute('required');
+                endDateInput.value = '';
                 passwordFields.style.display = 'block';
                 passwordInput.setAttribute('required', 'required');
                 emailInput.setAttribute('required', 'required');
@@ -342,18 +464,143 @@
 
         roleSelect.addEventListener('change', toggleFields);
         toggleFields(); // Para ejecutar al cargar la página
-    });
-</script>
 
-
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
         flatpickr('#birthdate', {
             locale: 'es',
             dateFormat: 'Y-m-d'
         });
+
+        const startDatePicker = flatpickr(startDateInput, {
+            locale: 'es',
+            dateFormat: 'Y-m-d',
+            onChange: function(selectedDates, dateStr, instance) {
+                updateEndDate();
+            }
+        });
+
+        const endDatePicker = flatpickr(endDateInput, {
+            locale: 'es',
+            dateFormat: 'Y-m-d'
+        });
+
+        singleGymSelect.addEventListener('change', function() {
+            const selectedGymId = this.value;
+            priceInput.value = '';
+            updateMembershipOptions(selectedGymId);
+        });
+
+        membershipSelect.addEventListener('change', function() {
+            const selectedMembership = this.options[this.selectedIndex];
+            const durationType = selectedMembership.getAttribute('data-duration-type');
+            const price = selectedMembership.getAttribute('data-price');
+
+            priceInput.value = "$" + price;
+
+            if (durationType === 'Diaria') {
+                startDateContainer.style.display = 'none';
+                endDateContainer.style.display = 'none';
+                setDailyDates();
+            } else if (durationType) {
+                startDateContainer.style.display = 'block';
+                endDateContainer.style.display = 'block';
+                updateEndDate();
+            } else {
+                startDateContainer.style.display = 'none';
+                endDateContainer.style.display = 'none';
+            }
+        });
+
+        function updateEndDate() {
+            const startDateStr = startDateInput.value;
+            const selectedMembership = membershipSelect.options[membershipSelect.selectedIndex];
+            const durationType = selectedMembership.getAttribute('data-duration-type');
+
+            if (startDateStr && durationType) {
+                const startDate = new Date(startDateStr);
+                let endDate = new Date(startDateStr);
+
+                switch (durationType) {
+                    case 'Semanal':
+                        endDate.setDate(startDate.getDate() + 8);
+                        break;
+                    case 'Mensual':
+                        const currentMonth = startDate.getMonth();
+                        const nextMonth = new Date(startDate);
+                        nextMonth.setMonth(currentMonth + 1);
+
+                        if ((currentMonthDays(currentMonth) === 31 && currentMonthDays(nextMonth.getMonth()) === 30)) {
+                            endDate.setDate(startDate.getDate() + 32);
+                        }
+                        else if((currentMonthDays(currentMonth) === 30 && currentMonthDays(nextMonth.getMonth()) === 31))
+                        {
+                            endDate.setDate(startDate.getDate() + 31);
+                        }
+                        else if (currentMonthDays(currentMonth) === 31 && currentMonthDays(nextMonth.getMonth()) === 31) {
+                            endDate.setDate(startDate.getDate() + 32);
+                        }
+                        else {
+                            endDate.setDate(startDate.getDate() + 32);
+                        }
+
+                        if (startDate.getMonth() === 1 && endDate.getMonth() === 2 && endDate.getDate() !== startDate.getDate()) {
+                            endDate.setDate(startDate.getDate() + 1);
+                        }
+
+                        if (startDate.getDate() > endDate.getDate()) {
+                            endDate.setDate(1);
+                            endDate.setDate(startDate.getDate() - (startDate.getDate() - endDate.getDate()));
+                        }
+                        break;
+                    case 'Anual':
+                        endDate.setFullYear(startDate.getFullYear() + 1);
+                        break;
+                    case 'Diaria':
+                        setDailyDates();
+                        break;
+                    default:
+                        endDate = null;
+                }
+
+                if (endDate) {
+                    endDate.setHours(23, 59, 0);
+                    endDateInput._flatpickr.setDate(endDate);
+                }
+            }
+        }
+
+        function setDailyDates() {
+            const today = new Date();
+            startDatePicker.setDate(today);
+            endDatePicker.setDate(today.setHours(23, 59, 0, 0));
+        }
+
+        function currentMonthDays(month) {
+            return new Date(new Date().getFullYear(), month + 1, 0).getDate();
+        }
+
+        async function updateMembershipOptions(gymId) {
+            membershipSelect.setAttribute('disabled', 'disabled');
+            membershipLoader.classList.remove('hidden');
+            
+            const response = await fetch(`/gyms/${gymId}/memberships`);
+            const data = await response.json();
+            
+            membershipSelect.innerHTML = '<option value="" disabled selected>Selecciona una Membresía</option>';
+            data.forEach(membership => {
+                const option = document.createElement('option');
+                option.value = membership.id;
+                option.setAttribute('data-duration-type', membership.duration_type);
+                option.setAttribute('data-price', membership.price);
+                option.textContent = membership.name;
+                membershipSelect.appendChild(option);
+            });
+            
+            membershipLoader.classList.add('hidden');
+            membershipSelect.removeAttribute('disabled');
+        }
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
 @endsection

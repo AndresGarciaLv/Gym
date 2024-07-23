@@ -56,8 +56,10 @@ class UserMembershipController extends Controller
      */
     public function create($gymId)
     {
-        // Obtener el gimnasio por ID junto con sus membresías
-        $gym = Gym::with('memberships')->findOrFail($gymId);
+        // Obtener el gimnasio por ID junto con sus membresías activas
+    $gym = Gym::with(['memberships' => function($query) {
+        $query->where('isActive', true);
+    }])->findOrFail($gymId);
         $memberships = $gym->memberships;
 
         // Obtener usuarios que pertenezcan al gimnasio y que no tengan una membresía activa en este gimnasio
@@ -247,7 +249,7 @@ class UserMembershipController extends Controller
         $userMembership = UserMembership::with('user', 'gym', 'membership')->findOrFail($id);
         $user = $userMembership->user;
         $gym = $userMembership->gym;
-        $memberships = $gym->memberships;
+        $memberships = $gym->memberships()->where('isActive', true)->get();
 
         // Pasar los datos a la vista
         return view('admin.user-memberships.renew', compact('userMembership', 'user', 'gym', 'memberships'));

@@ -1,14 +1,14 @@
 <div class="mt-4">
-    <form wire:submit="search">
+    <form id="perPageForm" wire:submit.prevent="search">
         <div class="flex items-end align-middle mb-5">
             <!-- BOTÓN QUE DIRIGE AL CRUD -->
             <a href="{{ route('admin.memberships.create') }}"
                 class="relative bg-[#34AD3C] text-white px-4 py-2 ml-5 mr-6 rounded hover:bg-[#3D7A41] transition-colors h-full">Agregar</a>
 
             <!-- SE AÑADE EL BÚSCADOR -->
-            <div class="relative ml-5 w-[600px] z-10 flex items-center">
+            <div class="relative ml-5 w-[500px] z-10 flex items-center">
                 <label for="Search" class="sr-only">Search</label>
-                <input wire:model="query" placeholder="Buscar"
+                <input wire:model.debounce.50ms="query" placeholder="Buscar"
                     class="w-full rounded border border-gray-300 py-2.5 px-4 sm:text-sm h-full outline-gray-400" />
                 <span
                     class="absolute rounded inset-y-0 end-0 grid w-10 place-content-center bg-[#5E0409] hover:bg-[#7F0001] text-white h-full">
@@ -65,8 +65,21 @@
                     </div>
                 </div>
             </div>
+
+            <div class="flex items-center">
+        <label for="perPage" class="mr-2 text-sm font-medium text-gray-700">Mostrar:</label>
+        <select id="perPage" wire:model="perPage" class="shadow-sm rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
         </div>
     </form>
+
+    
 
     @if($memberships->count())
     <div class="overflow-x-auto">
@@ -84,14 +97,18 @@
                     <th scope="col"
                     class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                     Precio
-                </th>
+                </th>     
                 <th scope="col"
+                class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                Duración
+            </th>  
+            <th scope="col"
                     class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                   Duración
-                </th>
+                   Estado
+                </th>              
                     <th scope="col"
-                        class="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                       descripcion
+                        class="px-3 py-3  text-center text-xs font-medium text-white uppercase tracking-wider">
+                       Descripción
                     </th>
                     <th scope="col"
                         class=" py-3 text-xs font-medium text-white uppercase">
@@ -114,32 +131,25 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center align-middle">
                         {{ $membership->duration_type }}
                     </td>
-                    <td class="px-6 py-4 text-sm max-w-[250px] truncate text-gray-500 text-center align-middle">
-                        {{ $membership->description }}
-                    </td>
-                   {{--  <td class="px-6 py-4 whitespace-nowrap text-sm text-center align-middle">
-                        @if($gym->isActive == 1)
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-center align-middle">
+                        @if ($membership->isActive == 1)
                             <span class="text-green-500">Activo</span>
                         @else
                             <span class="text-red-500">Inactivo</span>
                         @endif
-                    </td> --}}
-                    <td class=" flex justify-center px-3 py-4 text-sm text-gray-500">
-
-                        <a href="{{ route('admin.memberships.edit', $membership) }}"
-                            class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">
-                            <i class='bx bxs-edit'></i>
-                            Editar</a>
-
-                            <form action="{{ route('admin.memberships.destroy', $membership->id) }} " method="POST" onsubmit="return confirmDeletion(event);">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900 px-3 py-1 rounded-md mr-1 bg-red-100 hover:bg-red-200">
-                                    <i class='bx bx-trash'></i>
-                                    Eliminar</button>
-                            </form>
                     </td>
-
+                    <td class="px-6 py-4 text-sm text-gray-500 text-center align-middle whitespace-normal max-w-xs">
+                        {{ $membership->description }}
+                    </td>
+                    <td class=" flex justify-center px-3 py-4 text-sm text-gray-500">
+                        <a href="{{ route('admin.memberships.edit', $membership) }}"
+                            class="text-yellow-600 hover:text-yellow-900 px-3 py-1 rounded-md mr-1 bg-yellow-100 hover:bg-yellow-200">Editar</a>
+                        <form action="{{ route('admin.memberships.destroy', $membership->id) }} " method="POST" onsubmit="return confirmDeletion(event);">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-900 px-3 py-1 rounded-md mr-1 bg-red-100 hover:bg-red-200">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -155,6 +165,12 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('perPage').addEventListener('change', function () {
+            Livewire.emit('search');
+        });
+    });
+
     function confirmDeletion(event) {
         event.preventDefault();
         const form = event.target;

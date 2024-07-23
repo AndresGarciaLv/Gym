@@ -73,7 +73,7 @@
                     <p class="text-lg font-bold text-center">Datos del usuario</p>
 
 
-                    <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Nombre</label>
+                    <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-5">Nombre Completo</label>
                     <input class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001] mb-4"
                     type="text" name="name" placeholder="Nombre" value="{{ $user->name }}">
                     @error('name')

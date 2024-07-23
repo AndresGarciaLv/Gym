@@ -12,7 +12,22 @@ class MembershipsIndex extends Component
     use WithPagination;
 
     public $query = '';
+    public $perPage = 10;
 
+    // Esto asegura que los cambios en estas propiedades actualicen la URL
+    protected $queryString = ['query', 'perPage'];
+
+    public function updatingQuery()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    // Asegúrate de que el método search sea público
     public function search()
     {
         $this->resetPage();
@@ -20,9 +35,8 @@ class MembershipsIndex extends Component
 
     public function render()
     {
-        $user = Auth::user(); // Obtener el usuario autenticado
+        $user = Auth::user();
 
-        // Eager load the 'gym' relationship
         $memberships = Membership::with('gym')
             ->where(function($query) {
                 $query->where('name', 'LIKE', '%' . $this->query . '%')
@@ -31,23 +45,21 @@ class MembershipsIndex extends Component
                           $q->where('name', 'LIKE', '%' . $this->query . '%');
                       });
 
-                // Filtrar por precio (si el query es un número)
                 if (is_numeric($this->query)) {
                     $query->orWhere('price', $this->query);
                 }
             });
 
-        // Filtrar por gimnasios a los que pertenece el administrador
         if ($user && $user->hasRole('Administrador')) {
-            $user->load('gyms'); // Eager load the gyms relationship for the authenticated user
-            $gymIds = $user->gyms->pluck('id')->toArray(); // Obtener los IDs de los gimnasios del administrador
+            $user->load('gyms');
+            $gymIds = $user->gyms->pluck('id')->toArray();
             $memberships->whereHas('gym', function ($query) use ($gymIds) {
                 $query->whereIn('gyms.id', $gymIds);
             });
         }
 
         return view('livewire.membership.memberships-index', [
-            'memberships' => $memberships->paginate(10)
+            'memberships' => $memberships->paginate($this->perPage)
         ]);
     }
 }
