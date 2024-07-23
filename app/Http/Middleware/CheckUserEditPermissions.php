@@ -36,6 +36,11 @@ class CheckUserEditPermissions
 
         // Verifica si el usuario autenticado es un Staff y cumple con las restricciones adicionales
         if ($authUser->hasRole('Staff')) {
+
+            if ($authUser->id === $userToEdit->id) {
+                return $next($request);
+            }
+
             // Verificar si el usuario a editar tiene rol de Administrador o Super Administrador
             if ($userToEdit->hasRole('Administrador') || $userToEdit->hasRole('Super Administrador') || $userToEdit->hasRole('Staff')) {
                 abort(403, 'No tienes permiso para editar este usuario.');

@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->string('photo')->nullable();
             $table->string('name_contact')->nullable();
+            $table->enum('gender', ['male', 'female', 'undefined']);
+            $table->string('address')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');

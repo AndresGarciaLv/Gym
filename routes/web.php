@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\UserMembershipController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Staff\StaffController;
+use App\Http\Middleware\CheckGymAccess;
 use App\Http\Middleware\CheckGymMembership;
 use App\Http\Middleware\CheckGymOwnership;
 use App\Http\Middleware\CheckGymUserOwnership;
@@ -36,6 +37,14 @@ Route::middleware('auth')->group(function () {
         return view('home.staff');
     })->middleware('can:Dashboard-St')->name('Dashboard-St');
 
+    Route::get('/check-in-out', function () {
+        return view('home.administrador');
+    })->middleware('can:Dashboard-Adm')->name('Dashboard-Adm');
+
+    Route::get('/security-account', function () {
+        return view('profile.security');
+    })->name('profile.security');
+
     Route::get('/users/{user}/generate-credential', [CredentialController::class, 'printCredential'])->name('admin.users.generate-credential');
      Route::get('/admin/users/generate-credential/{user}/pdf', [CredentialController::class, 'generatePDF'])->name('admin.users.generate-credential.pdf');
 
@@ -46,6 +55,9 @@ Route::middleware('auth')->group(function () {
   Route::get('users/create', [UserController::class, 'create'])
     ->middleware('can:admin.users.create')
     ->name('admin.users.create');
+
+    Route::get('gyms/{gym}/memberships', [UserController::class, 'membershipsByGym']);
+
 
     Route::resource('users', UserController::class)
     ->middleware('can:admin.users')
@@ -78,6 +90,9 @@ Route::middleware('auth')->group(function () {
     ->middleware(['auth', CheckGymUserOwnership::class])
     ->name('admin.gyms.users');
 
+    Route::get('/gyms/{gym}/memberships', [GymController::class, 'getMemberships']);
+
+
   /*   Route::get('admin/gyms/{id}/users', [GymController::class, 'users'])->middleware('can:admin.gyms.users')->name('admin.gyms.users'); */
 
     Route::resource('memberships', MembershipController::class)->middleware('can:admin.memberships')->names('admin.memberships');
@@ -97,7 +112,7 @@ Route::middleware('auth')->group(function () {
     Route::post('admin/gym-log/{gym}/entry', [GymLogController::class, 'logEntry'])->name('gym-log.entry');
     Route::post('admin/gym-log/{gym}/exit', [GymLogController::class, 'logExit'])->name('gym-log.exit');
 
-    Route::get('admin/gym-log/{gym}', [GymLogController::class, 'index'])->name('admin.gym-log.index');
+    Route::get('admin/gym-log/{gym}', [GymLogController::class, 'index'])->middleware(['auth', CheckGymAccess::class])->name('admin.gym-log.index');
     Route::post('admin/gym-log/{gym}/action', [GymLogController::class, 'logAction'])->name('admin.gym-log.logAction');
 
     //STAFF ROUTES

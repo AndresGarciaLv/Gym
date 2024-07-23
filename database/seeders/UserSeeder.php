@@ -67,6 +67,14 @@ class UserSeeder extends Seeder
               'phone_emergency' => '9985352422',
               'role' => 'Super Administrador',
           ],
+          [
+            'name' => 'Checador EricksGYM',
+            'email' => 'checador@gmail.com',
+            'birthdate' => '1999-07-01',
+            'phone_number' => '9987824454',
+            'phone_emergency' => '9985352422',
+            'role' => 'Checador',
+        ],
       ];
 
       // Crear usuarios y asignar roles

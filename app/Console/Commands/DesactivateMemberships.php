@@ -4,12 +4,13 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\UserMembership;
+use App\Models\User;
 use Carbon\Carbon;
 
 class DesactivateMemberships extends Command
 {
     protected $signature = 'memberships:desactivate';
-    protected $description = 'Desactivar membresías vencidas y membresías diarias a las 00:00:00 HRS de todos los días';
+    protected $description = 'Desactivar usuarios con membresías vencidas y membresías diarias a las 00:00:00 HRS de todos los días';
 
     public function __construct()
     {
@@ -30,6 +31,19 @@ class DesactivateMemberships extends Command
 
         foreach ($expiredMemberships as $membership) {
             $membership->update(['isActive' => false]);
+
+            // Desactivar usuario si no renovó su membresía en 3 días
+            $user = $membership->user;
+            if ($user->hasRole('Cliente')) {
+                // Verificar si el usuario tiene alguna membresía activa
+                $activeMemberships = UserMembership::where('id_user', $user->id)
+                    ->where('isActive', true)
+                    ->count();
+
+                if ($activeMemberships == 0) {
+                    $user->update(['isActive' => false]);
+                }
+            }
         }
 
         // Desactivar membresías diarias a las 00:00:00 HRS
@@ -46,6 +60,6 @@ class DesactivateMemberships extends Command
             $membership->update(['isActive' => false]);
         }
 
-        $this->info('Membresías vencidas y membresías diarias desactivadas exitosamente.');
+        $this->info('Usuarios con Membresías vencidas y membresías diarias desactivadas exitosamente.');
     }
 }

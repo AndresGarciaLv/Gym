@@ -61,6 +61,8 @@ class StaffController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'id_membership' => 'required|exists:memberships,id',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'gender' => 'required|in:male,female,undefined',
+            'address' => 'nullable|string|max:255',
         ]);
 
         $userData = [
@@ -71,6 +73,8 @@ class StaffController extends Controller
             'phone_emergency' => $request->phone_emergency,
             'birthdate' => $request->birthdate,
             'isActive' => true,
+            'gender' => $request->gender,
+            'address' => $request->address,
             'created_by' => auth()->id(),
         ];
 

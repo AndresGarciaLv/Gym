@@ -50,6 +50,18 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->route('Dashboard-Adm');
             case 'Staff':
                 return redirect()->route('Dashboard-St');
+            case 'Checador':
+
+                    // Obtener el gimnasio al que pertenece el usuario con rol de Checador
+                    $gym = $user->gyms->first(); // Suponiendo que el usuario solo pertenece a un gimnasio
+
+                    if ($gym) {
+                        return redirect()->route('admin.gym-log.index', ['gym' => $gym->id]);
+                    } else {
+                        Auth::logout();
+                        flash()->error('No se ha encontrado un gimnasio asociado. Por favor, contácte al Administrador del Sistema');
+                        return redirect()->route('login');
+                    }
             default:
                 return redirect('/'); // Redirige a una ruta predeterminada si no tiene roles específicos
         }

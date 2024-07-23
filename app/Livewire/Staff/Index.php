@@ -49,6 +49,7 @@ class Index extends Component
                     }
                 });
             })
+            ->orderBy('start_date', 'desc') // Ordenar por fecha de inicio de más reciente a más antigua
             ->paginate(10);
 
         // Filtrar por estado de la membresía

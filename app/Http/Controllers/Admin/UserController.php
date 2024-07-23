@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Mail\WelcomeMail;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Gym; // Asegúrate de importar el modelo Gym
+use App\Models\Gym;
 use App\Models\Membership;
+use App\Models\UserMembership;
 use Dotenv\Exception\ValidationException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
@@ -50,13 +52,28 @@ class UserController extends Controller
             'password' => $role !== 'Cliente' ? 'required|string|min:8|confirmed' : 'nullable|string|min:8|confirmed',
             'isActive' => 'required|boolean',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'gender' => 'required|in:male,female,undefined',
+            'address' => 'nullable|string|max:255',
         ];
 
         if (in_array($role, ['Super Administrador', 'Administrador'])) {
             $rules['gyms'] = 'required|array';
             $rules['gyms.*'] = 'exists:gyms,id';
-        } else {
+            $rules['id_membership'] = 'nullable|exists:memberships,id';
+        $rules['start_date'] = 'nullable|date';
+        $rules['end_date'] = 'nullable|date|after:start_date';
+
+        }elseif($role === 'Cliente'){
             $rules['single_gym'] = 'required|exists:gyms,id';
+        $rules['id_membership'] = 'required|exists:memberships,id';
+        $rules['start_date'] = 'required|date';
+        $rules['end_date'] = 'required|date|after:start_date';
+        }
+        else {
+            $rules['single_gym'] = 'required|exists:gyms,id';
+            $rules['id_membership'] = 'nullable|exists:memberships,id';
+            $rules['start_date'] = 'nullable|date';
+            $rules['end_date'] = 'nullable|date|after:start_date';
         }
 
         $request->validate($rules);
@@ -68,6 +85,8 @@ class UserController extends Controller
                 'phone_number' => $request->phone_number,
                 'birthdate' => $request->birthdate,
                 'isActive' => $request->isActive,
+                'gender' => $request->gender,
+                'address' => $request->address,
                 'created_by' => auth()->user()->id,
             ];
 
@@ -86,7 +105,20 @@ class UserController extends Controller
                 $user->save();
             }
 
-            if (in_array($role, ['Super Administrador', 'Administrador'])) {
+            if ($role === 'Cliente') {
+                $user->gyms()->attach($request->single_gym);
+                $startDate = Carbon::parse($request->start_date);
+                $endDate = Carbon::parse($request->end_date);
+                UserMembership::create([
+                    'id_user' => $user->id,
+                    'id_gym' => $request->single_gym,
+                    'id_membership' => $request->id_membership,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'isActive' => true,
+                ]);
+            }
+            elseif (in_array($role, ['Super Administrador', 'Administrador'])) {
                 $user->gyms()->attach($request->gyms);
             } else {
                 $user->gyms()->attach($request->single_gym);
@@ -135,6 +167,9 @@ class UserController extends Controller
             'isActive' => 'required|boolean',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'remove_photo' => 'nullable|boolean',
+            'gender' => 'required|in:male,female,undefined',
+            'address' => 'nullable|string|max:255',
+
         ];
 
         // Validación específica según el rol
@@ -162,6 +197,8 @@ class UserController extends Controller
             'phone_emergency' => $request->phone_emergency,
             'birthdate' => $request->birthdate,
             'isActive' => $request->isActive,
+            'gender' => $request->gender,
+            'address' => $request->address,
             'updated_by' => auth()->user()->id,
         ];
 
@@ -202,7 +239,11 @@ class UserController extends Controller
         return redirect()->route('admin.users.edit', $user->id);
     }
 
-
+    public function membershipsByGym($gymId)
+    {
+        $memberships = Membership::where('gym_id', $gymId)->get();
+        return response()->json($memberships);
+    }
 
     /**
      * Remove the specified resource from storage.

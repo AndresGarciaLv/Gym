@@ -130,4 +130,9 @@ class GymController extends Controller
 
         return view('admin.gyms.users', compact('gym', 'users'));
     }
+
+    public function getMemberships(Gym $gym)
+    {
+        return response()->json($gym->memberships);
+    }
 }

@@ -24,6 +24,9 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        // Añadir mensaje flash
+        flash()->success('¡Contraseña modificada exitosamente!');
+
         return back()->with('status', 'password-updated');
     }
 }

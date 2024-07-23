@@ -60,21 +60,25 @@
                     $roles = $user->getRoleNames();
                 @endphp
                 @if ($roles->contains('Staff'))
-                    @php
-                        $gym = $user->gyms()->first();
-                    @endphp
-                    <a href="/panel-staff" class="flex justify-center items-center border-b border-b-white">
-                        <h2 id="imagen" class="text-xl text-[#fff] font-bold mb-2">{{ $gym ? $gym->name : 'GYM' }}
-                        </h2>
+                @php
+                    $gym = $user->gyms()->first();
+                @endphp
+                <a href="/panel-staff" class="flex justify-center items-center border-b border-b-white">
+                    @if ($gym && $gym->photo)
+                        <img class="w-[80px] mb-2" id="imagen" src="{{asset('storage/' . $gym->photo) }}">
                         <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
-                    </a>
-                @else
-                    <a href="/" class="flex justify-center items-center border-b border-b-white">
-                        <img class="w-[80px] mb-2" id="imagen" src="{{ asset('fotos/Gym-logo.png') }}"
-                            alt="">
+                    @else
+                        <h2 id="imagen" class="text-xl text-[#fff] font-bold mb-2">{{ $gym ? $gym->name : 'GYM' }}</h2>
                         <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
-                    </a>
-                @endif
+                    @endif
+                </a>
+            @else
+                <a href="/" class="flex justify-center items-center border-b border-b-white">
+                    <img class="w-[80px] mb-2" id="imagen" src="{{ asset('fotos/Gym-logo.png') }}" alt="">
+                    <h2 id="gym" class="text-xl text-[#fff] font-bold mb-2">GYM</h2>
+                </a>
+            @endif
+
 
             </div>
             <ul class="mt-4 scroll2 overflow-y-scroll" id="lista-side">
@@ -384,9 +388,19 @@
                                             src="{{ asset('storage/' . auth()->user()->photo) }}"
                                             alt="Foto de perfil" />
                                     @else
-                                        <!-- Si el usuario no tiene foto de perfil, muestra un icono de usuario predeterminado -->
+                                        @php
+                                            $avatar = 'fotos/avatar.webp';
+                                            if (auth()->user()->gender == 'male') {
+                                                $avatar = 'fotos/avatar.webp';
+                                            } elseif (auth()->user()->gender == 'female') {
+                                                $avatar = 'fotos/avatar-female.webp';
+                                            } elseif (auth()->user()->gender == 'undefined') {
+                                                $avatar = 'fotos/indefinido.webp';
+                                            }
+                                        @endphp
+                                        <!-- Si el usuario no tiene foto de perfil, muestra un icono de usuario predeterminado según su género -->
                                         <img id="preview" class="w-8 h-8 rounded-full"
-                                            src="{{ asset('fotos/avatar.webp') }}"
+                                            src="{{ asset($avatar) }}"
                                             alt="Ícono de usuario predeterminado">
                                     @endif
 
@@ -397,6 +411,7 @@
                                         class="connection-status-dot top-0 left-7 absolute w-3 h-3 bg-lime-500 border-2 border-white rounded-full">
                                     </div>
                                 </div>
+
                             </div>
                             <div class="p-2 hidden md:block text-left">
                                 <h2 class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</h2>

@@ -106,6 +106,65 @@
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+                    
+                    <div class="mb-4 w-full">
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Dirección <span class="text-gray-400">(opcional)</span></label>
+                        <input
+                            type="text"
+                            name="address"
+                            id="address"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                            placeholder="Dirección"
+                            value="{{ old('address') }}"
+                        >
+                        @error('address')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Género <b class="text-[#FF0104]">*</b></label>
+<div class="flex items-center space-x-4 mb-4 w-full">
+    <div class="flex items-center">
+        <input
+            type="radio"
+            name="gender"
+            id="gender_male"
+            value="male"
+            {{ old('gender') == 'male' ? 'checked' : '' }}
+            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+            required
+        >
+        <label for="gender_male" class="ml-2 block text-sm text-gray-700">Masculino</label>
+    </div>
+    <div class="flex items-center">
+        <input
+            type="radio"
+            name="gender"
+            id="gender_female"
+            value="female"
+            {{ old('gender') == 'female' ? 'checked' : '' }}
+            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+            required
+        >
+        <label for="gender_female" class="ml-2 block text-sm text-gray-700">Femenino</label>
+    </div>
+    <div class="flex items-center">
+        <input
+            type="radio"
+            name="gender"
+            id="gender_undefined"
+            value="undefined"
+            {{ old('gender') == 'undefined' ? 'checked' : '' }}
+            class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+            required
+        >
+        <label for="gender_undefined" class="ml-2 block text-sm text-gray-700">Indefinido</label>
+    </div>
+    @error('gender')
+        <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+    @enderror
+</div>
+
 
                     <div id="multiGymSelection" class="mb-4 w-full">
                         <label for="gyms" class="block text-sm font-medium text-gray-700 mb-2">Selecciona uno o más Gimnasios <b class="text-[#FF0104]">*</b></label>
@@ -237,7 +296,7 @@
             if (selectedRole === 'Super Administrador' || selectedRole === 'Administrador') {
                 multiGymSelection.style.display = 'block';
                 singleGymSelection.style.display = 'none';
-            } else if (selectedRole === 'Staff' || selectedRole === 'Cliente') {
+            } else if (selectedRole === 'Staff' || selectedRole === 'Cliente' || selectedRole === 'Checador') {
                 multiGymSelection.style.display = 'none';
                 singleGymSelection.style.display = 'block';
             } else {

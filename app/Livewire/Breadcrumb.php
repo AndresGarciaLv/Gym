@@ -53,12 +53,16 @@ class Breadcrumb extends Component
             'admin.gyms.user-memberships' => ['name' => 'Membresías Activas', 'roles' => ['Administrador', 'Super Administrador']],
             'admin.user-memberships.edit' => ['name' => 'Editar Membresía Activa', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
             'admin.user-memberships.create' => ['name' => 'Asignar Membresía', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
+            'admin.user-memberships.renew' => ['name' => 'Renovar Membresía', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
 
             //STAFF
             'staffs.clients' => ['name' => 'Lista de Clientes', 'roles' => ['Staff']],
             'staffs.index' => ['name' => 'Membresías Activas', 'roles' => ['Staff']],
             'staffs.create' => ['name' => 'Nuevo Cliente', 'roles' => ['Staff']],
 
+            //PERFIL
+            'profile.edit' => ['name' => 'Perfil', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
+            'profile.security' => ['name' => 'Seguridad', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
 
         ];
 

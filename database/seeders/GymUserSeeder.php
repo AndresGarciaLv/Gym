@@ -24,7 +24,7 @@ class GymUserSeeder extends Seeder
 
        // Asignar usuarios a gimnasios según su rol
        foreach ($users as $user) {
-           if ($user->hasRole('Staff') || $user->hasRole('Cliente')) {
+           if ($user->hasRole('Staff') || $user->hasRole('Cliente') || $user->hasRole('Checador')) {
                // Asignar un solo gimnasio aleatorio a los usuarios con rol 'Staff' o 'Cliente'
                $user->gyms()->attach(
                    $gyms->random(1)->pluck('id')->toArray()

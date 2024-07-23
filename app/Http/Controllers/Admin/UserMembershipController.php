@@ -145,6 +145,11 @@ class UserMembershipController extends Controller
             'is_renewal' => false, // Nueva membresía, no es renovación
         ]);
 
+         // Activar al usuario si tiene isActive = false
+         if (!$user->isActive) {
+            $user->update(['isActive' => true]);
+        }
+
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía asignada exitosamente!');
 
@@ -225,8 +230,13 @@ class UserMembershipController extends Controller
     // Obtener el ID del gimnasio de la membresía actualizada
     $gymId = $validated['id_gym'];
 
-    // Redirigir con un mensaje de éxito
-    flash()->success('¡Membresía actualizada exitosamente!');
+     // Redirigir con un mensaje de éxito
+     flash()->success('¡Membresía actualizada exitosamente!');
+
+     // Verificar si el usuario autenticado es Staff y redirigir en consecuencia
+     if (auth()->user()->hasRole('Staff')) {
+        return redirect()->route('staffs.index');
+    }
     return redirect()->route('admin.gyms.user-memberships', ['id' => $gymId]);
 }
 

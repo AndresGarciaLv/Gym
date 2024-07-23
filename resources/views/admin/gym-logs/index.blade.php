@@ -56,175 +56,194 @@
         .modal-body {
             overflow-y: auto;
         }
+
+        /* Estilo para el botón de Cerrar Sesión */
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .no-underline {
+            text-decoration: none;
+        }
+
+        .no-underline:hover {
+            text-decoration: none;
+        }
     </style>
 </head>
 
 <body>
-  <div class="bg-gradient-to-r from-gray-200 via-red-100 to-gray-300 min-h-screen w-full pt-3">
+    <div class="bg-gradient-to-r from-gray-200 via-red-100 to-gray-300 min-h-screen w-full pt-3">
+        @if (Auth::check() && Auth::user()->hasRole('Checador'))
+        <div class="logout-button">
+            <form action="{{ route('logout') }}" method="post">
+                @csrf
+                <a href="{{ route('logout') }}"
+                    onclick="event.preventDefault();
+                              localStorage.clear();
+                              this.closest('form').submit();"
+                    class="flex font-semibold items-center py-1 px-1 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md w-full transition-colors no-underline hover:no-underline">
+                    <i class='bx bx-log-out mr-1 text-xl'></i>
+                    <span class="nav-text text-sm">Cerrar sesión</span>
+                </a>
+            </form>
+        </div>
+    @endif
 
         <h1 class="shadow-xl p-8 text-3xl font-bold text-center uppercase">CHECK IN / OUT {{ $gym->name }}</h1>
 
-      <div class="max-w-10xl mx-auto sm:px-6 lg:px-8">
-          <div class="overflow-hidden shadow-sm sm:rounded-lg">
-              <div class="flex flex-col items-center justify-center p-6 bg-white border-b border-gray-200">
-                  <h2 class="text-[#7F0001]">¡Escanea tu código de Barras!</h2>
-                  <img class="w-[250px] h-[250px]" src="{{ asset('fotos/codigo-de-barras.png') }}" alt="Imagen Barcode" />
-                  <form id="checkin-form" method="POST" action="{{ route('admin.gym-log.logAction', $gym->id) }}">
-                      @csrf
-                      <input class="text-center text-4xl" type="text" id="code-input" name="code" placeholder="Ingresa el código" maxlength="6" required />
-                      <input type="hidden" name="id_gym" value="{{ $gym->id }}"> <!-- ID del gimnasio dinámico -->
-                      <button type="submit" class="ml-2 p-2 bg-blue-500 text-white rounded" style="display: none;">Buscar</button>
-                      @if ($errors->has('code'))
-                      <div id="code-error-message" class="text-red-500 mt-2">{{ $errors->first('code') }}</div>
-                  @endif
-                  </form>
+        <div class="max-w-10xl mx-auto sm:px-6 lg:px-8">
+            <div class="overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="mt-10 flex flex-col items-center justify-center p-6 bg-white border-b border-gray-200">
+                    <h2 class="text-[#7F0001]">¡Escanea tu código de Barras!</h2>
+                    <img class="w-[250px] h-[250px]" src="{{ asset('fotos/codigo-de-barras.png') }}" alt="Imagen Barcode" />
+                    <form id="checkin-form" method="POST" action="{{ route('admin.gym-log.logAction', $gym->id) }}">
+                        @csrf
+                        <input class="text-center text-4xl" type="text" id="code-input" name="code" placeholder="Ingresa el código" maxlength="6" required />
+                        <input type="hidden" name="id_gym" value="{{ $gym->id }}"> <!-- ID del gimnasio dinámico -->
+                        <button type="submit" class="ml-2 p-2 bg-blue-500 text-white rounded" style="display: none;">Buscar</button>
+                        @if ($errors->has('code'))
+                            <div id="code-error-message" class="text-red-500 mt-2">{{ $errors->first('code') }}</div>
+                        @endif
+                    </form>
 
-                  @if (session('message'))
-                      <script>
-                          $(document).ready(function() {
-                              // Aplicar blur al contenido principal
-                              $('body > .bg-gradient-to-r');
+                    @if (session('message'))
+                        <script>
+                            $(document).ready(function() {
+                                // Aplicar blur al contenido principal
+                                $('body > .bg-gradient-to-r');
 
-                              // Mostrar el modal
-                              $('#messageModal').modal('show');
-                              setTimeout(function() {
-                                  $('#messageModal').modal('hide');
-                                  // Quitar el blur después de cerrar el modal
-                                  $('body > .bg-gradient-to-r');
-                              }, 10000);
-                          });
-                      </script>
-                  @endif
+                                // Mostrar el modal
+                                $('#messageModal').modal('show');
+                                setTimeout(function() {
+                                    $('#messageModal').modal('hide');
+                                    // Quitar el blur después de cerrar el modal
+                                    $('body > .bg-gradient-to-r');
+                                }, 10000);
+                            });
+                        </script>
+                    @endif
 
-              </div>
-          </div>
-      </div>
-      <div class="mt-5 text-sm text-center text-gray-500 font-semibold py-1">
-        Copyright © <span id="get-current-year">2024</span><a href="https://www.facebook.com/profile.php?id=61558455937047" class="hover:underline text-gray-500 hover:text-gray-800" target="_blank"> Erick's GYM </a>
-        <span>by</span>
-        <a href="https://www.firenow.com" class="text-gray-500 hover:text-gray-800 hover:underline">Firenow Solutions</a>.
-      </div>
-  </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5 text-sm text-center text-gray-500 font-semibold py-1">
+            Copyright © <span id="get-current-year">2024</span><a href="https://www.facebook.com/profile.php?id=61558455937047" class="hover:underline text-gray-500 hover:text-gray-800" target="_blank"> Erick's GYM </a>
+            <span>by</span>
+            <a href="https://www.firenow.com" class="text-gray-500 hover:text-gray-800 hover:underline">Firenow Solutions</a>.
+        </div>
+    </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content
-              @if (session('status') == 'Vigente') modal-vigente
-              @elseif (session('status') == 'Por Vencer') modal-por-vencer
-              @elseif (session('status') == 'Vence Hoy') modal-vence-hoy
-              @else modal-vencido
-              @endif">
-              <div class="modal-header"
-                  style="background-color:
-                      @if (session('status') == 'Vigente') #28a745
-                      @elseif (session('status') == 'Por Vencer') #ffc107
-                      @elseif (session('status') == 'Vence Hoy') #007bff
-                      @else #dc3545
-                      @endif;">
-              <h5 class="modal-title" id="messageModalLabel">
-                @if (session('status') == 'Vencido')
-                    Acceso Denegado
-                @else
-                    {{ session('action') == 'entry' ? 'Registro de Entrada' : 'Registro de Salida' }}
-                @endif
-            </h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body text-center">
-
-                        @if (session('status') == 'Vigente')
-                            <h2 class="text-gray-700">Bienvenido, disfruta tu visita.</h2>
-                            <h3 class="text-[#28a745]">
-                                {{ session('message') }}
-                            </h3>
-
-                        @elseif (session('status') == 'Por Vencer')
+    <!-- Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content
+                @if (session('status') == 'Vigente') modal-vigente
+                @elseif (session('status') == 'Por Vencer') modal-por-vencer
+                @elseif (session('status') == 'Vence Hoy') modal-vence-hoy
+                @else modal-vencido
+                @endif">
+                <div class="modal-header"
+                    style="background-color:
+                        @if (session('status') == 'Vigente') #28a745
+                        @elseif (session('status') == 'Por Vencer') #ffc107
+                        @elseif (session('status') == 'Vence Hoy') #007bff
+                        @else #dc3545
+                        @endif;">
+                    <h5 class="modal-title" id="messageModalLabel">
+                        @if (session('status') == 'Vencido')
+                            Acceso Denegado
+                        @else
+                            {{ session('action') == 'entry' ? 'Registro de Entrada' : 'Registro de Salida' }}
+                        @endif
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    @if (session('status') == 'Vigente')
+                        <h2 class="text-gray-700">Bienvenido, disfruta tu visita.</h2>
+                        <h3 class="text-[#28a745]">
+                            {{ session('message') }}
+                        </h3>
+                    @elseif (session('status') == 'Por Vencer')
                         <h3 class="text-gray-700">Bienvenido, disfruta tu visita.</h2>
                         <h4 class="text-[#ffc107] ">
                             {{ session('message') }}
                         </h4>
                         <h5 class="text-gray-700">Te quedan pocos días, ¡No te quedes sin acceso!</h5>
                         <h4 class="text-[#7F0001]">¡Renueva tú Membresía en Recepción!</h4>
-
-                        @elseif (session('status') == 'Vence Hoy')
+                    @elseif (session('status') == 'Vence Hoy')
                         <h3 class="text-gray-700">Bienvenido, disfruta tu visita.</h2>
                         <h4 class="text-[#007bff] ">
                             {{ session('message') }}
                         </h4>
                         <h5 class="text-gray-700">Por favor, pasa a recepción para renovar tú membresía.</h5>
+                    @elseif (session('status') == 'Vencido')
+                        <h4 class="text-[#7F0001] ">
+                            {{ session('message') }}
+                        </h4>
+                    @else
+                        <h3 class="text-gray-700 ">{{ session('message') }}</h3>
+                    @endif
 
-                        @elseif (session('status') == 'Vencido')
-                            <h4 class="text-[#7F0001] ">
-                                {{ session('message') }}
-                            </h4>
+                    @if(session('membership') && session('user'))
+                        <div class="mt-4 flex flex-col justify-center items-center">
+                            <p class="text-xl"><strong>{{ session('membership')->membership->name }}</strong> </p>
+                            <p><strong>Fecha de Vencimiento:</strong> {{ \Carbon\Carbon::parse(session('membership')->end_date)->format('d-m-Y') }}</p>
+                            <p><strong>Gimnasio:</strong> {{ session('membership')->gym->name }}</p>
+                            <p><strong>Usuario:</strong> {{ session('user')->name }}</p>
+                            <p><strong>Hora:</strong> {{ session('currentTime') }}</p>
+                            <img class="w-32 h-32 rounded-full" src="{{ session('user')->photo ? asset('storage/' . session('user')->photo) : asset('fotos/Avatar.webp') }}" alt="Foto de perfil" />
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        @else
-                            <h3 class="text-gray-700 ">{{ session('message') }}</h3>
-                        @endif
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const codeInput = document.getElementById('code-input');
+            // Focus the input when the page loads
+            codeInput.focus();
 
-                  @if(session('membership') && session('user'))
-                      <div class="mt-4 flex flex-col justify-center items-center">
-                          <p class="text-xl"><strong>{{ session('membership')->membership->name }}</strong> </p>
-                          <p><strong>Fecha de Vencimiento:</strong> {{ \Carbon\Carbon::parse(session('membership')->end_date)->format('d-m-Y') }}</p>
+            // Re-focus the input whenever it loses focus
+            codeInput.addEventListener('blur', function () {
+                setTimeout(function () {
+                    codeInput.focus();
+                }, 0);
+            });
 
-                          <p><strong>Gimnasio:</strong> {{ session('membership')->gym->name }}</p>
-                          <p><strong>Usuario:</strong> {{ session('user')->name }}</p>
-                          <p><strong>Hora:</strong> {{ session('currentTime') }}</p>
-                          <img class="w-32 h-32 rounded-full" src="{{ session('user')->photo ? asset('storage/' . session('user')->photo) : asset('fotos/Avatar.webp') }}" alt="Foto de perfil" />
-                      </div>
-                  @endif
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              </div>
-          </div>
-      </div>
+            codeInput.addEventListener('input', function (e) {
+                let value = codeInput.value;
+                // Eliminar caracteres no alfanuméricos y convertirlos a mayúsculas
+                value = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                // Limite de 6 caracteres
+                if (value.length > 6) {
+                    value = value.slice(0, 6);
+                }
+                codeInput.value = value;
 
-  </div>
-
-
-
-  <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          const codeInput = document.getElementById('code-input');
-          // Focus the input when the page loads
-          codeInput.focus();
-
-          // Re-focus the input whenever it loses focus
-          codeInput.addEventListener('blur', function () {
-              setTimeout(function () {
-                  codeInput.focus();
-              }, 0);
-          });
-
-
-        codeInput.addEventListener('input', function (e) {
-              let value = codeInput.value;
-              // Eliminar caracteres no alfanuméricos y convertirlos a mayúsculas
-
-              value = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-              // Limite de 6 caracteres
-              if (value.length > 6) {
-                  value = value.slice(0, 6);
-              }
-              codeInput.value = value;
-
-              if (codeInput.value.length === 6) { // Suponiendo un código de 6 caracteres
-                  document.getElementById('checkin-form').submit();
-              }
-          });
+                if (codeInput.value.length === 6) { // Suponiendo un código de 6 caracteres
+                    document.getElementById('checkin-form').submit();
+                }
+            });
 
             // Ocultar el mensaje de error después de 10 segundos
-        const errorMessage = document.getElementById('code-error-message');
-        if (errorMessage) {
-            setTimeout(function () {
-                errorMessage.style.display = 'none';
-            }, 10000); // 10 segundos
-        }
-      });
-  </script>
+            const errorMessage = document.getElementById('code-error-message');
+            if (errorMessage) {
+                setTimeout(function () {
+                    errorMessage.style.display = 'none';
+                }, 10000); // 10 segundos
+            }
+        });
+    </script>
 </body>
 </html>

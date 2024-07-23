@@ -19,6 +19,7 @@ class RoleSeeder extends Seeder
             'Administrador',
             'Staff',
             'Cliente',
+            'Checador',
         ];
 
         // Crear o buscar roles
@@ -30,8 +31,9 @@ class RoleSeeder extends Seeder
         $permissions = [
             'Dashboard-SupAdm' => ['Super Administrador'],
             'Dashboard-Adm' => ['Administrador'],
+            'Dashboard-St' => ['Staff'],
             //USUARIOS
-            'admin.users' => ['Super Administrador', 'Administrador', 'Staff'],
+            'admin.users' => ['Super Administrador', 'Administrador'],
             'admin.users.create' => ['Super Administrador','Administrador'],
             'admin.users.edit' => ['Super Administrador', 'Administrador', 'Staff'],
             'admin.users.update' => ['Super Administrador', 'Administrador', 'Staff'],

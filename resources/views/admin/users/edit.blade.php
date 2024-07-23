@@ -19,8 +19,24 @@
                     <!-- Foto de Perfil -->
                     <div class="mb-5 text-center">
                         <div class="mx-auto w-32 h-32 mb-2 border rounded-full relative bg-gray-100 mb-4 shadow-inset">
-                            <img id="image" class="object-cover w-full h-32 rounded-full" src="{{ $user->photo ? asset('storage/' . $user->photo) : asset('fotos/Avatar.webp') }}" />
+                            @if ($user->photo)
+                                <img id="image" class="object-cover w-full h-32 rounded-full" src="{{ asset('storage/' . $user->photo) }}" />
+                            @else
+                                @php
+                                    $avatar = 'fotos/avatar.webp';
+                                    if ($user->gender == 'male') {
+                                        $avatar = 'fotos/avatar.webp';
+                                    } elseif ($user->gender == 'female') {
+                                        $avatar = 'fotos/avatar-female.webp';
+                                    } elseif ($user->gender == 'undefined') {
+                                        $avatar = 'fotos/indefinido.webp';
+                                    }
+                                @endphp
+                                <!-- Si el usuario no tiene foto de perfil, muestra un icono de usuario predeterminado según su género -->
+                                <img id="image" class="object-cover w-full h-32 rounded-full" src="{{ asset($avatar) }}" alt="Ícono de usuario predeterminado">
+                            @endif
                         </div>
+
 
                         <label
                             for="fileInput"
@@ -40,7 +56,8 @@
 
                         <input type="hidden" name="remove_photo" id="removePhotoInput" value="0">
 
-                        <div class="mx-auto w-48 text-gray-500 text-xs text-center mt-2">Haz Click para agregar una foto</div>
+                        <p class="text-gray-500 text-sm mt-2">Permitido JPG, GIF, PNG o Webp.</p>
+                            <p class="text-gray-500 text-sm">Tamaño máximo de 2048kB.</p>
 
                         <input name="photo" id="fileInput" accept="image/*" class="hidden" type="file"
                                onchange="let file = document.getElementById('fileInput').files[0];
@@ -97,6 +114,64 @@
                             <i class="absolute left-3 top-2 text-gray-500 bx bxs-calendar text-xl"></i>
                         </div>
                         @error('birthdate')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4 w-full">
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Dirección <span class="text-gray-400">(opcional)</span></label>
+                        <input
+                            type="text"
+                            name="address"
+                            id="address"
+                            class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-400 focus:outline-none focus:ring-[#7F0001] focus:border-[#7F0001]"
+                            placeholder="Dirección"
+                            value="{{ $user->address }}"
+                        >
+                        @error('address')
+                            <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Género <b class="text-[#FF0104]">*</b></label>
+                    <div class="flex items-center space-x-4 mb-4 w-full">
+                        <div class="flex items-center">
+                            <input
+                                type="radio"
+                                name="gender"
+                                id="gender_male"
+                                value="male"
+                                {{ $user->gender == 'male' ? 'checked' : '' }}
+                                class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                required
+                            >
+                            <label for="gender_male" class="ml-2 block text-sm text-gray-700">Masculino</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input
+                                type="radio"
+                                name="gender"
+                                id="gender_female"
+                                value="female"
+                                {{ $user->gender == 'female' ? 'checked' : '' }}
+                                class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                required
+                            >
+                            <label for="gender_female" class="ml-2 block text-sm text-gray-700">Femenino</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input
+                                type="radio"
+                                name="gender"
+                                id="gender_undefined"
+                                value="undefined"
+                                {{ $user->gender == 'undefined' ? 'checked' : '' }}
+                                class="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                required
+                            >
+                            <label for="gender_undefined" class="ml-2 block text-sm text-gray-700">Indefinido</label>
+                        </div>
+                        @error('gender')
                             <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
@@ -239,6 +314,13 @@
                         <a href="{{ route('admin.users.generate-credential.pdf', $user->id) }}"
                         class="text-white p-2 rounded-md mr-1 bg-blue-600 hover:bg-blue-700">Generar Credencial</a>
                     </div>
+
+
+                    @if (auth()->user()->id == $user->id || auth()->user()->hasRole('Administrador') || auth()->user()->hasRole('Super Administrador'))
+                        <p class="text-gray-400">Creado por: {{ $user->creator ? $user->creator->name : '' }} - {{ $user->created_at->format('d M Y, h:i A') }}</p>
+                        <p class="text-gray-400">Editado por: {{ $user->updater ? $user->updater->name : 'n/a' }} - {{ $user->updated_at ? $user->updated_at->format('d M Y, h:i A') : 'n/a' }}</p>
+                @endif
+
                 </form>
             </div>
         </div>
@@ -263,7 +345,7 @@
             if (selectedRole === 'Super Administrador' || selectedRole === 'Administrador') {
                 multiGymSelection.style.display = 'block';
                 singleGymSelection.style.display = 'none';
-            } else if (selectedRole === 'Staff' || selectedRole === 'Cliente') {
+            } else if (selectedRole === 'Staff' || selectedRole === 'Cliente' || selectedRole === 'Checador') {
                 multiGymSelection.style.display = 'none';
                 singleGymSelection.style.display = 'block';
             } else {
