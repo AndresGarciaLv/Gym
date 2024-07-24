@@ -17,23 +17,11 @@ class MembershipController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-{
-    // Obtener el valor de paginación desde la solicitud o usar 10 como valor predeterminado
-    $perPage = $request->input('per_page', 10);
-
-    // Validar que el valor de paginación sea un número entero positivo
-    if (!is_numeric($perPage) || $perPage <= 0) {
-        $perPage = 10; // Valor predeterminado
+    public function index()
+    {
+        $memberships = Membership::paginate(10);
+        return view('admin.memberships.index', compact('memberships'));
     }
-
-    // Obtener las membresías con la paginación
-    $memberships = Membership::paginate($perPage);
-
-    // Pasar el valor de paginación a la vista
-    return view('admin.memberships.index', compact('memberships', 'perPage'));
-}
-
 
     /**
      * Show the form for creating a new resource.

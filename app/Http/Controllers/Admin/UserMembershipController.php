@@ -39,15 +39,15 @@ class UserMembershipController extends Controller
 }
 
 
-    public function membershipsByGym($id)
-    {
-        $gym = Gym::findOrFail($id);
-        $userMemberships = UserMembership::with(['user.roles', 'gym', 'membership'])
-            ->where('id_gym', $id)
-            ->paginate(10);
+public function membershipsByGym($slug)
+{
+    $gym = Gym::where('slug', $slug)->firstOrFail();
+    $userMemberships = UserMembership::with(['user.roles', 'gym', 'membership'])
+        ->where('id_gym', $gym->id)
+        ->paginate(10);
 
-        return view('admin.user-memberships.index', compact('gym', 'userMemberships'));
-    }
+    return view('admin.user-memberships.index', compact('gym', 'userMemberships'));
+}
 
 
 
@@ -155,11 +155,15 @@ class UserMembershipController extends Controller
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía asignada exitosamente!');
 
+         // Obtener el slug del gimnasio
+         $gym = Gym::findOrFail($validated['id_gym']);
+         $gymSlug = $gym->slug;
+
     // Verificar si el usuario autenticado es Staff y redirigir en consecuencia
     if (auth()->user()->hasRole('Staff')) {
         return redirect()->route('staffs.index');
     }
-        return redirect()->route('admin.gyms.user-memberships', $validated['id_gym']);
+    return redirect()->route('admin.gyms.user-memberships', ['slug' => $gymSlug]);
     }
 
 
@@ -235,11 +239,15 @@ class UserMembershipController extends Controller
      // Redirigir con un mensaje de éxito
      flash()->success('¡Membresía actualizada exitosamente!');
 
+     // Obtener el slug del gimnasio
+    $gym = Gym::findOrFail($validated['id_gym']);
+    $gymSlug = $gym->slug;
+
      // Verificar si el usuario autenticado es Staff y redirigir en consecuencia
      if (auth()->user()->hasRole('Staff')) {
         return redirect()->route('staffs.index');
     }
-    return redirect()->route('admin.gyms.user-memberships', ['id' => $gymId]);
+    return redirect()->route('admin.gyms.user-memberships', ['slug' => $gymSlug]);
 }
 
 
@@ -323,7 +331,7 @@ class UserMembershipController extends Controller
             case DurationType::ANUAL:
                 return $startDate->copy()->addYear()->endOfDay();
             case DurationType::DIARIA:
-                return $startDate->copy()->addDay()->endOfDay();
+                return $startDate->copy()->endOfDay();
             default:
                 return null;
         }
@@ -353,14 +361,24 @@ class UserMembershipController extends Controller
      */
     public function destroy(string $id)
     {
+        // Encontrar la membresía de usuario por su ID
         $userMembership = UserMembership::findOrFail($id);
+
+        // Obtener el ID del gimnasio asociado
         $gymId = $userMembership->id_gym;
+
+        // Eliminar la membresía de usuario
         $userMembership->delete();
+
+        // Obtener el slug del gimnasio
+        $gym = Gym::findOrFail($gymId);
+        $gymSlug = $gym->slug;
 
         // Redirigir con un mensaje de éxito
         flash()->success('¡Membresía eliminada exitosamente!');
-        return redirect()->route('admin.gyms.user-memberships', $gymId);
+        return redirect()->route('admin.gyms.user-memberships', ['slug' => $gymSlug]);
     }
+
 
 
 }

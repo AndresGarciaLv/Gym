@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class UserMembership extends Model
 {
@@ -19,6 +20,7 @@ class UserMembership extends Model
         'duration_days',
         'isActive',
         'is_renewal',
+        'slug',
     ];
 
     /**
@@ -56,7 +58,7 @@ class UserMembership extends Model
         $now = Carbon::now()->startOfDay();
         $end_date = Carbon::parse($this->end_date)->startOfDay();
         $days_remaining = $now->diffInDays($end_date, false);
-        
+
         if ($now->isSameDay($end_date)) {
             $this->isActive = true;
             return 'Vence Hoy';
@@ -71,8 +73,8 @@ class UserMembership extends Model
             return 'Vencido';
         }
     }
-    
-    
+
+
     public function getStatusColorAttribute()
     {
         switch ($this->status) {
@@ -88,5 +90,6 @@ class UserMembership extends Model
                 return '#6c757d'; // Gris
         }
     }
+
 
 }

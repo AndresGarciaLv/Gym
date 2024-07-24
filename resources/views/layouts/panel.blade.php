@@ -91,35 +91,99 @@
                                 <i class='bx bxs-dashboard mr-3 text-lg'></i>
                                 <span class="nav-text text-sm">Dashboard</span>
                             </a>
-                <li class="mb-1 group">
-                    <a href="{{ route('staffs.create') }}"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                        <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
-                        <span class="nav-text text-sm">Nuevo Cliente</span>
+
+
+                <li id="group-gyms" class="mb-1 group relative z-2 transition-all">
+                    <a href=""
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
+                        <i class='bx bx-user-pin mr-3 text-lg' ></i>
+                        <span class="nav-text text-sm">Clientes</span>
+                        <i
+                            class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
                     </a>
+                    <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
+                            @if (Auth::user()->hasAnyRole(['Staff']))
+                            <li class="mb-1 group">
+                                <a href="{{ route('staffs.clients') }}"
+                                    class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
+                                    <i class='bx bxs-user-detail mr-3 text-lg'></i>
+                                    <span class="nav-text text-sm">Lista de Clientes</span>
+                                </a>
+                            </li>
+                            <li class="mb-1 group">
+                                <a href="{{ route('staffs.create') }}"
+                                    class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
+                                    <i class='bx bx-money-withdraw mr-3 text-lg'>+</i>
+                                    <span class="nav-text text-sm">Nuevo Cliente</span>
+                                </a>
+                            </li>
+
+                            @endif
+
+                    </ul>
                 </li>
-                <li class="mb-1 group">
-                    <a href="{{ route('staffs.clients') }}"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                        <i class='bx bxs-user-detail mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Lista de Clientes</span>
+
+
+                <li id="group-gyms" class="mb-1 group relative z-2 transition-all">
+                    <a href=""
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
+                        <i class='bx bxs-id-card mr-3 text-lg'></i>
+                        <span class="nav-text text-sm">Membresías</span>
+                        <i
+                            class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
                     </a>
+                    <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
+                            @if (Auth::user()->hasAnyRole(['Staff']))
+                            <li class="mb-1 group">
+                                <a href="{{ route('admin.user-memberships.create', $gym->id) }}"
+                                    class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors"
+                                    title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
+                                    <i class='bx bx-calendar-plus mr-3 text-lg'></i>
+                                    <span class="nav-text text-sm">Asignar Membresía</span>
+                                </a>
+                            </li>
+                            <li class="mb-1 group">
+                                <a href="{{ route('staffs.index') }}"
+                                    class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
+                                    <i class='bx bx-list-ul mr-3 text-lg'></i>
+                                    <span class="nav-text text-sm">Membresías Activas</span>
+                                </a>
+                            </li>
+                            @endif
+
+                    </ul>
                 </li>
-                <li class="mb-1 group">
-                    <a href="{{ route('admin.user-memberships.create', $gym->id) }}"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors"
-                        title="Asignar membresías a los usuarios que pertenecen a esta sucursal.">
-                        <i class='bx bx-calendar-plus mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Asignar Membresía</span>
+
+
+                <li id="group-gyms" class="mb-1 group relative z-2 transition-all">
+                    <a href=""
+                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] sidebar-dropdown-toggle rounded-md transition-colors">
+                        <i class='bx bx-news mr-3 text-lg' ></i>
+                        <span class="nav-text text-sm">Avisos</span>
+                        <i
+                            class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90 transition-transform hidden md:block"></i>
                     </a>
+                    <ul class="hidden absolute z-20 left-full top-0 w-48  text-white submenu rounded-md">
+                            @if (Auth::user()->hasAnyRole(['Staff']))
+                                <li>
+                                    <a href="{{ route('notices.index') }}"
+                                        class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                        <i class='bx bx-spreadsheet mr-3 text-lg'></i>
+                                        <span>Lista de Avisos</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('notices.create') }}"
+                                        class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                        <i class='bx bx-comment-add mr-3 text-lg'></i>
+                                        <span>Crear Aviso</span>
+                                    </a>
+                                </li>
+                            @endif
+
+                    </ul>
                 </li>
-                <li class="mb-1 group">
-                    <a href="{{ route('staffs.index') }}"
-                        class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors">
-                        <i class='bx bx-list-ul mr-3 text-lg'></i>
-                        <span class="nav-text text-sm">Membresías Activas</span>
-                    </a>
-                </li>
+
                 <li class="mb-1 group">
                     <a href="{{ route('admin.gym-log.index', $gym->id) }}"
                         class="flex font-semibold items-center py-2 px-4 text-white hover:bg-[#7F0001] hover:text-gray-100 rounded-md transition-colors"
@@ -225,6 +289,22 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if (Auth::user()->hasAnyRole(['Super Administrador', 'Administrador']))
+                                    <li>
+                                        <a href="{{ route('notices.index') }}"
+                                            class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                            <i class='bx bx-news mr-3 text-lg' ></i>
+                                            <span>Lista de Avisos</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('notices.create') }}"
+                                            class=" text-white text-sm flex items-center  p-1 rounded-md">
+                                            <i class='bx bx-comment-add mr-3 text-lg'></i>
+                                            <span>Crear Aviso</span>
+                                        </a>
+                                    </li>
+                                @endif
                             @endif
                         </ul>
                     </li>
@@ -298,7 +378,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.gyms.user-memberships', $gym->id) }}"
+                                    <a href="{{ route('admin.gyms.user-memberships', $gym->slug) }}"
                                         class="text-white text-sm flex items-center hover:bg-[#2F4050] p-1 rounded-md"
                                         title="Ver todas las membresías asignadas a clientes y usuarios de esta sucursal.">
                                         <i class='bx bxs-collection mr-3 text-xl'></i>

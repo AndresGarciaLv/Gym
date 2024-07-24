@@ -64,6 +64,11 @@ class Breadcrumb extends Component
             'profile.edit' => ['name' => 'Perfil', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
             'profile.security' => ['name' => 'Seguridad', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
 
+            //AVISOS
+            'notices.index' => ['name' => 'Lista de Avisos', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
+            'notices.edit' => ['name' => 'Editar Aviso', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
+            'notices.create' => ['name' => 'Crear de Aviso', 'roles' => ['Administrador', 'Super Administrador', 'Staff']],
+
         ];
 
         $hierarchy = [
@@ -81,11 +86,16 @@ class Breadcrumb extends Component
                 'admin.memberships.edit' => 'admin.memberships.index',
 
                 'admin.user-memberships.edit' => 'admin.gyms.user-memberships',
+                'notices.edit' => 'notices.index',
+                'notices.create' => 'notices.index',
             ],
             'Staff' => [
                 'admin.users.edit' => 'staffs.clients',
                 'admin.user-memberships.history' => 'staffs.clients',
                 'admin.user-memberships.edit' => 'staffs.index',
+                'notices.edit' => 'notices.index',
+                'notices.create' => 'notices.index',
+
             ],
             'Super Administrador' => [
                 'admin.users.create' => 'admin.users.index',
@@ -98,11 +108,14 @@ class Breadcrumb extends Component
                 'admin.gyms.edit' => 'admin.gyms.index',
                 'admin.memberships.gyms' =>'admin.gyms.index',
 
-
                 'admin.memberships.gyms' => 'admin.gyms.index',
                 'admin.memberships.create' => 'admin.memberships.index',
                 'admin.memberships.edit' => 'admin.memberships.index',
                 'admin.user-memberships.edit' => 'admin.gyms.user-memberships',
+
+                'notices.edit' => 'notices.index',
+                'notices.create' => 'notices.index',
+
             ],
         ];
 
