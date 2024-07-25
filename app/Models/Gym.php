@@ -31,6 +31,11 @@ class Gym extends Model
         return $this->hasMany(Membership::class, 'id_gym');
     }
 
+    public function notices()
+    {
+        return $this->hasMany(Notice::class, 'id_gym');
+    }
+
        // Generar un slug único al crear o actualizar un gimnasio
        public static function boot()
        {

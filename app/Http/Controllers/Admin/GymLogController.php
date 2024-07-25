@@ -15,7 +15,8 @@ class GymLogController extends Controller
 {
     public function index(Gym $gym)
     {
-        return view('admin.gym-logs.index', compact('gym'));
+        $notices = $gym->notices()->where('isActive', true)->get();
+        return view('admin.gym-logs.index', compact('gym', 'notices'));
     }
 
     public function logAction(Request $request, Gym $gym)

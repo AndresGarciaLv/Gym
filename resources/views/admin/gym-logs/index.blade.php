@@ -71,6 +71,43 @@
         .no-underline:hover {
             text-decoration: none;
         }
+
+        /* Estilos para los avisos */
+        .notices-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .notice-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 1rem;
+            width: calc(100% - 1rem); /* 4 tarjetas por fila con margen */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .notice-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .notice-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .notice-text {
+            font-size: 1.10rem;
+            color: #6c757d;
+            margin: 0.5rem 0;
+        }
+        .notice-date {
+            font-size: 1rem;
+            color: #adb5bd;
+        }
     </style>
 </head>
 
@@ -90,13 +127,13 @@
                 </a>
             </form>
         </div>
-    @endif
+        @endif
 
         <h1 class="shadow-xl p-8 text-3xl font-bold text-center uppercase">CHECK IN / OUT {{ $gym->name }}</h1>
 
         <div class="max-w-10xl mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="mt-10 flex flex-col items-center justify-center p-6 bg-white border-b border-gray-200">
+                <div class=" flex flex-col items-center justify-center p-6 bg-white border-b border-gray-200">
                     <h2 class="text-[#7F0001]">¡Escanea tu código de Barras!</h2>
                     <img class="w-[250px] h-[250px]" src="{{ asset('fotos/codigo-de-barras.png') }}" alt="Imagen Barcode" />
                     <form id="checkin-form" method="POST" action="{{ route('admin.gym-log.logAction', $gym->id) }}">
@@ -128,7 +165,30 @@
 
                 </div>
             </div>
+            @if ($notices->isNotEmpty())
+                        <div class="mt-4 w-100">
+                            <div class="flex justify-center text-lg">
+                                <i class="bx bx-bell mr-3 notice-icon"></i>
+                                <h3 class="card-title">Avisos del Gimnasio</h3>
+                                <i class="bx bx-bell ml-3 notice-icon"></i>
+                            </div>
+
+                            <div class="notices-container">
+                                @foreach ($notices as $notice)
+                                    <div class="notice-card">
+
+                                        <div class="notice-content">
+                                            <div class="notice-title">{{ $notice->title }}</div>
+                                            <div class="notice-text">{{ $notice->content }}</div>
+                                            <div class="notice-date">{{ $notice->created_at->format('d-m-Y') }}</div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
         </div>
+
         <div class="mt-5 text-sm text-center text-gray-500 font-semibold py-1">
             Copyright © <span id="get-current-year">2024</span><a href="https://www.facebook.com/profile.php?id=61558455937047" class="hover:underline text-gray-500 hover:text-gray-800" target="_blank"> Erick's GYM </a>
             <span>by</span>
@@ -170,14 +230,14 @@
                             {{ session('message') }}
                         </h3>
                     @elseif (session('status') == 'Por Vencer')
-                        <h3 class="text-gray-700">Bienvenido, disfruta tu visita.</h2>
+                        <h3 class="text-gray-700">Bienvenido, disfruta tu visita.</h3>
                         <h4 class="text-[#ffc107] ">
                             {{ session('message') }}
                         </h4>
                         <h5 class="text-gray-700">Te quedan pocos días, ¡No te quedes sin acceso!</h5>
                         <h4 class="text-[#7F0001]">¡Renueva tú Membresía en Recepción!</h4>
                     @elseif (session('status') == 'Vence Hoy')
-                        <h3 class="text-gray-700">Bienvenido, disfruta tu visita.</h2>
+                        <h3 class="text-gray-700">Bienvenido, disfruta tu visita.</h3>
                         <h4 class="text-[#007bff] ">
                             {{ session('message') }}
                         </h4>
