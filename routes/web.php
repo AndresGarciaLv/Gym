@@ -17,12 +17,23 @@ use App\Http\Middleware\CheckGymOwnership;
 use App\Http\Middleware\CheckGymUserOwnership;
 use App\Http\Middleware\CheckUserEditPermissions;
 use GuzzleHttp\Middleware;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NuevoCliente;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/iniciar-sesion', function () {
         return view('auth.login');
     });
 });
+
+Route::get('/nuevo-cliente', function () {
+    return view('welcome');
+});
+
+Route::post('nuevo-cliente', function () {
+    Mail::to('agarcia@firenow.com')->send(new NuevoCliente);
+    return "Correo enviado exitosamente";
+})->name('nuevo-cliente');
 
 Route::middleware('auth')->group(function () {
 

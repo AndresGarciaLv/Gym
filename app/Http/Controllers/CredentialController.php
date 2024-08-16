@@ -13,10 +13,10 @@ class CredentialController extends Controller
     {
         $user = User::findOrFail($userId);
         $generator = new BarcodeGeneratorPNG();
-        
+
         // Genera el código de barras en formato PNG
         $barcode = $generator->getBarcode($user->code, $generator::TYPE_CODE_128);
-        
+
         // Convierte el código de barras a una base64
         $barcodeBase64 = 'data:image/png;base64,' . base64_encode($barcode);
 
@@ -42,10 +42,10 @@ class CredentialController extends Controller
 
         $user = User::findOrFail($userId);
         $generator = new BarcodeGeneratorPNG();
-        
+
         // Genera el código de barras en formato PNG
         $barcode = $generator->getBarcode($user->code, $generator::TYPE_CODE_128);
-        
+
         // Convierte el código de barras a una base64
         $barcodeBase64 = 'data:image/png;base64,' . base64_encode($barcode);
 

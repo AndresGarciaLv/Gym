@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Mail\WelcomeMail;
+use App\Mail\NuevoCliente;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Gym;
@@ -117,6 +118,11 @@ class UserController extends Controller
                     'end_date' => $endDate,
                     'isActive' => true,
                 ]);
+
+                // Enviar correo al nuevo cliente
+                if (!empty($user->email)) {
+                    Mail::to($user->email)->send(new NuevoCliente($user));
+                }
             }
             elseif (in_array($role, ['Super Administrador', 'Administrador'])) {
                 $user->gyms()->attach($request->gyms);
